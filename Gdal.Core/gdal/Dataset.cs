@@ -8,6 +8,9 @@
 // the SWIG interface file instead.
 //------------------------------------------------------------------------------
 
+using System.Collections.Generic;
+using System.Linq;
+
 namespace OSGeo.GDAL {
 
 using global::System;
@@ -45,6 +48,34 @@ public class Dataset : MajorObject {
     {
       return new HandleRef(null, IntPtr.Zero);
     }
+  }
+
+  public Dictionary<string, string> GetSubDatasets()
+  {
+      Dictionary<string,string> dic = new Dictionary<string, string>();
+      string[] sd = GetMetadata("SUBDATASETS");
+      var kvDic = new Dictionary<string,string>();
+      foreach (var VARIABLE in sd)
+      {
+          if (VARIABLE.Contains("="))
+          {
+              var kv = VARIABLE.Split('=');
+              if (kv.Length == 2)
+              {
+                  kvDic.Add(kv[0],kv[1]);
+              }
+          }
+      }
+      int i = 1;
+      while (kvDic.ContainsKey("SUBDATASET_"+i+"_NAME"))
+      {
+          string subDsFilePath = kvDic["SUBDATASET_" + i + "_NAME"];
+          int index = subDsFilePath.LastIndexOf("://");
+          string name = subDsFilePath.Substring(index+3, subDsFilePath.Length - index-3);
+          dic.Add(name,kvDic["SUBDATASET_"+i+"_NAME"]);
+          i = i + 1;
+      }
+      return dic;
   }
 
   ~Dataset() {
