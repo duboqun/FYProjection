@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.13)
+project(osr_warp)
+add_library(osr_warp SHARED osr_wrap.cpp)
+find_package(GDAL)
+include_directories(${GDAL_INCLUDE_DIR})
+target_link_libraries(osr_warp ${GDAL_LIBRARY})

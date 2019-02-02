@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.13)
+project(ogr_warp)
+add_library(ogr_warp SHARED ogr_wrap.cpp)
+find_package(GDAL)
+include_directories(${GDAL_INCLUDE_DIR})
+target_link_libraries(ogr_warp ${GDAL_LIBRARY})
