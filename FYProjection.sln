@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26124.0
+MinimumVisualStudioVersion = 15.0.26124.0
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTool", "ProjectTool\ProjectTool.csproj", "{8D2BC5A0-BA42-487A-9413-656DA4DFACF7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileProject", "FileProject\FileProject.csproj", "{CE2C6B94-4192-4A8C-B2C4-03F8E880D1B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gdal.Core", "Gdal.Core\Gdal.Core.csproj", "{C001DF4A-68C0-45E8-A2E9-8A442DFA92D5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CE2C6B94-4192-4A8C-B2C4-03F8E880D1B3}.Debug|x64.ActiveCfg = Debug|x64
+		{CE2C6B94-4192-4A8C-B2C4-03F8E880D1B3}.Debug|x64.Build.0 = Debug|x64
+		{8D2BC5A0-BA42-487A-9413-656DA4DFACF7}.Debug|x64.ActiveCfg = Debug|x64
+		{8D2BC5A0-BA42-487A-9413-656DA4DFACF7}.Debug|x64.Build.0 = Debug|x64
+		{C001DF4A-68C0-45E8-A2E9-8A442DFA92D5}.Release|x64.ActiveCfg = Release|Any CPU
+		{C001DF4A-68C0-45E8-A2E9-8A442DFA92D5}.Release|x64.Build.0 = Release|Any CPU
+		{C001DF4A-68C0-45E8-A2E9-8A442DFA92D5}.Debug|x64.ActiveCfg = Release|x64
+		{C001DF4A-68C0-45E8-A2E9-8A442DFA92D5}.Debug|x64.Build.0 = Release|x64
+	EndGlobalSection
+EndGlobal
