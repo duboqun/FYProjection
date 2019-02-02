@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FileProject\FileProject.csproj" />
     <ProjectReference Include="..\Gdal.Core\Gdal.Core.csproj" />
   </ItemGroup>
 

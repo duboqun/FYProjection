@@ -14,7 +14,7 @@ namespace PIE.Meteo.FileProject
 
         }
 
-        public HSDProcess hsdProcess { get; set; } = null;
+//        public HSDProcess hsdProcess { get; set; } = null;
         public bool IsRadiation { get; set; } = true;
         public string InfileName { get; set; }
     }

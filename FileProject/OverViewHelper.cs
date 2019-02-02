@@ -72,7 +72,8 @@ namespace PIE.Meteo.FileProject
 //            export.StartExporting();
 //            activeView.Output(export as PIE.Carto.IExport, 96, dT.DeviceFrame, layer.Extent, null);
 //            export.FinishExporting();
-            return outOverviewFile;
+//            return outOverviewFile;
+            return string.Empty;
         }
     }
 }

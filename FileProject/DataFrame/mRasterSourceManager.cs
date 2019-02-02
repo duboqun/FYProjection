@@ -47,15 +47,17 @@ namespace PIE.Meteo.Model
 
         private mRasterSourceManager()
         {
+            Console.WriteLine($"读取卫星传感器配置文件，目录：{Directory.GetCurrentDirectory()}");
+            LoadConfigInfo(Directory.GetCurrentDirectory());
         }
 
-        public void LoadConfigInfo(string workPath)
+        private void LoadConfigInfo(string workPath)
         {
             try
             {
                 workpath = workPath;
                 string rasterSourceTypesConfigPath =
-                    Path.Combine(workPath, "SystemData", "RasterSourceTypesConfig.xml");
+                    Path.Combine(workPath, "Config", "RasterSourceTypesConfig.xml");
                 if (File.Exists(rasterSourceTypesConfigPath))
                 {
                     XmlDocument xmlDoc = mXMLHelper.GetXmlDocument(rasterSourceTypesConfigPath);
@@ -63,7 +65,7 @@ namespace PIE.Meteo.Model
                     RasterSourceTypesInfo = new RasterSourceTypesInfo(xn as XmlElement);
                 }
 
-                string rasterDatasetsConfigPath = Path.Combine(workPath, "SystemData", "RasterDatasetsConfig.xml");
+                string rasterDatasetsConfigPath = Path.Combine(workPath, "Config", "RasterDatasetsConfig.xml");
                 if (File.Exists(rasterDatasetsConfigPath))
                 {
                     XmlDocument xmlDoc = mXMLHelper.GetXmlDocument(rasterDatasetsConfigPath);
@@ -78,7 +80,7 @@ namespace PIE.Meteo.Model
                     }
                 }
 
-                string identifyListsConfigPath = Path.Combine(workPath, "SystemData", "IdentifyListsConfig.xml");
+                string identifyListsConfigPath = Path.Combine(workPath, "Config", "IdentifyListsConfig.xml");
                 if (File.Exists(identifyListsConfigPath))
                 {
                     XmlDocument xmlDoc = mXMLHelper.GetXmlDocument(identifyListsConfigPath);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using PIE.Meteo.Model;
 
 namespace PIE.Meteo.FileProject
 {
@@ -124,11 +125,11 @@ namespace PIE.Meteo.FileProject
             }
             catch (Exception ex)
             {
-                mLogger.Error($"FileChecker.GetFileType() {file.fileName}");
+                Console.WriteLine($"FileChecker.GetFileType() {file.fileName}");
                 throw new Exception($"未获得是轨道数据或者是已投影数据标识，无法确定正确的数据来源. {Path.GetFileName(file.fileName)}", ex.InnerException);
             }
 
-            mLogger.Error($"FileChecker.GetFileType() {file.fileName}");
+            Console.WriteLine($"FileChecker.GetFileType() {file.fileName}");
             throw new Exception($"未获得是轨道数据或者是已投影数据标识，无法确定正确的数据来源. {Path.GetFileName(file.fileName)}");
         }
 

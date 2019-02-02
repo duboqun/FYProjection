@@ -1,5 +1,4 @@
-﻿using PIE.Meteo.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -12,6 +11,7 @@ namespace PIE.Meteo.FileProject
     public class FileFinder
     {
         #region Modis
+
         public static AbstractWarpDataset TryFind03FileFromModisImgFile(AbstractWarpDataset fileRaster)
         {
             string dir = Path.GetDirectoryName(fileRaster.fileName);
@@ -79,6 +79,7 @@ namespace PIE.Meteo.FileProject
                 return null;
             return Open(retFile);
         }
+
         #endregion
 
         public static AbstractWarpDataset Open(string filename)
@@ -90,6 +91,7 @@ namespace PIE.Meteo.FileProject
         }
 
         #region FY
+
         /// <summary>
         /// 20130418添加了对以下类型文件名的支持。(尚未完成)
         /// Z_SATE_C_BAWX_20130321034403_P_FY3B_MERSI_GBAL_L1_20110220_0510_0250M_MS.HDF
@@ -106,7 +108,8 @@ namespace PIE.Meteo.FileProject
                 string retFile = fileName.Replace("_0250M_", "_1000M_");
                 string resultretFile = Path.Combine(dir, retFile);
                 if (retFile == fileName || !File.Exists(resultretFile))
-                {//这里再进一步扫描目录下的文件，用正则匹配，如果能找到，同样适用。
+                {
+                    //这里再进一步扫描目录下的文件，用正则匹配，如果能找到，同样适用。
                     if (File.Exists(resultretFile.Replace("250M", "1000M")))
                     {
                         return Open(resultretFile.Replace("250M", "1000M"));
@@ -130,7 +133,7 @@ namespace PIE.Meteo.FileProject
                 string dir = Path.GetDirectoryName(fileRaster.fileName);
                 string fileName = Path.GetFileName(fileRaster.fileName);
                 string retFile = fileName.Replace("_1000M", "_0250M");
-                if (retFile == fileName)//文件名中不包含_1000M_
+                if (retFile == fileName) //文件名中不包含_1000M_
                     return null;
                 string resultretFile = Path.Combine(dir, retFile);
                 if (File.Exists(resultretFile))
@@ -140,6 +143,7 @@ namespace PIE.Meteo.FileProject
                 {
                     return Open(Path.Combine(dir.Replace("1000M", "250M"), retFile));
                 }
+
                 //if (kmFileName.Contains("Z_SATE_C_BAWX_"))
                 //{ 
                 //}
@@ -182,6 +186,7 @@ namespace PIE.Meteo.FileProject
                 {
                     kmGeo = TryFindQkmGeoFileFromFY3C_MERSI(fileRaster);
                 }
+
                 if (kmGeo == null)
                     throw new Exception("无法找到角度数据(如经纬度等)文件[._GEO1K_...HDF]或[._GEOQK_...HDF]");
                 return kmGeo;
@@ -197,7 +202,8 @@ namespace PIE.Meteo.FileProject
             string fileName = fileRaster.fileName;
             string dir = Path.GetDirectoryName(fileName);
             fileName = Path.GetFileName(fileName);
-            string retFile = fileName.Replace("_1000M_", "_GEO1K_").Replace("_0250M_", "_GEO1K_"); ;
+            string retFile = fileName.Replace("_1000M_", "_GEO1K_").Replace("_0250M_", "_GEO1K_");
+            ;
             string fileFullPath = Path.Combine(dir, retFile);
             if (retFile == fileName || !File.Exists(fileFullPath))
             {
@@ -208,6 +214,7 @@ namespace PIE.Meteo.FileProject
                     return null;
                 }
             }
+
             try
             {
                 return Open(fileFullPath);
@@ -234,6 +241,7 @@ namespace PIE.Meteo.FileProject
                     return null;
                 }
             }
+
             try
             {
                 return Open(fileFullPath);
@@ -283,6 +291,7 @@ namespace PIE.Meteo.FileProject
             {
                 result = WarpDataset.Open(newPath);
             }
+
             return result;
         }
 
@@ -297,6 +306,7 @@ namespace PIE.Meteo.FileProject
             {
                 result = WarpDataset.Open(newPath);
             }
+
             return result;
         }
 
@@ -311,13 +321,17 @@ namespace PIE.Meteo.FileProject
             {
                 result = WarpDataset.Open(newPath);
             }
+
             return result;
         }
+
         #endregion
 
         #region BandmapTable
-        public static void GetModisBandmapTable(AbstractWarpDataset kmRaster, AbstractWarpDataset hkmRaster, AbstractWarpDataset qkmRaster, int[] bandNumbers,
-           out int[] qkmBandNumberMaps, out int[] hkmBandNumberMaps, out int[] kmBandNumberMaps)
+
+        public static void GetModisBandmapTable(AbstractWarpDataset kmRaster, AbstractWarpDataset hkmRaster,
+            AbstractWarpDataset qkmRaster, int[] bandNumbers,
+            out int[] qkmBandNumberMaps, out int[] hkmBandNumberMaps, out int[] kmBandNumberMaps)
         {
             qkmBandNumberMaps = null;
             hkmBandNumberMaps = null;
@@ -335,6 +349,7 @@ namespace PIE.Meteo.FileProject
                     bandNumbers[i] = i + 1;
                 }
             }
+
             List<int> qkm = new List<int>();
             List<int> hkm = new List<int>();
             List<int> km = new List<int>();
@@ -344,28 +359,32 @@ namespace PIE.Meteo.FileProject
                 {
                     if (bandNumbers[i] <= qkmBandLength)
                     {
-                        qkm.Add(bandNumbers[i]);//当前通道号为bandIndexs[i]，目标的为i
+                        qkm.Add(bandNumbers[i]); //当前通道号为bandIndexs[i]，目标的为i
                         continue;
                     }
                 }
+
                 if (hkmRaster != null)
                 {
                     if (bandNumbers[i] <= hkmBandLength)
                     {
-                        hkm.Add(bandNumbers[i]);//当前通道号为bandIndexs[i]，目标的为i
+                        hkm.Add(bandNumbers[i]); //当前通道号为bandIndexs[i]，目标的为i
                         continue;
                     }
                 }
+
                 if (kmRaster != null)
                     if (bandNumbers[i] <= kmBandLength)
                         km.Add(bandNumbers[i]);
             }
+
             qkmBandNumberMaps = qkm.Count == 0 ? null : qkm.ToArray();
             hkmBandNumberMaps = hkm.Count == 0 ? null : hkm.ToArray();
             kmBandNumberMaps = km.Count == 0 ? null : km.ToArray();
         }
 
-        internal static void GetBandmapTableMERSI(AbstractWarpDataset qkmRaster, AbstractWarpDataset kmRaster, int[] bandNumbers,
+        internal static void GetBandmapTableMERSI(AbstractWarpDataset qkmRaster, AbstractWarpDataset kmRaster,
+            int[] bandNumbers,
             out int[] qkmBandNoMaps, out int[] kmBandNoMaps)
         {
             qkmBandNoMaps = null;
@@ -382,6 +401,7 @@ namespace PIE.Meteo.FileProject
                     bandNumbers[i] = i + 1;
                 }
             }
+
             List<int> qkm = new List<int>();
             List<int> km = new List<int>();
             for (int i = 0; i < bandNumbers.Length; i++)
@@ -390,14 +410,16 @@ namespace PIE.Meteo.FileProject
                 {
                     if (bandNumbers[i] <= qkmBandLength)
                     {
-                        qkm.Add(bandNumbers[i]);//当前通道号为bandIndexs[i]，目标的为i
+                        qkm.Add(bandNumbers[i]); //当前通道号为bandIndexs[i]，目标的为i
                         continue;
                     }
                 }
+
                 if (kmRaster != null)
                     if (bandNumbers[i] <= kmBandLength)
                         km.Add(bandNumbers[i]);
             }
+
             qkmBandNoMaps = qkm.Count == 0 ? null : qkm.ToArray();
             kmBandNoMaps = km.Count == 0 ? null : km.ToArray();
         }
@@ -414,12 +436,14 @@ namespace PIE.Meteo.FileProject
                     bandNumbers[i] = i + 1;
                 }
             }
+
             List<int> km = new List<int>();
             for (int i = 0; i < bandNumbers.Length; i++)
             {
                 if (bandNumbers[i] <= kmBandLength)
                     km.Add(bandNumbers[i]);
             }
+
             kmBandNoMaps = km.Count == 0 ? null : km.ToArray();
         }
 
@@ -436,12 +460,14 @@ namespace PIE.Meteo.FileProject
                     bandIndexs[i] = i + 1;
                 }
             }
+
             List<int> km = new List<int>();
             for (int i = 0; i < bandIndexs.Length; i++)
             {
                 if (bandIndexs[i] <= kmBandLength)
                     km.Add(bandIndexs[i]);
             }
+
             kmBandNoMaps = km.Count == 0 ? null : km.ToArray();
         }
 
@@ -457,12 +483,14 @@ namespace PIE.Meteo.FileProject
                     bandIndexs[i] = i + 1;
                 }
             }
+
             List<int> km = new List<int>();
             for (int i = 0; i < bandIndexs.Length; i++)
             {
                 if (bandIndexs[i] <= kmBandLength)
                     km.Add(bandIndexs[i]);
             }
+
             kmBandNoMaps = km.Count == 0 ? null : km.ToArray();
         }
 
@@ -478,17 +506,20 @@ namespace PIE.Meteo.FileProject
                     bandIndexs[i] = i + 1;
                 }
             }
+
             List<int> km = new List<int>();
             for (int i = 0; i < bandIndexs.Length; i++)
             {
                 if (bandIndexs[i] <= kmBandLength)
                     km.Add(bandIndexs[i]);
             }
+
             kmBandNoMaps = km.Count == 0 ? null : km.ToArray();
         }
 
-        internal static void GetBandmapTableMERSI2(AbstractWarpDataset qkmRaster, AbstractWarpDataset kmRaster, int[] bandNumbers,
-                    out int[] qkmBandNoMaps, out int[] kmBandNoMaps)
+        internal static void GetBandmapTableMERSI2(AbstractWarpDataset qkmRaster, AbstractWarpDataset kmRaster,
+            int[] bandNumbers,
+            out int[] qkmBandNoMaps, out int[] kmBandNoMaps)
         {
             qkmBandNoMaps = null;
             kmBandNoMaps = null;
@@ -504,6 +535,7 @@ namespace PIE.Meteo.FileProject
                     bandNumbers[i] = i + 1;
                 }
             }
+
             List<int> qkm = new List<int>();
             List<int> km = new List<int>();
             for (int i = 0; i < bandNumbers.Length; i++)
@@ -512,26 +544,34 @@ namespace PIE.Meteo.FileProject
                 {
                     if (bandNumbers[i] <= qkmBandLength)
                     {
-                        qkm.Add(bandNumbers[i]);//当前通道号为bandIndexs[i]，目标的为i
+                        qkm.Add(bandNumbers[i]); //当前通道号为bandIndexs[i]，目标的为i
                         continue;
                     }
                 }
+
                 if (kmRaster != null)
                     if (bandNumbers[i] <= kmBandLength)
                         km.Add(bandNumbers[i]);
             }
+
             qkmBandNoMaps = qkm.Count == 0 ? null : qkm.ToArray();
             kmBandNoMaps = km.Count == 0 ? null : km.ToArray();
         }
 
-        internal static void GetFY4ABandmapTable(AbstractWarpDataset hkmRaster, AbstractWarpDataset kmRaster, AbstractWarpDataset dkmRaster, AbstractWarpDataset fkmRaster, int[] bandNumbers, out int[] hkmBands, out int[] kmBands, out int[] dkmBands, out int[] fkmBands)
+        internal static void GetFY4ABandmapTable(AbstractWarpDataset hkmRaster, AbstractWarpDataset kmRaster,
+            AbstractWarpDataset dkmRaster, AbstractWarpDataset fkmRaster, int[] bandNumbers, out int[] hkmBands,
+            out int[] kmBands, out int[] dkmBands, out int[] fkmBands)
         {
-            hkmBands = null; kmBands = null; dkmBands = null; fkmBands = null;
-            List<AbstractWarpDataset> srcRasterList = new List<AbstractWarpDataset> { hkmRaster, kmRaster, dkmRaster, fkmRaster };
+            hkmBands = null;
+            kmBands = null;
+            dkmBands = null;
+            fkmBands = null;
+            List<AbstractWarpDataset> srcRasterList = new List<AbstractWarpDataset>
+                {hkmRaster, kmRaster, dkmRaster, fkmRaster};
             List<PrjBand[]> bandDefList = new List<PrjBand[]>
             {
-                BandDefCollection.FY4_0500_OrbitDefCollecges(),BandDefCollection.FY4_1000_OrbitDefCollecges(),
-                BandDefCollection.FY4_2000_OrbitDefCollecges(),BandDefCollection.FY4_4000_OrbitDefCollecges()
+                BandDefCollection.FY4_0500_OrbitDefCollecges(), BandDefCollection.FY4_1000_OrbitDefCollecges(),
+                BandDefCollection.FY4_2000_OrbitDefCollecges(), BandDefCollection.FY4_4000_OrbitDefCollecges()
             };
             if (srcRasterList.All(t => t == null)) return;
             int index = srcRasterList.FindLastIndex(t => t != null);
@@ -541,6 +581,7 @@ namespace PIE.Meteo.FileProject
             {
                 bandNumbers = Enumerable.Range(1, basePrjBand.Length).ToArray();
             }
+
             List<int> hkm = new List<int>();
             List<int> km = new List<int>();
             List<int> dkm = new List<int>();
@@ -551,54 +592,66 @@ namespace PIE.Meteo.FileProject
                 {
                     if (bandNumbers[i] <= bandDefList[1].Length)
                     {
-                        km.Add(bandNumbers[i]);//当前通道号为bandIndexs[i]，目标的为i
+                        km.Add(bandNumbers[i]); //当前通道号为bandIndexs[i]，目标的为i
                         continue;
                     }
                 }
+
                 if (dkmRaster != null)
                 {
                     if (bandNumbers[i] <= bandDefList[2].Length)
                     {
-                        dkm.Add(bandNumbers[i]);//当前通道号为bandIndexs[i]，目标的为i
+                        dkm.Add(bandNumbers[i]); //当前通道号为bandIndexs[i]，目标的为i
                         continue;
                     }
                 }
+
                 if (fkmRaster != null)
                     if (bandNumbers[i] <= bandDefList[3].Length)
                         fkm.Add(bandNumbers[i]);
             }
+
             int hkmIndex = bandNumbers.ToList().FindIndex(t => t == 2);
             if (hkmRaster != null)
             {
                 hkm.Add(hkmIndex);
             }
+
             hkmBands = hkm.Count == 0 ? null : hkm.ToArray();
             kmBands = km.Count == 0 ? null : km.ToArray();
             dkmBands = dkm.Count == 0 ? null : dkm.ToArray();
             fkmBands = fkm.Count == 0 ? null : fkm.ToArray();
         }
+
         #endregion
 
         #region HSD
+
         public static List<string> TryFindHSDGroupt(AbstractWarpDataset fileRaster)
         {
-            MyLog.Log.Print.Info($"开始搜索与文件：{Environment.NewLine}          {fileRaster.fileName}{Environment.NewLine}相同时次的HSD数据");
+            Console.WriteLine
+                ($"开始搜索与文件：{Environment.NewLine}          {fileRaster.fileName}{Environment.NewLine}相同时次的HSD数据");
             FileInfo h8FileInfo = new FileInfo(fileRaster.fileName);
             string[] part = Path.GetFileNameWithoutExtension(fileRaster.fileName).Split('_');
-            DateTime time = DateTime.ParseExact(part[2] + part[3], "yyyyMMddHHmm", System.Globalization.CultureInfo.CurrentCulture);
+            DateTime time = DateTime.ParseExact(part[2] + part[3], "yyyyMMddHHmm",
+                System.Globalization.CultureInfo.CurrentCulture);
             var files = h8FileInfo.Directory.GetFiles("*.bz2");
 
             List<string> groupBz2Files = new List<string>();
             foreach (var bzFile in files)
             {
                 string[] parts = Path.GetFileNameWithoutExtension(bzFile.FullName).Split('_');
-                DateTime curTime = DateTime.ParseExact(parts[2] + parts[3], "yyyyMMddHHmm", System.Globalization.CultureInfo.CurrentCulture);
+                DateTime curTime = DateTime.ParseExact(parts[2] + parts[3], "yyyyMMddHHmm",
+                    System.Globalization.CultureInfo.CurrentCulture);
                 if (curTime == time)
                     groupBz2Files.Add(bzFile.FullName);
             }
-            MyLog.Log.Print.Info($"搜索到匹配时次数据{groupBz2Files.Count}个");
+
+            Console.WriteLine
+                ($"搜索到匹配时次数据{groupBz2Files.Count}个");
             return groupBz2Files;
         }
+
         #endregion
     }
 }

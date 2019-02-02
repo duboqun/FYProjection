@@ -1,5 +1,4 @@
-﻿using PIE.Meteo.Core;
-using PIE.Meteo.Model;
+﻿using PIE.Meteo.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;

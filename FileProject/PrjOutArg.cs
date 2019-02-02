@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using OSGeo.OSR;
 using PIE.Meteo.RasterProject;
-using PIE.Geometry;
 
 namespace PIE.Meteo.FileProject
 {
@@ -19,7 +19,7 @@ namespace PIE.Meteo.FileProject
         /// <param name="prjBands"></param>
         /// <param name="outDirFile"></param>
         /// <param name="args">eg:NotRadiation,NotSolarZenith</param>
-        public PrjOutArg(ISpatialReference projectionRef, PrjEnvelopeItem[] envelopes, float resolutonX, float resolutionY,string outDirFile)
+        public PrjOutArg(SpatialReference projectionRef, PrjEnvelopeItem[] envelopes, float resolutonX, float resolutionY,string outDirFile)
         {
             ProjectionRef = projectionRef;
             Envelopes = envelopes;
@@ -30,7 +30,7 @@ namespace PIE.Meteo.FileProject
 
         public PrjOutArg(string projectionIdentify, PrjEnvelopeItem[] envelopes, float resolutonX, float resolutionY,string outDirFile)
         {
-            ISpatialReference projectionRef = GetSpatialReference(projectionIdentify);
+            SpatialReference projectionRef = GetSpatialReference(projectionIdentify);
             ProjectionRef = projectionRef;
             Envelopes = envelopes;
             ResolutionX = resolutonX;
@@ -40,7 +40,7 @@ namespace PIE.Meteo.FileProject
         /// <summary>
         /// 输出文件投影定义
         /// </summary>
-        public ISpatialReference ProjectionRef;
+        public SpatialReference ProjectionRef;
         /// <summary>
         /// 定义输出范围
         /// null代表整文件输出
@@ -82,7 +82,7 @@ namespace PIE.Meteo.FileProject
         /// </summary>
         public int[] SelectedBands;
         
-        private ISpatialReference GetSpatialReference(string projectionIdentify)
+        private SpatialReference GetSpatialReference(string projectionIdentify)
         {
             switch (projectionIdentify)
             {

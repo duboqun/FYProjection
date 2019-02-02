@@ -1,6 +1,4 @@
-﻿using PIE.Geometry;
-using PIE.Meteo.Core;
-using PIE.Meteo.RasterProject;
+﻿using PIE.Meteo.RasterProject;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,10 +11,10 @@ namespace PIE.Meteo.FileProject
 {
     public class DefinedRegionParse
     {
-        static string configFilePath = Path.Combine(mService.WorkDir.FullName, "appconfig/DefinedRegion.xml");
+        static string configFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Config/DefinedRegion.xml");
         private Dictionary<string, PrjEnvelopeItem[]> _definedRegion;
         private BlockDefined _blockDefined = new BlockDefined();
-        private ISpatialReference wgs84;
+        private OSGeo.OSR.SpatialReference wgs84 = new OSGeo.OSR.SpatialReference("");
         public DefinedRegionParse()
         {
             LoadConfig();
