@@ -1,8 +1,4 @@
-﻿using PIE.DataSource;
-using PIE.Geometry;
-using PIE.Meteo.Common;
-using PIE.Meteo.Core;
-using PIE.Meteo.Model;
+﻿using PIE.Meteo.Model;
 using PIE.Meteo.RasterProject;
 using System;
 using System.Collections.Generic;
@@ -11,6 +7,9 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using OSGeo.GDAL;
+using OSGeo.OGR;
+using OSGeo.OSR;
 
 namespace PIE.Meteo.FileProject
 {
@@ -74,7 +73,7 @@ namespace PIE.Meteo.FileProject
             switch (fileType)
             {
                 case "H8":
-                    outFiles = PrjH08(srcRaster, prjOutArg, progress, out messageBox);
+                    //outFiles = PrjH08(srcRaster, prjOutArg, progress, out messageBox);
                     break;
                 case "VIRR_L1":
                     outFiles = PrjVIRR(srcRaster, prjOutArg, progress, out errorMessage);
@@ -155,88 +154,19 @@ namespace PIE.Meteo.FileProject
             }
             stopwatch.Stop();
             Debug.WriteLine("投影耗时" + stopwatch.ElapsedMilliseconds.ToString() + "ms");
-            MyLog.Log.Print.Info("投影耗时" + stopwatch.ElapsedMilliseconds.ToString() + "ms");
             if (errorMessage != null)
                 messageBox = errorMessage.ToString();
             return outFiles;
         }
 
-        #region H8
-
-        private string[] PrjH08(AbstractWarpDataset fileDataset, PrjOutArg prjOutArg, Action<int, string> progress, out string messageBox)
-        {
-            messageBox = "";
-            try
-            {
-                H08_FileProjector projector = new H08_FileProjector();
-                H08_PrjSetting setting = new H08_PrjSetting();
-                setting.InfileName = fileDataset.fileName;
-                string outputFileName = prjOutArg.OutDirOrFile;
-                if (IsDir(outputFileName))
-                {
-                    //生成文件名
-                    outputFileName = Path.Combine(outputFileName, Path.GetFileName(fileDataset.fileName).Substring(0, 20) + "_proj.ldf");
-                }
-                //搜索文件
-                var groupBz2Files = FileFinder.TryFindHSDGroupt(fileDataset);
-                //构造BlockProcess
-                string tempDir = prjOutArg.Args.Where(t => t.ToString().Contains("TempDir")).FirstOrDefault()?.ToString();
-                if (!string.IsNullOrEmpty(tempDir))
-                    tempDir = tempDir.Substring(8);
-
-
-                HSDProcess process = new HSDProcess(groupBz2Files.ToArray(), progress, tempDir);
-                setting.hsdProcess = process;
-
-                setting.OutPathAndFileName = outputFileName;
-                setting.OutResolutionX = prjOutArg.ResolutionX;
-                setting.OutResolutionY = prjOutArg.ResolutionY;
-                PrjEnvelopeItem[] prjEnvelopes = prjOutArg.Envelopes;
-                setting.OutEnvelope = prjEnvelopes == null ? null : prjEnvelopes[0].PrjEnvelope;
-                setting.OutBandNos = prjOutArg.SelectedBands;
-                if (prjOutArg.Args != null)
-                {
-                    if (prjOutArg.Args.Contains("NotRadiation"))
-                        setting.IsRadiation = false;
-                }
-
-                projector.Project(fileDataset, setting, prjOutArg.ProjectionRef, progress);
-
-
-
-                if (prjOutArg.Args.Contains("IsClearPrjCache"))
-                {
-                    try
-                    {
-                        Directory.Delete(process.GetTempDir(), true);
-                    }
-                    catch (Exception ex)
-                    {
-                        mLogger.Error("删除临时目录", ex);
-                    }
-
-                }
-
-                process.Dispose();
-                process = null;
-                return new string[] { setting.OutPathAndFileName };
-            }
-            catch (Exception ex)
-            {
-                mLogger.Error("H8 投影", ex);
-                messageBox = ex.Message;
-                throw;
-            }
-        }
-
-        #endregion H8
+        
 
         #region FY3_VIRR
 
         // FY3A_VIRR_06_GLL_L1_20120909_Day3_1000M.LDF
         private string[] PrjVIRR(AbstractWarpDataset fileName, PrjOutArg prjOutArg, Action<int, string> progress, out StringBuilder errorMessage)
         {
-            ISpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
+            SpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
             PrjEnvelopeItem[] prjEnvelopes = prjOutArg.Envelopes;
             AbstractWarpDataset srcRaster = fileName;
             IFileProjector projector = null;
@@ -255,7 +185,7 @@ namespace PIE.Meteo.FileProject
                     {
                         if (prjOutArg.ResolutionX == 0)
                         {
-                            if (dstSpatialRef == null || dstSpatialRef.Type == SpatialReferenceType.GeographicCS)
+                            if (dstSpatialRef == null || dstSpatialRef.IsGeographic()==1)
                             {
                                 prjOutArg.ResolutionX = 0.01f;
                                 prjOutArg.ResolutionY = 0.01f;
@@ -322,7 +252,7 @@ namespace PIE.Meteo.FileProject
         {
             errorMessage = new StringBuilder();
             AbstractWarpDataset geoRaster = FileFinder.TryFindGeoFileFromFY3C_VIRR(srcRaster);
-            ISpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
+            SpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
             PrjEnvelopeItem[] prjEnvelopes = prjOutArg.Envelopes;
             IFileProjector projector = null;
             int[] kmBands;
@@ -339,7 +269,7 @@ namespace PIE.Meteo.FileProject
                     {
                         if (prjOutArg.ResolutionX == 0)
                         {
-                            if (dstSpatialRef == null || dstSpatialRef.Type == SpatialReferenceType.GeographicCS)
+                            if (dstSpatialRef == null || dstSpatialRef.IsGeographic()==1)
                             {
                                 prjOutArg.ResolutionX = 0.01f;
                                 prjOutArg.ResolutionY = 0.01f;
@@ -433,7 +363,7 @@ namespace PIE.Meteo.FileProject
 
         private string[] PrjFY3C_MERSI(AbstractWarpDataset qkmRaster, AbstractWarpDataset kmRaster, AbstractWarpDataset qkmGeoRaster, AbstractWarpDataset kmGeoRaster, PrjOutArg prjOutArg, Action<int, string> progress, out StringBuilder errorMessage)
         {
-            ISpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
+            SpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
             PrjEnvelopeItem[] prjEnvelopes = prjOutArg.Envelopes;
             float outResolutionX = prjOutArg.ResolutionX;
             float outResolutionY = prjOutArg.ResolutionY;
@@ -443,7 +373,7 @@ namespace PIE.Meteo.FileProject
             string outDir = prjOutArg.OutDirOrFile;
 
             float baseResolutionK = 0.01f;
-            if (dstSpatialRef == null || dstSpatialRef.Type == SpatialReferenceType.GeographicCS)
+            if (dstSpatialRef == null || dstSpatialRef.IsGeographic()==1)
             {
                 baseResolutionK = 0.01f;
             }
@@ -710,7 +640,7 @@ namespace PIE.Meteo.FileProject
 
         private string[] PrjFY3D_MERSI_QKM(AbstractWarpDataset qkmRaster, AbstractWarpDataset kmRaster, AbstractWarpDataset qkmGeoRaster, AbstractWarpDataset kmGeoRaster, PrjOutArg prjOutArg, Action<int, string> progress, out StringBuilder errorMessage)
         {
-            ISpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
+            SpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
             PrjEnvelopeItem[] prjEnvelopes = prjOutArg.Envelopes;
             float outResolutionX = prjOutArg.ResolutionX;
             float outResolutionY = prjOutArg.ResolutionY;
@@ -837,7 +767,7 @@ namespace PIE.Meteo.FileProject
 
         private string[] PrjFY3D_MERSI_1KM(AbstractWarpDataset qkmRaster, AbstractWarpDataset kmRaster, AbstractWarpDataset qkmGeoRaster, AbstractWarpDataset kmGeoRaster, PrjOutArg prjOutArg, Action<int, string> progress, out StringBuilder errorMessage)
         {
-            ISpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
+            SpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
             PrjEnvelopeItem[] prjEnvelopes = prjOutArg.Envelopes;
             float outResolutionX = prjOutArg.ResolutionX;
             float outResolutionY = prjOutArg.ResolutionY;
@@ -847,7 +777,7 @@ namespace PIE.Meteo.FileProject
             string outDir = prjOutArg.OutDirOrFile;
 
             float baseResolutionK = 0.01f;
-            if (dstSpatialRef == null || dstSpatialRef.Type == SpatialReferenceType.GeographicCS)
+            if (dstSpatialRef == null || dstSpatialRef.IsGeographic()==1)
             {
                 baseResolutionK = 0.01f;
             }
@@ -1097,7 +1027,7 @@ namespace PIE.Meteo.FileProject
         private string[] PrjFY4A_L1(AbstractWarpDataset srcRaster, PrjOutArg prjOutArg, Action<int, string> progress, out StringBuilder errorMessage)
         {
             //500 1000 2000 4000 融合处理
-            ISpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
+            SpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
             PrjEnvelopeItem[] prjEnvelopes = prjOutArg.Envelopes;
             FY4A_AGRIFileProjector projector = null;
             int[] kmBands;
@@ -1144,7 +1074,6 @@ namespace PIE.Meteo.FileProject
                     }
                     catch (Exception ex)
                     {
-                        MyLog.Log.Print.Error("ProjectionFactory.PrjFY4A_L1()", ex);
                         outFiles.Add(null);
                         errorMessage.AppendLine(ex.Message);
                         TryDeleteErrorFile(outFileName);
@@ -1210,7 +1139,7 @@ namespace PIE.Meteo.FileProject
         {
             errorMessage = new StringBuilder();
             //默认分辨率，默认参数
-            ISpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
+            SpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
             float outResolutionX = prjOutArg.ResolutionX;
             float outResolutionY = prjOutArg.ResolutionY;
             SetDefaultResolutionForFY4A(hkmRaster, kmRaster, dkmRaster, fkmRaster, dstSpatialRef, ref outResolutionX, ref outResolutionY);
@@ -1520,7 +1449,7 @@ namespace PIE.Meteo.FileProject
         /// <summary>
         /// 释放用不到的数据集
         /// </summary>
-        private void FilterRasterForFY4A(ref AbstractWarpDataset hkmRaster, ref AbstractWarpDataset kmRaster, ref AbstractWarpDataset dkmRaster, ref AbstractWarpDataset fkmRaster, ISpatialReference dstSpatialRef, float outResolutionX, float outResolutionY)
+        private void FilterRasterForFY4A(ref AbstractWarpDataset hkmRaster, ref AbstractWarpDataset kmRaster, ref AbstractWarpDataset dkmRaster, ref AbstractWarpDataset fkmRaster, SpatialReference dstSpatialRef, float outResolutionX, float outResolutionY)
         {
             float baseResolution = 0;
 
@@ -1534,7 +1463,7 @@ namespace PIE.Meteo.FileProject
             {
                 if (dsList[i] != null)
                 {
-                    if (dstSpatialRef.Type == SpatialReferenceType.GeographicCS)
+                    if (dstSpatialRef.IsGeographic()==1)
                         baseResolution = resList[i].Item1;
                     else
                         baseResolution = resList[i].Item2;
@@ -1548,7 +1477,7 @@ namespace PIE.Meteo.FileProject
             hkmRaster = dsList[0]; kmRaster = dsList[1]; dkmRaster = dsList[2]; fkmRaster = dsList[3];
         }
 
-        private void SetDefaultResolutionForFY4A(AbstractWarpDataset hkmRaster, AbstractWarpDataset kmRaster, AbstractWarpDataset dkmRaster, AbstractWarpDataset fkmRaster, ISpatialReference dstSpatialRef, ref float outResolutionX, ref float outResolutionY)
+        private void SetDefaultResolutionForFY4A(AbstractWarpDataset hkmRaster, AbstractWarpDataset kmRaster, AbstractWarpDataset dkmRaster, AbstractWarpDataset fkmRaster, SpatialReference dstSpatialRef, ref float outResolutionX, ref float outResolutionY)
         {
             List<Tuple<AbstractWarpDataset, float, float>> resDic = new List<Tuple<AbstractWarpDataset, float, float>>
             {
@@ -1563,7 +1492,7 @@ namespace PIE.Meteo.FileProject
                 {
                     if (item.Item1 != null)
                     {
-                        if (dstSpatialRef.Type == SpatialReferenceType.GeographicCS)
+                        if (dstSpatialRef.IsGeographic()==1)
                         {
                             outResolutionX = item.Item2;
                             outResolutionY = item.Item2;
@@ -1584,7 +1513,7 @@ namespace PIE.Meteo.FileProject
 
         private string[] PrjFY2X_NOM(AbstractWarpDataset srcRaster, PrjOutArg prjOutArg, Action<int, string> progress, out StringBuilder errorMessage)
         {
-            ISpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
+            SpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
             PrjEnvelopeItem[] prjEnvelopes = prjOutArg.Envelopes;
             IFileProjector projector = null;
             int[] kmBands;
@@ -1634,7 +1563,6 @@ namespace PIE.Meteo.FileProject
                         errorMessage.AppendLine(ex.Message);
                         TryDeleteErrorFile(outFileName);
                         Console.WriteLine(ex.Message);
-                        ex.Message.Error();
                     }
                 }
                 return outFiles.ToArray();
@@ -1666,7 +1594,7 @@ namespace PIE.Meteo.FileProject
 
         private string[] PrjMersi(AbstractWarpDataset qkmRaster, AbstractWarpDataset kmRaster, PrjOutArg prjOutArg, Action<int, string> progress, out StringBuilder errorMessage)
         {
-            ISpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
+            SpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
             PrjEnvelopeItem[] prjEnvelopes = prjOutArg.Envelopes;
             float outResolutionX = prjOutArg.ResolutionX;
             float outResolutionY = prjOutArg.ResolutionY;
@@ -1676,7 +1604,7 @@ namespace PIE.Meteo.FileProject
             string outDir = prjOutArg.OutDirOrFile;
 
             float baseResolutionK = 0.01f;
-            if (dstSpatialRef == null || dstSpatialRef.Type == SpatialReferenceType.GeographicCS)
+            if (dstSpatialRef == null || dstSpatialRef.IsGeographic()==1)
             {
                 baseResolutionK = 0.01f;
             }
@@ -1952,7 +1880,7 @@ namespace PIE.Meteo.FileProject
                         prjSetting.OutResolutionX = prjOutArg.ResolutionX;
                         prjSetting.OutResolutionY = prjOutArg.ResolutionY;
                         prjSetting.OutEnvelope = prjEnvelopes[i].PrjEnvelope;
-                        ISpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
+                        SpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
 
                         projTor.Project(srcRaster, prjSetting, dstSpatialRef, progress);
                         outFiles.Add(prjSetting.OutPathAndFileName);
@@ -1975,13 +1903,13 @@ namespace PIE.Meteo.FileProject
 
         #endregion PROJECTED
 
-        private static void SetDefaultResolutionForMersi(AbstractWarpDataset qkmRaster, ISpatialReference dstSpatialRef, ref float outResolutionX, ref float outResolutionY)
+        private static void SetDefaultResolutionForMersi(AbstractWarpDataset qkmRaster, SpatialReference dstSpatialRef, ref float outResolutionX, ref float outResolutionY)
         {
             if (outResolutionX == 0 || outResolutionY == 0)
             {
                 if (qkmRaster != null)
                 {
-                    if (dstSpatialRef.Type == SpatialReferenceType.GeographicCS)
+                    if (dstSpatialRef.IsGeographic()==1)
                     {
                         outResolutionX = 0.0025F;
                         outResolutionY = 0.0025F;
@@ -1994,7 +1922,7 @@ namespace PIE.Meteo.FileProject
                 }
                 else
                 {
-                    if (dstSpatialRef.Type == SpatialReferenceType.GeographicCS)
+                    if (dstSpatialRef.IsGeographic()==1)
                     {
                         outResolutionX = 0.01f;
                         outResolutionY = 0.01f;
@@ -2008,7 +1936,7 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        private AbstractWarpDataset CreateRaster(string outfilename, PrjEnvelope envelope, float outResolutionX, float outResolutionY, int bandCount, ISpatialReference spatialRef, string bandNames)
+        private AbstractWarpDataset CreateRaster(string outfilename, PrjEnvelope envelope, float outResolutionX, float outResolutionY, int bandCount, SpatialReference spatialRef, string bandNames)
         {
             Size outSize = envelope.GetSize(outResolutionX, outResolutionY);
             string[] options = new string[]{
@@ -2019,32 +1947,33 @@ namespace PIE.Meteo.FileProject
                 "MAPINFO={" + 1 + "," + 1 + "}:{" + envelope.MinX + "," + envelope.MaxY + "}:{" + outResolutionX + "," + outResolutionY + "}"
                 ,bandNames
             };
-            Geometry.Envelope env = new Geometry.Envelope()
+            PrjEnvelope env = new PrjEnvelope()
             {
-                SpatialReference = spatialRef,
-                XMax = envelope.MaxX,
-                XMin = envelope.MinX,
-                YMax = envelope.MaxY,
-                YMin = envelope.MinY
+                Srs = spatialRef,
+                MaxX = envelope.MaxX,
+                MinX = envelope.MinX,
+                MaxY = envelope.MaxY,
+                MinY = envelope.MinY
             };
+
             return CreateOutFile(outfilename, bandCount, outSize, env, outResolutionX, outResolutionY);
         }
 
-        private AbstractWarpDataset CreateOutFile(string outfilename, int dstBandCount, Size outSize, Geometry.Envelope env, float outResolutionX, float outResolutionY)
+        private AbstractWarpDataset CreateOutFile(string outfilename, int dstBandCount, Size outSize, PrjEnvelope env, float outResolutionX, float outResolutionY)
         {
             string dir = Path.GetDirectoryName(outfilename);
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
             string[] _options = new string[] { "header_offset=128" };
-            double[] geoTrans = new double[] { env.XMin, Convert.ToDouble(outResolutionX.ToString("f6")), 0, env.YMax, 0, -Convert.ToDouble(outResolutionY.ToString("f6")) };
-            var ds = DatasetFactory.CreateRasterDataset(outfilename, outSize.Width, outSize.Height, dstBandCount, PixelDataType.UInt16, "ENVI", null);
+            double[] geoTrans = new double[] { env.MinX, Convert.ToDouble(outResolutionX.ToString("f6")), 0, env.MaxY, 0, -Convert.ToDouble(outResolutionY.ToString("f6")) };
+            var ds = DatasetFactory.CreateRasterDataset(outfilename, outSize.Width, outSize.Height, dstBandCount, DataType.GDT_UInt16, "ENVI", null);
             ds.SetGeoTransform(geoTrans);
             if (ds == null)
                 throw new ArgumentException("请检查输出文件路径");
-            ds.SpatialReference = env.SpatialReference;
+            ds.SetProjection(env.Srs.ExportToWkt());
             //设置无效值
             //Enumerable.Range(0, dstBandCount).ToList().ForEach(t => ds.GetRasterBand(t).SetNoDataValue(0));
-            return new WarpDataset(ds);
+            return new WarpDataset(ds,outfilename);
         }
 
         public static PrjOutArg GetDefaultArg(string fileName)
@@ -2052,8 +1981,8 @@ namespace PIE.Meteo.FileProject
             AbstractWarpDataset rad = null;
             try
             {
-                var ds = DatasetFactory.OpenDataset(fileName, DataSource.OpenMode.ReadOnly);
-                rad = new WarpDataset(ds);
+                var ds = Gdal.OpenShared(fileName, Access.GA_ReadOnly);
+                rad = new WarpDataset(ds,fileName);
                 FileChecker checker = new FileChecker();
                 string type = checker.GetFileType(rad);
                 switch (type)
@@ -2091,8 +2020,8 @@ namespace PIE.Meteo.FileProject
 
         public static AbstractWarpDataset OpenUpdate(string filename)
         {
-            var ds = DataSource.DatasetFactory.OpenDataset(filename, DataSource.OpenMode.Update);
-            return new WarpDataset(ds);
+            var ds = Gdal.OpenShared(filename, Access.GA_Update);
+            return new WarpDataset(ds,filename);
         }
 
         public static AbstractWarpDataset CheckPrjArg(AbstractWarpDataset rasterIn)
@@ -2189,9 +2118,9 @@ namespace PIE.Meteo.FileProject
                     break;
 
                 case "PROJECTED":
-                    Geometry.IEnvelope coord = srcRaster.GetEnvelope();
+                    Envelope coord = srcRaster.GetEnvelope();
                     if (coord != null)
-                        env = new PrjEnvelope(coord.XMin, coord.XMax, coord.YMin, coord.YMax, (coord as IGeometry).SpatialReference);
+                        env = new PrjEnvelope(coord.MinX, coord.MaxX, coord.MinY, coord.MaxY, srcRaster.SpatialRef);
                     break;
             }
             return env;
@@ -2272,9 +2201,9 @@ namespace PIE.Meteo.FileProject
                     break;
 
                 case "PROJECTED":
-                    Geometry.IEnvelope coord = raster.GetEnvelope();
+                    Envelope coord = raster.GetEnvelope();
                     if (coord != null)
-                        env = new PrjEnvelope(coord.XMin, coord.XMax, coord.YMin, coord.YMax, (coord as IGeometry).SpatialReference);
+                        env = new PrjEnvelope(coord.MinX, coord.MaxX, coord.MinY, coord.MaxY, raster.SpatialRef);
                     hasVaild = env.IntersectsWith(invalidEnv);
                     break;
                 case "FY4A_AGRI_0500":
@@ -2305,7 +2234,7 @@ namespace PIE.Meteo.FileProject
         /// <param name="validRate"></param>
         /// <param name="outEnv"></param>
         /// <returns></returns>
-        public static bool ValidEnvelope(AbstractWarpDataset raster, PrjEnvelope validEnv, ISpatialReference envSpatialReference, out double validRate, out PrjEnvelope outEnv)
+        public static bool ValidEnvelope(AbstractWarpDataset raster, PrjEnvelope validEnv, SpatialReference envSpatialReference, out double validRate, out PrjEnvelope outEnv)
         {
             string fileType = new FileChecker().GetFileType(raster);
             if (string.IsNullOrWhiteSpace(fileType))
@@ -2372,7 +2301,7 @@ namespace PIE.Meteo.FileProject
                     var coord = raster.GetEnvelope();
                     if (coord != null)
                     {
-                        outEnv = new PrjEnvelope(coord.XMin, coord.XMax, coord.YMin, coord.YMax, (coord as IGeometry).SpatialReference);
+                        outEnv = new PrjEnvelope(coord.MinX, coord.MaxX, coord.MinY, coord.MaxY, raster.SpatialRef);
                         hasVaild = outEnv.IntersectsRate(validEnv, out validRate);
                     }
                     break;
@@ -2388,7 +2317,7 @@ namespace PIE.Meteo.FileProject
         /// <summary>
         /// 获取输出文件名
         /// </summary>
-        private string GetOutPutFile(string outDir, string filename, ISpatialReference projRef, string blockname, DataIdentify identify, float resolution, string extName)
+        private string GetOutPutFile(string outDir, string filename, SpatialReference projRef, string blockname, DataIdentify identify, float resolution, string extName)
         {
             string outFileNmae = "";
             string filenameOnly = Path.GetFileName(filename);
@@ -2413,15 +2342,15 @@ namespace PIE.Meteo.FileProject
             return CreateOnlyFilename(outFileNmae);
         }
 
-        private static string GetPrjIdentify(ISpatialReference projRef)
+        private static string GetPrjIdentify(SpatialReference projRef)
         {
             string prjIdentify;
-            if (projRef == null || string.IsNullOrWhiteSpace(projRef.Name))
+            if (projRef == null || string.IsNullOrWhiteSpace(projRef.__str__()))
                 prjIdentify = "GLL";
-            else if (projRef.Type == SpatialReferenceType.GeographicCS)
-                prjIdentify = GenericFilename.GetProjectionIdentify((projRef as GeographicCoordinateSystem).Name);
+            else if (projRef.IsGeographic()==1)
+                prjIdentify = GenericFilename.GetProjectionIdentify(projRef.__str__());
             else
-                prjIdentify = GenericFilename.GetProjectionIdentify((projRef as ProjectedCoordinateSystem).Name);
+                prjIdentify = GenericFilename.GetProjectionIdentify(projRef.__str__());
             return prjIdentify;
         }
 
@@ -2467,9 +2396,9 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        private bool IsGeoSpatial(ISpatialReference dstSpatialRef)
+        private bool IsGeoSpatial(SpatialReference dstSpatialRef)
         {
-            return dstSpatialRef == null || dstSpatialRef.Type == SpatialReferenceType.GeographicCS;
+            return dstSpatialRef == null || dstSpatialRef.IsGeographic()==1;
         }
 
         private bool IsDir(string path)
@@ -2500,7 +2429,7 @@ namespace PIE.Meteo.FileProject
 
         private string[] PrjFY2NOM_L1(AbstractWarpDataset srcRaster, PrjOutArg prjOutArg, Action<int, string> progress, out StringBuilder errorMessage)
         {
-            ISpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
+            SpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
             PrjEnvelopeItem[] prjEnvelopes = prjOutArg.Envelopes;
             IFileProjector projector = null;
             int[] kmBands;
@@ -2585,7 +2514,7 @@ namespace PIE.Meteo.FileProject
 
         private string[] PrjMODIS_1KM_L1Only(AbstractWarpDataset fileName, PrjOutArg prjOutArg, Action<int, string> progress, out StringBuilder errorMessage)
         {
-            ISpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
+            SpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
             PrjEnvelopeItem[] prjEnvelopes = prjOutArg.Envelopes;
             AbstractWarpDataset srcRaster = fileName;
             AbstractWarpDataset locationRaster = null;
@@ -2643,7 +2572,7 @@ namespace PIE.Meteo.FileProject
 
         private string[] PrjFY1X_1A5_L1(AbstractWarpDataset raster, PrjOutArg prjOutArg, Action<int, string> progress, out StringBuilder errorMessage)
         {
-            ISpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
+            SpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
             PrjEnvelopeItem[] prjEnvelopes = prjOutArg.Envelopes;
             AbstractWarpDataset srcRaster = raster;
             IFileProjector projTor = null;
@@ -2662,7 +2591,7 @@ namespace PIE.Meteo.FileProject
                     {
                         if (prjOutArg.ResolutionX == 0)
                         {
-                            if (dstSpatialRef == null || dstSpatialRef.Type == SpatialReferenceType.GeographicCS)
+                            if (dstSpatialRef == null || dstSpatialRef.IsGeographic()==1)
                             {
                                 prjOutArg.ResolutionX = 0.01f;
                                 prjOutArg.ResolutionY = 0.01f;
@@ -2718,7 +2647,7 @@ namespace PIE.Meteo.FileProject
 
         private string[] PrjNOAA_1BD_L1(AbstractWarpDataset raster, PrjOutArg prjOutArg, Action<int, string> progress, out StringBuilder errorMessage)
         {
-            ISpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
+            SpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
             PrjEnvelopeItem[] prjEnvelopes = prjOutArg.Envelopes;
             AbstractWarpDataset srcRaster = raster;
             IFileProjector projTor = null;
@@ -2737,7 +2666,7 @@ namespace PIE.Meteo.FileProject
                     {
                         if (prjOutArg.ResolutionX == 0)
                         {
-                            if (dstSpatialRef == null || dstSpatialRef.Type == SpatialReferenceType.GeographicCS)
+                            if (dstSpatialRef == null || dstSpatialRef.IsGeographic()==1)
                             {
                                 prjOutArg.ResolutionX = 0.01f;
                                 prjOutArg.ResolutionY = 0.01f;
@@ -2835,7 +2764,7 @@ namespace PIE.Meteo.FileProject
             ref AbstractWarpDataset qkmRaster, ref AbstractWarpDataset hkmRaster, AbstractWarpDataset kmRaster, Action<int, string> progress)
         {
             //默认分辨率，默认参数
-            ISpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
+            SpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
             float outResolutionX = prjOutArg.ResolutionX;
             float outResolutionY = prjOutArg.ResolutionY;
             SetDefaultResolutionForModis(qkmRaster, hkmRaster, dstSpatialRef, ref outResolutionX, ref outResolutionY);
@@ -3078,11 +3007,11 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        private static void FilterRasterForModis(ref AbstractWarpDataset qkmRaster, ref AbstractWarpDataset hkmRaster, AbstractWarpDataset kmRaster, ISpatialReference dstSpatialRef, float outResolutionX, float outResolutionY)
+        private static void FilterRasterForModis(ref AbstractWarpDataset qkmRaster, ref AbstractWarpDataset hkmRaster, AbstractWarpDataset kmRaster, SpatialReference dstSpatialRef, float outResolutionX, float outResolutionY)
         {
             float baseResolutionK = 0.01f;
             float baseResolutionH = 0.005f;
-            if (dstSpatialRef.Type == SpatialReferenceType.ProjectedCS)
+            if (dstSpatialRef.IsProjected()==1)
             {
                 baseResolutionK = 1000f;
                 baseResolutionH = 500f;
@@ -3116,13 +3045,13 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        private static void SetDefaultResolutionForModis(AbstractWarpDataset qkmRaster, AbstractWarpDataset hkmRaster, ISpatialReference dstSpatialRef, ref float outResolutionX, ref float outResolutionY)
+        private static void SetDefaultResolutionForModis(AbstractWarpDataset qkmRaster, AbstractWarpDataset hkmRaster, SpatialReference dstSpatialRef, ref float outResolutionX, ref float outResolutionY)
         {
             if (outResolutionX == 0 || outResolutionY == 0)
             {
                 if (qkmRaster != null)
                 {
-                    if (dstSpatialRef == null || dstSpatialRef.Type == SpatialReferenceType.GeographicCS)
+                    if (dstSpatialRef == null || dstSpatialRef.IsGeographic()==1)
                     {
                         outResolutionX = 0.0025f;
                         outResolutionY = 0.0025f;
@@ -3135,7 +3064,7 @@ namespace PIE.Meteo.FileProject
                 }
                 else if (hkmRaster != null)
                 {
-                    if (dstSpatialRef == null || dstSpatialRef.Type == SpatialReferenceType.GeographicCS)
+                    if (dstSpatialRef == null || dstSpatialRef.IsGeographic()==1)
                     {
                         outResolutionX = 0.005f;
                         outResolutionY = 0.005f;
@@ -3148,7 +3077,7 @@ namespace PIE.Meteo.FileProject
                 }
                 else
                 {
-                    if (dstSpatialRef == null || dstSpatialRef.Type == SpatialReferenceType.GeographicCS)
+                    if (dstSpatialRef == null || dstSpatialRef.IsGeographic()==1)
                     {
                         outResolutionX = 0.01f;
                         outResolutionY = 0.01f;

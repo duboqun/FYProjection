@@ -1,8 +1,8 @@
-﻿using PIE.Geometry;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using OSGeo.OGR;
 
 namespace PIE.Meteo.FileProject.BlockOper
 {
@@ -16,7 +16,7 @@ namespace PIE.Meteo.FileProject.BlockOper
         private double _minY = 0;
         private double _maxX = 0;
         private double _maxY = 0;
-        private IEnvelope _envelope = null;
+        private Envelope _envelope = null;
 
         public string Name
         {
@@ -60,10 +60,10 @@ namespace PIE.Meteo.FileProject.BlockOper
 
         }
 
-        public IEnvelope ToEnvelope()
+        public Envelope ToEnvelope()
         {
             if (_envelope == null)
-                _envelope = new Envelope { XMin = MinX, XMax = MaxX, YMin = MinY, YMax = MaxY };
+                _envelope = new Envelope { MinX = MinX, MaxX = MaxX, MinY = MinY, MaxY = MaxY };
             return _envelope;
         }
     }

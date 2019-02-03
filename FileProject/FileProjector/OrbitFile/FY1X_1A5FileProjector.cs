@@ -51,7 +51,7 @@ namespace PIE.Meteo.FileProject
         private bool _isDay = false;        //白天
         #endregion
 
-        ISpatialReference _srcSpatialRef = null;
+        SpatialReference _srcSpatialRef = null;
         //private Block _orbitBlock = null;              //当前投影范围，需要使用的原始轨道数据最小范围
         private IRasterDataDriver _outLdfDriver = null;
         private string _szDataFilename;
@@ -80,7 +80,7 @@ namespace PIE.Meteo.FileProject
             return false;
         }
 
-        public override void Project(WarpDataset srcRaster, FilePrjSettings prjSettings, ISpatialReference dstSpatialRef, Action<int, string> progressCallback)
+        public override void Project(WarpDataset srcRaster, FilePrjSettings prjSettings, SpatialReference dstSpatialRef, Action<int, string> progressCallback)
         {
             if (srcRaster == null)
                 throw new ArgumentNullException("srcRaster");
@@ -178,7 +178,7 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        private void DoSession(WarpDataset srcRaster, ISpatialReference dstSpatialRef, NOAA_PrjSettings prjSettings, Action<int, string> progressCallback)
+        private void DoSession(WarpDataset srcRaster, SpatialReference dstSpatialRef, NOAA_PrjSettings prjSettings, Action<int, string> progressCallback)
         {
             if (_curSession == null || _curSession != srcRaster || _isBeginSession)
             {
@@ -214,7 +214,7 @@ namespace PIE.Meteo.FileProject
                 _sensorSenithBand = bands[0];
         }
 
-        private void Project(WarpDataset srcRaster, NOAA_PrjSettings prjSettings, ISpatialReference dstSpatialRef, Action<int, string> progressCallback)
+        private void Project(WarpDataset srcRaster, NOAA_PrjSettings prjSettings, SpatialReference dstSpatialRef, Action<int, string> progressCallback)
         {
             PrjEnvelope envelops = prjSettings.OutEnvelope;
             if (envelops.IntersectsWith(_maxPrjEnvelope))
@@ -242,7 +242,7 @@ namespace PIE.Meteo.FileProject
         /// 3、计算通道数据亮温
         /// 4、投影通道。
         /// </summary>
-        private void ProjectToLDF(WarpDataset srcRaster, NOAA_PrjSettings prjSettings, ISpatialReference dstSpatialRef, Action<int, string> progressCallback)
+        private void ProjectToLDF(WarpDataset srcRaster, NOAA_PrjSettings prjSettings, SpatialReference dstSpatialRef, Action<int, string> progressCallback)
         {
             string outFormat = prjSettings.OutFormat;
             string outfilename = prjSettings.OutPathAndFileName;
@@ -503,7 +503,7 @@ namespace PIE.Meteo.FileProject
         /// <summary> 
         /// 准备定位信息,计算投影后的值，并计算范围
         /// </summary>
-        private void ReadyLocations(WarpDataset srcRaster, ISpatialReference dstSpatialRef, Size srcSize,
+        private void ReadyLocations(WarpDataset srcRaster, SpatialReference dstSpatialRef, Size srcSize,
             out double[] xs, out double[] ys, out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback)
         {
             if (progressCallback != null)
@@ -787,7 +787,7 @@ namespace PIE.Meteo.FileProject
             return new FY3_VIRR_PrjSettings();
         }
 
-        private void TryCreateDefaultArgs(WarpDataset srcRaster, NOAA_PrjSettings prjSettings, ref ISpatialReference dstSpatialRef)
+        private void TryCreateDefaultArgs(WarpDataset srcRaster, NOAA_PrjSettings prjSettings, ref SpatialReference dstSpatialRef)
         {
             if (dstSpatialRef == null)
                 dstSpatialRef = _srcSpatialRef;
@@ -812,7 +812,7 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        public override void ComputeDstEnvelope(WarpDataset srcRaster, ISpatialReference dstSpatialRef, out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback)
+        public override void ComputeDstEnvelope(WarpDataset srcRaster, SpatialReference dstSpatialRef, out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback)
         {
             if (srcRaster != null)
             {

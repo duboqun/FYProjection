@@ -57,7 +57,7 @@ namespace PIE.Meteo.FileProject
         private float[] _emmisive_BT_Coefficients = new float[] { 2.05806810F, 0.98231665F, 0.20002536F, 0.99791678F, 0.13149949F, 0.99820459F };//A、B值
         #endregion
 
-        private ISpatialReference _srcSpatialRef = null;
+        private SpatialReference _srcSpatialRef = null;
         //private IRasterDataDriver _outLdfDriver = null;             //输出ldf文件驱动
         private string _solarZenithCacheFilename;                   //太阳高度角文件，缓存文件
         private FY3_VIRR_PrjSettings _prjSettings;
@@ -95,7 +95,7 @@ namespace PIE.Meteo.FileProject
         /// <param name="prjSettings">投影设置</param>
         /// <param name="dstSpatialRef">目标坐标系</param>
         /// <param name="progressCallback">进度回调</param>
-        public override void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, ISpatialReference dstSpatialRef, Action<int, string> progressCallback)
+        public override void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, SpatialReference dstSpatialRef, Action<int, string> progressCallback)
         {
             try
             {
@@ -168,7 +168,7 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        private void ReadyArgs(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, ISpatialReference dstSpatialRef, Action<int, string> progressCallback)
+        private void ReadyArgs(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, SpatialReference dstSpatialRef, Action<int, string> progressCallback)
         {
             if (srcRaster == null)
                 throw new ArgumentNullException("srcRaster");
@@ -240,7 +240,7 @@ namespace PIE.Meteo.FileProject
             _geoDataProvider = null;
         }
 
-        private void DoSession(AbstractWarpDataset srcRaster, AbstractWarpDataset geoRaster, ISpatialReference dstSpatialRef, FY3_VIRR_PrjSettings prjSettings, Action<int, string> progressCallback)
+        private void DoSession(AbstractWarpDataset srcRaster, AbstractWarpDataset geoRaster, SpatialReference dstSpatialRef, FY3_VIRR_PrjSettings prjSettings, Action<int, string> progressCallback)
         {
             if (_curSession == null || _curSession != srcRaster || _isBeginSession)
             {
@@ -555,7 +555,7 @@ namespace PIE.Meteo.FileProject
             try
             {
                 FY3_VIRR_PrjSettings fy3prjSettings = prjSettings as FY3_VIRR_PrjSettings;
-                ISpatialReference dstSpatialRef = (dstRaster.SpatialRef);
+                SpatialReference dstSpatialRef = (dstRaster.SpatialRef);
                 TryCreateDefaultArgs(srcRaster, fy3prjSettings, ref dstSpatialRef);
                 DoSession(srcRaster, _geoDataProvider, dstSpatialRef, fy3prjSettings, progressCallback);
                 if (prjSettings.OutEnvelope == null || prjSettings.OutEnvelope == PrjEnvelope.Empty)
@@ -616,7 +616,7 @@ namespace PIE.Meteo.FileProject
             return new FY3_VIRR_PrjSettings();
         }
 
-        private void TryCreateDefaultArgs(AbstractWarpDataset srcRaster, FY3_VIRR_PrjSettings prjSettings, ref ISpatialReference dstSpatialRef)
+        private void TryCreateDefaultArgs(AbstractWarpDataset srcRaster, FY3_VIRR_PrjSettings prjSettings, ref SpatialReference dstSpatialRef)
         {
             if (dstSpatialRef == null)
                 dstSpatialRef = _srcSpatialRef;
@@ -659,7 +659,7 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        public override void ComputeDstEnvelope(AbstractWarpDataset srcRaster, ISpatialReference dstSpatialRef, out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback)
+        public override void ComputeDstEnvelope(AbstractWarpDataset srcRaster, SpatialReference dstSpatialRef, out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback)
         {
             if (srcRaster != null)
             {

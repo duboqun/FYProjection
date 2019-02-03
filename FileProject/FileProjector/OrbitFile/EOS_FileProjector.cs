@@ -24,7 +24,7 @@ namespace PIE.Meteo.FileProject
         private float[] _v;
 
         private string _fileAliasName;
-        private ISpatialReference _srcSpatialRef = null;
+        private SpatialReference _srcSpatialRef = null;
 
         //太阳高度角
         private string _szDataFilename = "";
@@ -106,7 +106,7 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        public override void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, ISpatialReference dstSpatialRef, Action<int, string> progressCallback)
+        public override void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, SpatialReference dstSpatialRef, Action<int, string> progressCallback)
         {
             try
             {
@@ -169,7 +169,7 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        private void ReadyArgs(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, ISpatialReference dstSpatialRef, Action<int, string> progressCallback)
+        private void ReadyArgs(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, SpatialReference dstSpatialRef, Action<int, string> progressCallback)
         {
             float resolutionScale = 1f;
             _readyProgress = 0;
@@ -276,7 +276,7 @@ namespace PIE.Meteo.FileProject
             _radiance_Offsets_EV_250_RefSB = null;
         }
 
-        private void DoSession(AbstractWarpDataset srcRaster, ISpatialReference dstSpatialRef, EOS_MODIS_PrjSettings prjSettings, Action<int, string> progressCallback)
+        private void DoSession(AbstractWarpDataset srcRaster, SpatialReference dstSpatialRef, EOS_MODIS_PrjSettings prjSettings, Action<int, string> progressCallback)
         {
             if (_curSession == null || _curSession != srcRaster || _isBeginSession)
             {
@@ -331,7 +331,7 @@ namespace PIE.Meteo.FileProject
         /// 准备定位信息,WGS-84经纬度值
         /// 计算投影后的值，并计算范围
         /// </summary>
-        private void ReadyLocations(AbstractWarpDataset srcRaster, ISpatialReference dstSpatialRef,
+        private void ReadyLocations(AbstractWarpDataset srcRaster, SpatialReference dstSpatialRef,
             out double[] xs, out double[] ys, out PrjEnvelope maxPrjEnvelope, out Size locationSize, Action<int, string> progressCallback)
         {
             if (progressCallback != null)
@@ -889,7 +889,7 @@ namespace PIE.Meteo.FileProject
             return new FY3_VIRR_PrjSettings();
         }
 
-        private void TryCreateDefaultArgsKM(AbstractWarpDataset srcRaster, EOS_MODIS_PrjSettings prjSettings, ref ISpatialReference dstSpatialRef)
+        private void TryCreateDefaultArgsKM(AbstractWarpDataset srcRaster, EOS_MODIS_PrjSettings prjSettings, ref SpatialReference dstSpatialRef)
         {
             if (dstSpatialRef == null)
                 dstSpatialRef = _srcSpatialRef;
@@ -940,7 +940,7 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        private void TryCreateDefaultArgsHKM(AbstractWarpDataset srcRaster, EOS_MODIS_PrjSettings prjSettings, ref ISpatialReference dstSpatialRef)
+        private void TryCreateDefaultArgsHKM(AbstractWarpDataset srcRaster, EOS_MODIS_PrjSettings prjSettings, ref SpatialReference dstSpatialRef)
         {
             if (dstSpatialRef == null)
                 dstSpatialRef = _srcSpatialRef;
@@ -970,7 +970,7 @@ namespace PIE.Meteo.FileProject
             SetPrjBand(prjSettings, PrjBand.MODIS_500_Orbit);
         }
 
-        private void TryCreateDefaultArgsQKM(AbstractWarpDataset srcRaster, EOS_MODIS_PrjSettings prjSettings, ref ISpatialReference dstSpatialRef)
+        private void TryCreateDefaultArgsQKM(AbstractWarpDataset srcRaster, EOS_MODIS_PrjSettings prjSettings, ref SpatialReference dstSpatialRef)
         {
             if (dstSpatialRef == null)
                 dstSpatialRef = _srcSpatialRef;
@@ -1038,7 +1038,7 @@ namespace PIE.Meteo.FileProject
             throw new Exception("无法识别为EOS MODIS轨道数据，无法确定是Terra还是Aqua，无法设定参数");
         }
 
-        public override void ComputeDstEnvelope(AbstractWarpDataset loncationRaster, ISpatialReference dstSpatialRef, out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback)
+        public override void ComputeDstEnvelope(AbstractWarpDataset loncationRaster, SpatialReference dstSpatialRef, out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback)
         {
             if (loncationRaster != null)
             {

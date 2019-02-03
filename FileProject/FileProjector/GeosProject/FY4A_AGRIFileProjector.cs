@@ -6,10 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using PIE.Meteo.RasterProject;
 using PIE.Meteo.Model;
-using PIE.DataSource;
-using PIE.Meteo.Core;
 using System.IO;
-using PIE.Geometry;
+using OSGeo.GDAL;
+using OSGeo.OSR;
 
 namespace PIE.Meteo.FileProject
 {
@@ -28,7 +27,7 @@ namespace PIE.Meteo.FileProject
         public string NOMSatHeight = string.Empty;
 
 
-        public override void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, ISpatialReference dstSpatialRef, Action<int, string> progressCallback)
+        public override void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, SpatialReference dstSpatialRef, Action<int, string> progressCallback)
         {
             _setting = prjSettings as FY4A_AGRIPrjSetting;
             progressCallback?.Invoke(0, "读取位置参数");
@@ -185,12 +184,12 @@ namespace PIE.Meteo.FileProject
                 proj += string.Format(" +h={0}", NOMSatHeight);
             }
 
-            _srcSpatialRef = new ProjectedCoordinateSystem();
+            _srcSpatialRef = new SpatialReference("");
             _srcSpatialRef.ImportFromProj4(proj);
             _srcGeoTrans = geoTransform;
         }
 
-        public override void ComputeDstEnvelope(AbstractWarpDataset srcRaster, ISpatialReference dstSpatialRef, out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback)
+        public override void ComputeDstEnvelope(AbstractWarpDataset srcRaster, SpatialReference dstSpatialRef, out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback)
         {
             InitLocationArgs(srcRaster);
             var projTrans = ProjectionTransformFactory.GetProjectionTransform(_srcSpatialRef, dstSpatialRef);
@@ -226,7 +225,7 @@ namespace PIE.Meteo.FileProject
                     index++;
                 }
             }
-            if (dstSpatialRef.IsSame(SpatialReferenceFactory.CreateSpatialReference(4326)))
+            if (dstSpatialRef.IsSame(SpatialReferenceFactory.CreateSpatialReference(4326))==1)
             {
                 projTrans.Transform(xs, ys);
                 GeosCorrection(dstSpatialRef, xs, ys);
@@ -250,20 +249,20 @@ namespace PIE.Meteo.FileProject
             {
                 //Single[] data = new Single[srcSize.Width * srcSize.Height];
                 var bandIndex = prjBands[index - 1].DataSetIndex;
-                IRasterBand[] rasterBands = srcbandpro.GetBands("CALChannel" + bandIndex.ToString("00"));
+                Band[] rasterBands = srcbandpro.GetBands("CALChannel" + bandIndex.ToString("00"));
                 if (rasterBands == null)
                     throw new ArgumentNullException(string.Format("FY4辐射定标，未找到名称为{0}的数据.", "CALChannel" + index.ToString("00")));
-                int width = rasterBands[0].GetXSize();
-                int height = rasterBands[0].GetYSize();
+                int width = rasterBands[0].XSize;
+                int height = rasterBands[0].YSize;
                 Single[] data = new Single[width * height];
-                IRasterBand rasterBand = rasterBands[0];
+                Band rasterBand = rasterBands[0];
                 {
                     unsafe
                     {
                         fixed (Single* ptr = data)
                         {
                             IntPtr bufferPtr = new IntPtr(ptr);
-                            rasterBand.Read(0, 0, width, height, bufferPtr, width, height, PixelDataType.Float32);
+                            rasterBand.ReadRaster(0, 0, width, height, bufferPtr, width, height, DataType.GDT_Float32,0,0);
                         }
                     }
                 }
@@ -273,7 +272,7 @@ namespace PIE.Meteo.FileProject
         }
 
 
-        public override bool HasVaildEnvelope(AbstractWarpDataset geoRaster, PrjEnvelope validEnv, ISpatialReference dstSpatialRef)
+        public override bool HasVaildEnvelope(AbstractWarpDataset geoRaster, PrjEnvelope validEnv, SpatialReference dstSpatialRef)
         {
             //ToDo:加入范围判断
             return true;

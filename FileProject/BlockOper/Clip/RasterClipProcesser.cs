@@ -1,13 +1,11 @@
-﻿using PIE.DataSource;
-using PIE.Geometry;
-using PIE.Meteo.Core;
-using PIE.Meteo.Model;
+﻿using PIE.Meteo.Model;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OSGeo.OGR;
 using VBand = PIE.Meteo.FileProject.BlockOper.VirtualRasterBand;
 
 
@@ -26,9 +24,9 @@ namespace PIE.Meteo.FileProject.BlockOper
             {
                 int tBeginRow = -1, tEndRow = -1, tBeginCol = -1, tEndCol = -1;
                 int oBeginRow = -1, oEndRow = -1, oBeginCol = -1, oEndCol = -1;
-                IEnvelope oEnvelope = srcBand.dataset.GetExtent();
-                IEnvelope tEnvelope = it.ToEnvelope();
-                Size oSize = new Size(srcBand.band.GetXSize(), srcBand.band.GetYSize());
+                Envelope oEnvelope = srcBand.dataset.GetExtent();
+                Envelope tEnvelope = it.ToEnvelope();
+                Size oSize = new Size(srcBand.band.XSize, srcBand.band.YSize);
                 double[] geoTrans = srcBand.dataset.GetGeoTransform();
                 Size tSize = ClipCutHelper.GetTargetSize(it, geoTrans[1], -geoTrans[5]);
                 bool isInternal = new RasterMoasicClipHelper().ComputeBeginEndRowCol(oEnvelope, oSize, tEnvelope, tSize, ref oBeginRow, ref oBeginCol, ref oEndRow, ref oEndCol, ref tBeginRow, ref tBeginCol, ref tEndRow, ref tEndCol);
@@ -50,8 +48,8 @@ namespace PIE.Meteo.FileProject.BlockOper
                 //位置映射参数
                 int tBeginRow = -1, tEndRow = -1, tBeginCol = -1, tEndCol = -1;
                 int oBeginRow = -1, oEndRow = -1, oBeginCol = -1, oEndCol = -1;
-                IEnvelope oEnvelope = srcRaster.GetEnvelope();
-                IEnvelope tEnvelope = blockDefs[blockNums].ToEnvelope();
+                Envelope oEnvelope = srcRaster.GetEnvelope();
+                Envelope tEnvelope = blockDefs[blockNums].ToEnvelope();
                 Size oSize = new Size(srcRaster.Width, srcRaster.Height);
                 Size tSize = ClipCutHelper.GetTargetSize(blockDefs[blockNums], srcRaster.ResolutionX, srcRaster.ResolutionY);
                 bool isInternal = new RasterMoasicClipHelper().ComputeBeginEndRowCol(oEnvelope, oSize, tEnvelope, tSize, ref oBeginRow, ref oBeginCol, ref oEndRow, ref oEndCol,
@@ -133,8 +131,8 @@ namespace PIE.Meteo.FileProject.BlockOper
             //位置映射参数
             int tBeginRow = -1, tEndRow = -1, tBeginCol = -1, tEndCol = -1;
             int oBeginRow = -1, oEndRow = -1, oBeginCol = -1, oEndCol = -1;
-            IEnvelope oEnvelope = srcRaster.GetEnvelope();
-            IEnvelope tEnvelope = blockDefs.ToEnvelope();
+            Envelope oEnvelope = srcRaster.GetEnvelope();
+            Envelope tEnvelope = blockDefs.ToEnvelope();
             Size oSize = new Size(srcRaster.Width, srcRaster.Height);
             Size tSize = ClipCutHelper.GetTargetSize(blockDefs, srcRaster.ResolutionX, srcRaster.ResolutionY);
             bool isInternal = new RasterMoasicClipHelper().ComputeBeginEndRowCol(oEnvelope, oSize, tEnvelope, tSize, ref oBeginRow, ref oBeginCol, ref oEndRow, ref oEndCol,

@@ -703,6 +703,14 @@ public class SpatialReference : global::System.IDisposable {
     if (OsrPINVOKE.SWIGPendingException.Pending) throw OsrPINVOKE.SWIGPendingException.Retrieve();
     return ret;
   }
+  
+  public string ExportToWkt()
+  {
+    string argout = string.Empty;
+    int ret = OsrPINVOKE.SpatialReference_ExportToWkt(swigCPtr, out argout);
+    if (OsrPINVOKE.SWIGPendingException.Pending) throw OsrPINVOKE.SWIGPendingException.Retrieve();
+    return argout;
+  }
 
   public int ExportToPrettyWkt(out string argout, int simplify) {
     int ret = OsrPINVOKE.SpatialReference_ExportToPrettyWkt(swigCPtr, out argout, simplify);

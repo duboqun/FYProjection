@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
-using PIE.Geometry;
-using PIE.Meteo.Core;
+using OSGeo.OGR;
 
 namespace PIE.Meteo.FileProject.BlockOper
 {
@@ -20,55 +19,55 @@ namespace PIE.Meteo.FileProject.BlockOper
 
         public bool ComputeBeginEndRowCol(AbstractWarpDataset args, AbstractWarpDataset dstArgs, Size targetSize, ref int oBeginRow, ref int oBeginCol, ref int oEndRow, ref int oEndCol, ref int tBeginRow, ref int tBeginCol, ref int tEndRow, ref int tEndCol)
         {
-            IEnvelope targetEnvelope = dstArgs.GetEnvelope();
-            IEnvelope innerEnvelope = ((targetEnvelope as Geometry.Geometry).Intersection(args.GetEnvelope() as IGeometry) as IEnvelope);
+            Envelope targetEnvelope = dstArgs.GetEnvelope();
+            Envelope innerEnvelope = ((targetEnvelope as Geometry.Geometry).Intersection(args.GetEnvelope() as IGeometry) as Envelope);
             if (innerEnvelope == null)
                 return  false;
             double tResolutionX = dstArgs.ResolutionX;
             double tResolutionY = dstArgs.ResolutionY;
             double oResolutionX = args.ResolutionX;
             double oResolutionY = args.ResolutionY;
-            IEnvelope oEnvelope = args.GetEnvelope();
+            Envelope oEnvelope = args.GetEnvelope();
             //
-            if (oEnvelope.XMin >= targetEnvelope.XMin)//左边界在目标图像内部
+            if (oEnvelope.MinX >= targetEnvelope.MinX)//左边界在目标图像内部
             {
                 oBeginCol = 0;
-                tBeginCol = (int)((oEnvelope.XMin - targetEnvelope.XMin) / tResolutionX + _errorValue);
+                tBeginCol = (int)((oEnvelope.MinX - targetEnvelope.MinX) / tResolutionX + _errorValue);
             }
             else//左边界在目标图像外部
             {
-                oBeginCol = (int)((targetEnvelope.XMin - oEnvelope.XMin) / oResolutionX + _errorValue);
+                oBeginCol = (int)((targetEnvelope.MinX - oEnvelope.MinX) / oResolutionX + _errorValue);
                 tBeginCol = 0;
             }
-            if (oEnvelope.XMax >= targetEnvelope.XMax)//右边界在目标图像外部
+            if (oEnvelope.MaxX >= targetEnvelope.MaxX)//右边界在目标图像外部
             {
-                oEndCol = (int)((targetEnvelope.XMax - oEnvelope.XMin) / oResolutionX + _errorValue);
+                oEndCol = (int)((targetEnvelope.MaxX - oEnvelope.MinX) / oResolutionX + _errorValue);
                 tEndCol = targetSize.Width;
             }
             else//右边界在目标图像内部
             {
-                oEndCol = (int)((args.GetEnvelope().XMax - args.GetEnvelope().XMin) / oResolutionX + _errorValue);
-                tEndCol = (int)((oEnvelope.XMax - targetEnvelope.XMin) / tResolutionX + _errorValue);
+                oEndCol = (int)((args.GetEnvelope().MaxX - args.GetEnvelope().MinX) / oResolutionX + _errorValue);
+                tEndCol = (int)((oEnvelope.MaxX - targetEnvelope.MinX) / tResolutionX + _errorValue);
             }
-            if (oEnvelope.YMax <= targetEnvelope.YMax)//上边界在目标图像内部
+            if (oEnvelope.MaxY <= targetEnvelope.MaxY)//上边界在目标图像内部
             {
                 oBeginRow = 0;
-                tBeginRow = (int)((targetEnvelope.YMax - oEnvelope.YMax) / tResolutionY + _errorValue);
+                tBeginRow = (int)((targetEnvelope.MaxY - oEnvelope.MaxY) / tResolutionY + _errorValue);
             }
             else//上边界在目标边界外部
             {
-                oBeginRow = (int)((oEnvelope.YMax - targetEnvelope.YMax) / oResolutionY + _errorValue);
+                oBeginRow = (int)((oEnvelope.MaxY - targetEnvelope.MaxY) / oResolutionY + _errorValue);
                 tBeginRow = 0;
             }
-            if (oEnvelope.YMin <= targetEnvelope.YMin)//下边界在目标图像外部
+            if (oEnvelope.MinY <= targetEnvelope.MinY)//下边界在目标图像外部
             {
-                oEndRow = (int)((oEnvelope.YMax - targetEnvelope.YMin) / oResolutionY + _errorValue);
+                oEndRow = (int)((oEnvelope.MaxY - targetEnvelope.MinY) / oResolutionY + _errorValue);
                 tEndRow = targetSize.Height;
             }
             else//下边界在目标图像内部
             {
                 oEndRow = args.Height;
-                tEndRow = (int)((targetEnvelope.YMax - oEnvelope.YMin) / tResolutionY + _errorValue);
+                tEndRow = (int)((targetEnvelope.MaxY - oEnvelope.MinY) / tResolutionY + _errorValue);
             }
             ////以下添加对偏移计算的纠正，取最小行列数。
             //int oWidth = oEndCol - oBeginCol;
@@ -85,52 +84,52 @@ namespace PIE.Meteo.FileProject.BlockOper
         }
 
         //源为待裁切的文件，目标为裁切输出的小文件
-        public bool ComputeBeginEndRowCol(IEnvelope oEnvelope, Size oSize, IEnvelope tEnvelope, Size tSize, ref int oBeginRow, ref int oBeginCol, ref int oEndRow, ref int oEndCol, ref int tBeginRow, ref int tBeginCol, ref int tEndRow, ref int tEndCol)
+        public bool ComputeBeginEndRowCol(Envelope oEnvelope, Size oSize, Envelope tEnvelope, Size tSize, ref int oBeginRow, ref int oBeginCol, ref int oEndRow, ref int oEndCol, ref int tBeginRow, ref int tBeginCol, ref int tEndRow, ref int tEndCol)
         {
             if (!IsInteractived(oEnvelope, tEnvelope))
                 return false;
             double resolutionX = oEnvelope.GetWidth() / oSize.Width;
             double resolutionY = oEnvelope.GetHeight() / oSize.Height;
 
-            if (oEnvelope.XMin >= tEnvelope.XMin)//左边界在目标图像内部
+            if (oEnvelope.MinX >= tEnvelope.MinX)//左边界在目标图像内部
             {
                 oBeginCol = 0;
-                tBeginCol = GetInteger((oEnvelope.XMin - tEnvelope.XMin) / resolutionX);
+                tBeginCol = GetInteger((oEnvelope.MinX - tEnvelope.MinX) / resolutionX);
             }
             else//左边界在目标图像外部
             {
-                oBeginCol = GetInteger((tEnvelope.XMin - oEnvelope.XMin) / resolutionX);
+                oBeginCol = GetInteger((tEnvelope.MinX - oEnvelope.MinX) / resolutionX);
                 tBeginCol = 0;
             }
-            if (oEnvelope.XMax >= tEnvelope.XMax)//右边界在目标图像外部
+            if (oEnvelope.MaxX >= tEnvelope.MaxX)//右边界在目标图像外部
             {
-                oEndCol = GetInteger((tEnvelope.XMax - oEnvelope.XMin) / resolutionX);
+                oEndCol = GetInteger((tEnvelope.MaxX - oEnvelope.MinX) / resolutionX);
                 tEndCol = tSize.Width;
             }
             else//右边界在目标图像内部
             {
-                oEndCol = GetInteger((oEnvelope.XMax - oEnvelope.XMin) / resolutionX);
-                tEndCol = GetInteger((oEnvelope.XMax - tEnvelope.XMin) / resolutionX);
+                oEndCol = GetInteger((oEnvelope.MaxX - oEnvelope.MinX) / resolutionX);
+                tEndCol = GetInteger((oEnvelope.MaxX - tEnvelope.MinX) / resolutionX);
             }
-            if (oEnvelope.YMax <= tEnvelope.YMax)//上边界在目标图像内部
+            if (oEnvelope.MaxY <= tEnvelope.MaxY)//上边界在目标图像内部
             {
                 oBeginRow = 0;
-                tBeginRow = GetInteger((tEnvelope.YMax - oEnvelope.YMax) / resolutionY);
+                tBeginRow = GetInteger((tEnvelope.MaxY - oEnvelope.MaxY) / resolutionY);
             }
             else//上边界在目标边界外部
             {
-                oBeginRow = GetInteger((oEnvelope.YMax - tEnvelope.YMax) / resolutionY);
+                oBeginRow = GetInteger((oEnvelope.MaxY - tEnvelope.MaxY) / resolutionY);
                 tBeginRow = 0;
             }
-            if (oEnvelope.YMin <= tEnvelope.YMin)//下边界在目标图像外部
+            if (oEnvelope.MinY <= tEnvelope.MinY)//下边界在目标图像外部
             {
-                oEndRow = GetInteger((oEnvelope.YMax - tEnvelope.YMin) / resolutionY);
+                oEndRow = GetInteger((oEnvelope.MaxY - tEnvelope.MinY) / resolutionY);
                 tEndRow = tSize.Height;
             }
             else//下边界在目标图像内部
             {
                 oEndRow = oSize.Height;
-                tEndRow = GetInteger((tEnvelope.YMax - oEnvelope.YMin) / resolutionY);
+                tEndRow = GetInteger((tEnvelope.MaxY - oEnvelope.MinY) / resolutionY);
             }
             int oWidth = oEndCol - oBeginCol;
             int oHeight = oEndRow - oBeginRow;
@@ -154,10 +153,10 @@ namespace PIE.Meteo.FileProject.BlockOper
             return (int)(fWidth);
         }
 
-        private static bool IsInteractived(IEnvelope envelopeA, IEnvelope envelopeB)
+        private static bool IsInteractived(Envelope envelopeA, Envelope envelopeB)
         {
-            RectangleF a = new RectangleF((float)envelopeA.XMin, (float)envelopeA.YMin, (float)envelopeA.GetWidth(), (float)envelopeA.GetHeight());
-            RectangleF b = new RectangleF((float)envelopeB.XMin, (float)envelopeB.YMin, (float)envelopeB.GetWidth(), (float)envelopeB.GetHeight());
+            RectangleF a = new RectangleF((float)envelopeA.MinX, (float)envelopeA.MinY, (float)envelopeA.GetWidth(), (float)envelopeA.GetHeight());
+            RectangleF b = new RectangleF((float)envelopeB.MinX, (float)envelopeB.MinY, (float)envelopeB.GetWidth(), (float)envelopeB.GetHeight());
             return a.IntersectsWith(b);
         }
         
@@ -178,9 +177,10 @@ namespace PIE.Meteo.FileProject.BlockOper
             ref int oBeginRow, ref int oBeginCol, ref Size oIntersectSize, 
             ref int tBeginRow, ref int tBeginCol, ref Size tIntersectSize)
         {
-            IEnvelope oEnvelope = args.GetEnvelope();
-            IEnvelope tEnvelope = dstArgs.GetEnvelope();
-            IEnvelope inEnv = ((oEnvelope as Geometry.Geometry).Intersection(tEnvelope as IGeometry) as IEnvelope);
+            Envelope oEnvelope = args.GetEnvelope();
+            Envelope tEnvelope = dstArgs.GetEnvelope();
+            
+            Envelope inEnv = ((oEnvelope as Geometry.Geometry).Intersection(tEnvelope as IGeometry) as Envelope);
             if (inEnv == null)
                 return false;
             if (!IsInteractived(oEnvelope, tEnvelope))
@@ -192,24 +192,24 @@ namespace PIE.Meteo.FileProject.BlockOper
             oIntersectSize = CoordEnvelopeToSize(inEnv, oResolutionX, oResolutionY);
             tIntersectSize = CoordEnvelopeToSize(inEnv, tResolutionX, tResolutionY);
             //
-            if (oEnvelope.XMin >= tEnvelope.XMin)//左边界在目标图像内部
+            if (oEnvelope.MinX >= tEnvelope.MinX)//左边界在目标图像内部
             {
                 oBeginCol = 0;
-                tBeginCol = (int)((oEnvelope.XMin - tEnvelope.XMin) / tResolutionX + _errorValue);
+                tBeginCol = (int)((oEnvelope.MinX - tEnvelope.MinX) / tResolutionX + _errorValue);
             }
             else//左边界在目标图像外部
             {
-                oBeginCol = (int)((tEnvelope.XMin - oEnvelope.XMin) / oResolutionX + _errorValue);
+                oBeginCol = (int)((tEnvelope.MinX - oEnvelope.MinX) / oResolutionX + _errorValue);
                 tBeginCol = 0;
             }
-            if (oEnvelope.YMax <= tEnvelope.YMax)//上边界在目标图像内部
+            if (oEnvelope.MaxY <= tEnvelope.MaxY)//上边界在目标图像内部
             {
                 oBeginRow = 0;
-                tBeginRow = (int)((tEnvelope.YMax - oEnvelope.YMax) / tResolutionY + _errorValue);
+                tBeginRow = (int)((tEnvelope.MaxY - oEnvelope.MaxY) / tResolutionY + _errorValue);
             }
             else//上边界在目标边界外部
             {
-                oBeginRow = (int)((oEnvelope.YMax - tEnvelope.YMax) / oResolutionY + _errorValue);
+                oBeginRow = (int)((oEnvelope.MaxY - tEnvelope.MaxY) / oResolutionY + _errorValue);
                 tBeginRow = 0;
             }
             Size oSize = new Size(args.Width, args.Height);
@@ -226,10 +226,10 @@ namespace PIE.Meteo.FileProject.BlockOper
             return true;
         }
 
-        private static Size CoordEnvelopeToSize(IEnvelope envelope, float resolutonX, float resolutonY)
+        private static Size CoordEnvelopeToSize(Envelope envelope, float resolutonX, float resolutonY)
         {
-            int w = (int)((envelope.XMax - envelope.XMin) / resolutonX + _errorValue);
-            int h = (int)((envelope.YMax - envelope.YMin) / resolutonY + _errorValue);
+            int w = (int)((envelope.MaxX - envelope.MinX) / resolutonX + _errorValue);
+            int h = (int)((envelope.MaxY - envelope.MinY) / resolutonY + _errorValue);
             return w <= 0 || h <= 0 ? Size.Empty : new Size(w, h);
         }
 

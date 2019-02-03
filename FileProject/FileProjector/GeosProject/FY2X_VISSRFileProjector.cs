@@ -4,10 +4,10 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OSGeo.GDAL;
+using OSGeo.OSR;
 using PIE.Meteo.RasterProject;
-using PIE.DataSource;
-using PIE.Meteo.Core;
-using PIE.Geometry;
+
 
 namespace PIE.Meteo.FileProject
 {
@@ -16,7 +16,7 @@ namespace PIE.Meteo.FileProject
         Fy2_NOM_PrjSettings _setting = null;
         static readonly string fileInfo = "NomFileInfo";
         List<UInt16[]> _lutList = new List<ushort[]>();
-        public override void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, ISpatialReference dstSpatialRef, Action<int, string> progressCallback)
+        public override void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, SpatialReference dstSpatialRef, Action<int, string> progressCallback)
         {
             try
             {
@@ -43,13 +43,13 @@ namespace PIE.Meteo.FileProject
                 int bandNo = _setting.OutBandNos[i];
                 PrjBand b = prjBands[bandNo - 1];
                 string calName = b.DataSetName.Replace("NOMChannel","CALChannel");
-                IRasterBand[] bands = srcRaster.GetBands(calName);
+                Band[] bands = srcRaster.GetBands(calName);
                 if (bands == null||bands.Length==0)
                     throw new ArgumentNullException(string.Format("FY2X辐射定标，未找到名称为{0}的数据.", calName));
-                IRasterBand band = bands[0];
-                float[] buffer = new float[band.GetXSize() * band.GetYSize()];
-                band.Read(0, 0, band.GetXSize(), band.GetYSize(), buffer, band.GetXSize(), band.GetYSize(), PixelDataType.Float32);
-                UInt16[] ubuffer = new ushort[band.GetXSize() * band.GetYSize()];
+                var band = bands[0];
+                float[] buffer = new float[band.XSize * band.YSize];
+                band.ReadRaster(0, 0, band.XSize, band.YSize, buffer, band.XSize, band.YSize,0,0);
+                UInt16[] ubuffer = new ushort[band.XSize * band.YSize];
                 for (int j = 0; j < buffer.Length; j++)
                 {
                     if (buffer[j] > 1)
@@ -78,12 +78,12 @@ namespace PIE.Meteo.FileProject
             geoTransform[3] = 5720000 - 0 * nReslution;
             geoTransform[4] = 0;
             geoTransform[5] = -nReslution;
-            _srcSpatialRef = new ProjectedCoordinateSystem();
+            _srcSpatialRef = new SpatialReference("");
             _srcSpatialRef.ImportFromProj4(proj);
             _srcGeoTrans = geoTransform;
         }
 
-        public override void ComputeDstEnvelope(AbstractWarpDataset srcRaster, ISpatialReference dstSpatialRef, out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback)
+        public override void ComputeDstEnvelope(AbstractWarpDataset srcRaster, SpatialReference dstSpatialRef, out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback)
         {
             InitLocationArgs(srcRaster);
             var projTrans = ProjectionTransformFactory.GetProjectionTransform(_srcSpatialRef, dstSpatialRef);
@@ -119,7 +119,7 @@ namespace PIE.Meteo.FileProject
                     index++;
                 }
             }
-            if (dstSpatialRef.IsSame(SpatialReferenceFactory.CreateSpatialReference(4326)))
+            if (dstSpatialRef.IsSame(SpatialReferenceFactory.CreateSpatialReference(4326))==1)
             {
                 projTrans.Transform(xs, ys);
                 GeosCorrection(dstSpatialRef, xs, ys);

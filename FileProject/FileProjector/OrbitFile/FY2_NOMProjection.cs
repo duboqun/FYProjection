@@ -17,7 +17,7 @@ namespace PIE.Meteo.FileProject
     /// </summary>
     public class FY2_NOMProjection : FileProjector
     {
-        private ISpatialReference _srcSpatialRef;
+        private SpatialReference _srcSpatialRef;
         //private string[] _agiles = new string[] { "NOMSatelliteZenith", "NOMSunGlintAngle", "NOMSunZenith"};//FY2几个角度的波段名称
         Fy2_NOM_PrjSettings _prjSettings;
 
@@ -36,7 +36,7 @@ namespace PIE.Meteo.FileProject
             return false;
         }
 
-        public override void ComputeDstEnvelope(AbstractWarpDataset srcRaster, ISpatialReference dstSpatialRef, out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback)
+        public override void ComputeDstEnvelope(AbstractWarpDataset srcRaster, SpatialReference dstSpatialRef, out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback)
         {
             if (dstSpatialRef == null || dstSpatialRef.Type == SpatialReferenceType.GeographicCS)
             {
@@ -167,7 +167,7 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        public override void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, ISpatialReference dstSpatialRef, Action<int, string> progressCallback)
+        public override void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, SpatialReference dstSpatialRef, Action<int, string> progressCallback)
         {
             try
             {
@@ -510,7 +510,7 @@ namespace PIE.Meteo.FileProject
 
         private float[][] _bandNoValueMap;
 
-        private void ReadyLocations(AbstractWarpDataset srcRaster, ISpatialReference dstSpatialRef, Size srcSize,
+        private void ReadyLocations(AbstractWarpDataset srcRaster, SpatialReference dstSpatialRef, Size srcSize,
             out double[] xs, out double[] ys, out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback)
         {
             if (progressCallback != null)
@@ -563,7 +563,7 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        private void DoSession(AbstractWarpDataset srcRaster, ISpatialReference dstSpatialRef, Fy2_NOM_PrjSettings prjSettings, Action<int, string> progressCallback)
+        private void DoSession(AbstractWarpDataset srcRaster, SpatialReference dstSpatialRef, Fy2_NOM_PrjSettings prjSettings, Action<int, string> progressCallback)
         {
             if (_curSession == null || _curSession != srcRaster || _isBeginSession)
             {
@@ -595,7 +595,7 @@ namespace PIE.Meteo.FileProject
                 _sensorSenithBand = bands[0];
         }
 
-        private void ReadyArgs(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, ISpatialReference dstSpatialRef, Action<int, string> progressCallback)
+        private void ReadyArgs(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, SpatialReference dstSpatialRef, Action<int, string> progressCallback)
         {
             if (dstSpatialRef == null)
                 dstSpatialRef = _srcSpatialRef;
@@ -744,7 +744,7 @@ namespace PIE.Meteo.FileProject
             return bands;
         }
 
-        private AbstractWarpDataset CreateOutFile(FilePrjSettings prjSettings, ISpatialReference dstSpatial, DataIdentify dataIdentify)
+        private AbstractWarpDataset CreateOutFile(FilePrjSettings prjSettings, SpatialReference dstSpatial, DataIdentify dataIdentify)
         {
             float resolutionX = prjSettings.OutResolutionX;
             float resolutionY = prjSettings.OutResolutionY;
@@ -776,7 +776,7 @@ namespace PIE.Meteo.FileProject
             return CreateOutFile(driver, filename, bandCount, outSize, PixelDataType.Int16,options);
         }
 
-        private string[] LdfOptions(FilePrjSettings prjSettings, ISpatialReference dstSpatial, float resolutionX, float resolutionY, DataIdentify dataIdentify)
+        private string[] LdfOptions(FilePrjSettings prjSettings, SpatialReference dstSpatial, float resolutionX, float resolutionY, DataIdentify dataIdentify)
         {
             List<string> options = new List<string>();
             options.Add("INTERLEAVE=BSQ");

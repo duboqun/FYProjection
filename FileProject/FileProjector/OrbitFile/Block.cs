@@ -6,14 +6,6 @@ using System.Drawing;
 
 namespace PIE.Meteo.FileProject
 {
-    /// <summary>
-    /// 类名：Block
-    /// 属性描述：
-    /// 创建者：admin   创建日期：2013-09-26 18:46:13
-    /// 修改者：             修改日期：
-    /// 修改描述：
-    /// 备注：
-    /// </summary>
     public class Block : ICloneable
     {
         public int xBegin;

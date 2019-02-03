@@ -25,7 +25,7 @@ namespace PIE.Meteo.FileProject
         protected const double C2 = 1.438833;
         protected const double V = 875.1379;
 
-        private ISpatialReference _srcSpatialRef = null;
+        private SpatialReference _srcSpatialRef = null;
 
         #region Session
         private float[] _vir_Cal_Coeff = null;      //反射通道，19个通道的三个系数，排列为第一个通道的k0，k1，k2；第二个通道的k0，k1，k2；......
@@ -59,7 +59,7 @@ namespace PIE.Meteo.FileProject
             return false;
         }
 
-        public override void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, ISpatialReference dstSpatialRef, Action<int, string> progressCallback)
+        public override void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, SpatialReference dstSpatialRef, Action<int, string> progressCallback)
         {
             try
             {
@@ -197,7 +197,7 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        private void ReadyArgs(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, ISpatialReference dstSpatialRef, Action<int, string> progressCallback)
+        private void ReadyArgs(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, SpatialReference dstSpatialRef, Action<int, string> progressCallback)
         {
             if (srcRaster.DataIdentify != null)
             {
@@ -321,7 +321,7 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        private void TryCreate0250DefaultArgs(AbstractWarpDataset srcRaster, FY3_MERSI_PrjSettings prjSettings, ref ISpatialReference dstSpatialRef)
+        private void TryCreate0250DefaultArgs(AbstractWarpDataset srcRaster, FY3_MERSI_PrjSettings prjSettings, ref SpatialReference dstSpatialRef)
         {
             if (prjSettings.SecondaryOrbitRaster == null && prjSettings.IsSolarZenith)
                 prjSettings.IsSolarZenith = false;  //throw new Exception("无法获取相应1KM轨道数据文件，无法做太阳天顶角订正");
@@ -362,7 +362,7 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        private void TryCreateDefaultArgs(AbstractWarpDataset srcRaster, FY3_MERSI_PrjSettings prjSettings, ref ISpatialReference dstSpatialRef)
+        private void TryCreateDefaultArgs(AbstractWarpDataset srcRaster, FY3_MERSI_PrjSettings prjSettings, ref SpatialReference dstSpatialRef)
         {
             if (dstSpatialRef == null)
                 dstSpatialRef = _srcSpatialRef;
@@ -405,7 +405,7 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        private void DoSession(AbstractWarpDataset srcRaster, AbstractWarpDataset locationRaster, ISpatialReference dstSpatialRef, FY3_MERSI_PrjSettings prjSettings, Action<int, string> progressCallback)
+        private void DoSession(AbstractWarpDataset srcRaster, AbstractWarpDataset locationRaster, SpatialReference dstSpatialRef, FY3_MERSI_PrjSettings prjSettings, Action<int, string> progressCallback)
         {
             if (_curSession == null || _curSession != srcRaster || _isBeginSession)
             {
@@ -488,7 +488,7 @@ namespace PIE.Meteo.FileProject
             return rasterBands.ToArray();
         }
 
-        private void ReadyLocations(AbstractWarpDataset srcRaster, ISpatialReference dstSpatialRef, FY3_MERSI_PrjSettings fy3prjSettings,
+        private void ReadyLocations(AbstractWarpDataset srcRaster, SpatialReference dstSpatialRef, FY3_MERSI_PrjSettings fy3prjSettings,
             out Size locationSize, out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback)
         {
             if (progressCallback != null)
@@ -904,7 +904,7 @@ namespace PIE.Meteo.FileProject
             return new FY3_VIRR_PrjSettings();
         }
 
-        public override void ComputeDstEnvelope(AbstractWarpDataset srcRaster, ISpatialReference dstSpatialRef, out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback)
+        public override void ComputeDstEnvelope(AbstractWarpDataset srcRaster, SpatialReference dstSpatialRef, out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback)
         {
             if (srcRaster != null)
             {

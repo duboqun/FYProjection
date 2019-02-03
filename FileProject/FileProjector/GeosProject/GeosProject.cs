@@ -1,8 +1,4 @@
-﻿using PIE.DataSource;
-using PIE.Geometry;
-using PIE.Meteo.Common;
-using PIE.Meteo.Core;
-using PIE.Meteo.RasterProject;
+﻿using PIE.Meteo.RasterProject;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,19 +7,23 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using OSGeo.GDAL;
+using OSGeo.OGR;
+using OSGeo.OSR;
 
 namespace PIE.Meteo.FileProject
 {
     public abstract class GeosProject : FileProjector
     {
-        private IRasterBand[] _rasterBands = null;
+        private Band[] _rasterBands = null;
         protected IProjectionTransform _projectionTransform;
-        protected ISpatialReference _srcSpatialRef { get; set; }//转换的目标投影
-        protected double[] _srcGeoTrans { get; set; }//转换的仿射变换参数
+        protected SpatialReference _srcSpatialRef { get; set; } //转换的目标投影
+        protected double[] _srcGeoTrans { get; set; } //转换的仿射变换参数
 
         protected static UInt16 NODATA_VALUE = 65535;
 
         protected AbstractWarpDataset _prdWriter { get; set; }
+
         public GeosProject()
         {
             _name = "GeosProject";
@@ -32,17 +32,19 @@ namespace PIE.Meteo.FileProject
         }
 
 
-        public override AbstractWarpDataset Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, AbstractWarpDataset dstRaster, int beginBandIndex, Action<int, string> progressCallback)
+        public override AbstractWarpDataset Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings,
+            AbstractWarpDataset dstRaster, int beginBandIndex, Action<int, string> progressCallback)
         {
-
             _dstSpatialRef = dstRaster.SpatialRef;
             _projectionTransform = ProjectionTransformFactory.GetProjectionTransform(_srcSpatialRef, _dstSpatialRef);
             ProjectRaster(srcRaster, prjSettings, dstRaster, progressCallback, NODATA_VALUE, beginBandIndex, 1, 1);
             GC.Collect();
             return dstRaster;
         }
+
         // 1
-        public override void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, ISpatialReference dstSpatialRef, Action<int, string> progressCallback)
+        public override void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings,
+            SpatialReference dstSpatialRef, Action<int, string> progressCallback)
         {
             _dstSpatialRef = dstSpatialRef;
             _projectionTransform = ProjectionTransformFactory.GetProjectionTransform(_srcSpatialRef, dstSpatialRef);
@@ -51,7 +53,9 @@ namespace PIE.Meteo.FileProject
         }
 
         // 2
-        private void ProjectRaster(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, AbstractWarpDataset prdWriter, Action<int, string> progressCallback, UInt16 fillValue, int beginBandIndex, double dataWeight, float zoom)
+        private void ProjectRaster(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings,
+            AbstractWarpDataset prdWriter, Action<int, string> progressCallback, UInt16 fillValue, int beginBandIndex,
+            double dataWeight, float zoom)
         {
             var timer = System.Diagnostics.Stopwatch.StartNew();
 
@@ -71,38 +75,39 @@ namespace PIE.Meteo.FileProject
             float srcResolutionX = Convert.ToSingle(_srcGeoTrans[1]);
             float srcResolutionY = Math.Abs(Convert.ToSingle(_srcGeoTrans[5]));
             //输入数据的大小
-            Size srcSize = new Size() { Width = srcWidth, Height = srcHeight };
-            MyLog.Log.Print.Info($"投影输入图像尺寸：{srcSize}");
-            MyLog.Log.Print.Info($"投影输出图像尺寸：{outSize}");
+            Size srcSize = new Size() {Width = srcWidth, Height = srcHeight};
             //输出数据的左上角地理坐标
             double outLtPointX = outLeftTopPoint.X;
             double outLtPointY = outLeftTopPoint.Y;
             //输入数据源的坐标范围
-            PrjEnvelope srcEnvelope = new PrjEnvelope(_srcGeoTrans[0], _srcGeoTrans[0] + srcWidth * _srcGeoTrans[1], _srcGeoTrans[3] + srcHeight * _srcGeoTrans[5], _srcGeoTrans[3], _srcSpatialRef);
+            PrjEnvelope srcEnvelope = new PrjEnvelope(_srcGeoTrans[0], _srcGeoTrans[0] + srcWidth * _srcGeoTrans[1],
+                _srcGeoTrans[3] + srcHeight * _srcGeoTrans[5], _srcGeoTrans[3], _srcSpatialRef);
             ulong mem = MemoryHelper.GetAvalidPhyMemory();
-            MyLog.Log.Print.Info($"当前剩余物理内存：{mem / 1024 / 1024 / 1024}GB");
             mem = mem > 10.0 * 1024 * 1024 * 1024 ? Convert.ToUInt64(10.0 * 1024 * 1024 * 1024) : mem;
             ulong maxLimit = mem / (6 * 8);
-            int rowStep = (int)(maxLimit / (UInt32)outWidth);
+            int rowStep = (int) (maxLimit / (UInt32) outWidth);
             if (rowStep == 0)
                 rowStep = 1;
             if (rowStep > outHeight)
                 rowStep = outHeight;
-            int stepCount = (int)(Math.Ceiling((double)outHeight / rowStep));
+            int stepCount = (int) (Math.Ceiling((double) outHeight / rowStep));
             int percent = 0;
             int progress = 0;
             int progressCount = outBandCount * stepCount + stepCount * 2;
-            MyLog.Log.Print.Info($"当前投影处理每步骤处理：{rowStep}行");
-            long stepGeolocationTime = 0, stepReadDataTime = 0, stepRadiationTime = 0, stepProjectRasterTime = 0, stepWriteDataTime = 0;
+            long stepGeolocationTime = 0,
+                stepReadDataTime = 0,
+                stepRadiationTime = 0,
+                stepProjectRasterTime = 0,
+                stepWriteDataTime = 0;
             for (int oRow = 0; oRow < outHeight; oRow += rowStep)
             {
-                MyLog.Log.Print.Info($"当前投影处理开始行号：{oRow}行");
                 if (progressCallback != null)
                 {
                     percent++;
                     progress = percent * 100 / progressCount;
                     progressCallback(progress, string.Format("投影完成{0}%", progress));
                 }
+
                 if (oRow + rowStep > outHeight)
                     rowStep = outHeight - oRow;
 
@@ -118,13 +123,15 @@ namespace PIE.Meteo.FileProject
                 }
                 catch (Exception ex)
                 {
-                    MyLog.Log.Print.Error("GeosProject.ProjectRaster()", ex);
                     throw;
                 }
+
                 Size srcStepSize = new Size();
                 Block oBlock, tBlock;
                 timer.Restart();
+
                 #region 初始化查找表
+
                 {
                     double oY = oRow * outResolutionY;
                     Parallel.For(0, rowStep, j =>
@@ -165,6 +172,7 @@ namespace PIE.Meteo.FileProject
                         progress = percent * 100 / progressCount;
                         progressCallback(progress, string.Format("投影完成{0}%", progress));
                     }
+
                     Parallel.For(0, rowStep, j =>
                     {
                         double x;
@@ -175,17 +183,20 @@ namespace PIE.Meteo.FileProject
                             index = i + j * outWidth;
                             x = xs[index];
                             y = ys[index];
-                            if (x >= srcStepLeftTopX && x <= srcStepRightBottomX && y <= srcStepLeftTopY && y >= srcStepRightBottomY)
+                            if (x >= srcStepLeftTopX && x <= srcStepRightBottomX && y <= srcStepLeftTopY &&
+                                y >= srcStepRightBottomY)
                             {
-                                cols[index] = (UInt16)((x - srcStepLeftTopX) / srcResolutionX + 0.5);
-                                rows[index] = (UInt16)((srcStepLeftTopY - y) / srcResolutionY + 0.5);
+                                cols[index] = (UInt16) ((x - srcStepLeftTopX) / srcResolutionX + 0.5);
+                                rows[index] = (UInt16) ((srcStepLeftTopY - y) / srcResolutionY + 0.5);
                             }
                         }
                     });
                     xs = null;
                     ys = null;
                 }
+
                 #endregion
+
                 stepGeolocationTime += timer.ElapsedMilliseconds;
 
                 //输入波段数据缓冲区
@@ -201,9 +212,11 @@ namespace PIE.Meteo.FileProject
                         progress = percent * 100 / progressCount;
                         progressCallback(progress, string.Format("投影完成{0}%", progress));
                     }
+
                     var bandNum = b - beginBandIndex;
                     timer.Restart();
-                    ReadBandData<UInt16>(srcBandData, bandNum, oBlock.xBegin, oBlock.yBegin, srcStepSize.Width, srcStepSize.Height, PixelDataType.UInt16);
+                    ReadBandData<UInt16>(srcBandData, bandNum, oBlock.xBegin, oBlock.yBegin, srcStepSize.Width,
+                        srcStepSize.Height, DataType.GDT_UInt16);
                     stepReadDataTime += timer.ElapsedMilliseconds;
 
                     Size srcBlockSize = new Size(srcStepSize.Width, srcStepSize.Height);
@@ -232,33 +245,37 @@ namespace PIE.Meteo.FileProject
 #endif
                     //Size outStepSize = new Size(outWidth, rowStep);
                     timer.Restart();
-                    _rasterProjector.Project<UInt16>(srcBandData, srcStepSize, rows, cols, new Size(outWidth, rowStep), dstBandData, fillValue, 0, null);
+                    _rasterProjector.Project<UInt16>(srcBandData, srcStepSize, rows, cols, new Size(outWidth, rowStep),
+                        dstBandData, fillValue, 0, null);
                     stepProjectRasterTime += timer.ElapsedMilliseconds;
 
                     timer.Restart();
                     if (dataWeight == 1)
-                        WriteDataToLDF<UInt16>(prdWriter, PixelDataType.UInt16, outWidth, rowStep, oRow, dstBandData, b);
+                        WriteDataToLDF<UInt16>(prdWriter, DataType.GDT_UInt16, outWidth, rowStep, oRow, dstBandData, b);
                     else
-                        WriteDataToLDF<UInt16>(prdWriter, PixelDataType.UInt16, outWidth, rowStep, oRow, dstBandData, b, dataWeight, zoom);
+                        WriteDataToLDF<UInt16>(prdWriter, DataType.GDT_UInt16, outWidth, rowStep, oRow, dstBandData, b,
+                            dataWeight, zoom);
                     stepWriteDataTime += timer.ElapsedMilliseconds;
-
                 }
+
                 rows = null;
                 rows = null;
                 srcBandData = null;
                 dstBandData = null;
             }
-            MyLog.Log.Print.Info($"坐标投影转换：{stepGeolocationTime}ms");
-            MyLog.Log.Print.Info($"读取波段数据：{stepReadDataTime}ms");
-            MyLog.Log.Print.Info($"定标波段数据：{stepRadiationTime}ms");
-            MyLog.Log.Print.Info($"投影波段数据：{stepProjectRasterTime}ms");
-            MyLog.Log.Print.Info($"写入波段数据：{stepWriteDataTime}ms");
+
+            Console.WriteLine($"坐标投影转换：{stepGeolocationTime}ms");
+            Console.WriteLine($"读取波段数据：{stepReadDataTime}ms");
+            Console.WriteLine($"定标波段数据：{stepRadiationTime}ms");
+            Console.WriteLine($"投影波段数据：{stepProjectRasterTime}ms");
+            Console.WriteLine($"写入波段数据：{stepWriteDataTime}ms");
         }
 
         /// <summary>
         /// 参数检验
         /// </summary>
-        protected void ArgsCheck(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, ISpatialReference dstSpatialRef)
+        protected void ArgsCheck(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings,
+            SpatialReference dstSpatialRef)
         {
             if (srcRaster == null)
                 throw new ArgumentNullException("srcRaster");
@@ -275,26 +292,28 @@ namespace PIE.Meteo.FileProject
                 else
                     prjSettings.OutFormat = "ENVI";
             }
+
             if (prjSettings.OutResolutionX == 0f || prjSettings.OutResolutionY == 0f)
             {
-                bool isProjectRef = srcRaster.SpatialRef is PIE.Geometry.IProjectedCoordinateSystem;
-                if ((dstSpatialRef.Type == SpatialReferenceType.GeographicCS && !isProjectRef) ||
-                    (dstSpatialRef.Type == SpatialReferenceType.ProjectedCS && isProjectRef))
+                bool isProjectRef = srcRaster.SpatialRef.IsProjected() == 1;
+                if ((dstSpatialRef.IsGeographic() == 1 && !isProjectRef) ||
+                    (dstSpatialRef.IsProjected() == 1 && isProjectRef))
                 {
                     prjSettings.OutResolutionX = srcRaster.ResolutionX;
                     prjSettings.OutResolutionY = srcRaster.ResolutionY;
                 }
-                else if (dstSpatialRef.Type == SpatialReferenceType.ProjectedCS && !isProjectRef)
+                else if (dstSpatialRef.IsProjected() == 1 && !isProjectRef)
                 {
                     prjSettings.OutResolutionX = srcRaster.ResolutionX * 100000F;
                     prjSettings.OutResolutionY = srcRaster.ResolutionY * 100000F;
                 }
-                else if (dstSpatialRef.Type == SpatialReferenceType.GeographicCS && isProjectRef)
+                else if (dstSpatialRef.IsGeographic() == 1 && isProjectRef)
                 {
                     prjSettings.OutResolutionX = srcRaster.ResolutionX / 100000F;
                     prjSettings.OutResolutionY = srcRaster.ResolutionY / 100000F;
                 }
             }
+
             if (prjSettings.OutBandNos == null || prjSettings.OutBandNos.Length == 0)
             {
                 List<int> bandNoList = new List<int>();
@@ -302,11 +321,13 @@ namespace PIE.Meteo.FileProject
                 {
                     bandNoList.Add(i);
                 }
+
                 prjSettings.OutBandNos = bandNoList.ToArray();
             }
         }
 
-        protected void ReadySession(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, ISpatialReference dstSpatialRef, Action<int, string> progressCallback)
+        protected void ReadySession(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings,
+            SpatialReference dstSpatialRef, Action<int, string> progressCallback)
         {
             if (_curSession == null || _curSession != srcRaster || _isBeginSession)
             {
@@ -327,23 +348,26 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        protected IRasterBand[] TryCreateRasterDataBands(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, Action<int, string> progressCallback)
+        protected Band[] TryCreateRasterDataBands(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings,
+            Action<int, string> progressCallback)
         {
             PrjBand[] bands = PrjBandTable.GetPrjBands(srcRaster);
-            List<IRasterBand> rasterBands = new List<IRasterBand>();
+            List<Band> rasterBands = new List<Band>();
             for (int i = 0; i < prjSettings.OutBandNos.Length; i++)
             {
                 if (progressCallback != null)
                     progressCallback(_readyProgress++, "投影准备");
                 int bandNo = prjSettings.OutBandNos[i];
                 PrjBand b = bands[bandNo - 1];
-                IRasterBand band = srcRaster.GetBands(b.DataSetName)[0];
+                Band band = srcRaster.GetBands(b.DataSetName)[0];
                 rasterBands.Add(band);
             }
+
             return rasterBands.ToArray();
         }
 
         #region NotImplemented
+
         public override bool IsSupport(string fileName)
         {
             throw new NotImplementedException();
@@ -356,23 +380,26 @@ namespace PIE.Meteo.FileProject
         }
 
 
-        protected override void ReadLocations(AbstractWarpDataset srcRaster, out double[] xs, out double[] ys, out Size locationSize)
+        protected override void ReadLocations(AbstractWarpDataset srcRaster, out double[] xs, out double[] ys,
+            out Size locationSize)
         {
             throw new NotImplementedException();
         }
 
-        protected override void DoRadiation(AbstractWarpDataset srcImgRaster, int i, ushort[] srcBandData, float[] solarZenithData, Size srcBlockImgSize, Size angleSize)
+        protected override void DoRadiation(AbstractWarpDataset srcImgRaster, int i, ushort[] srcBandData,
+            float[] solarZenithData, Size srcBlockImgSize, Size angleSize)
         {
             throw new NotImplementedException();
         }
 
-        private void ProjectToLDF(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, AbstractWarpDataset prdWriter, ISpatialReference dstSpatialRef, Action<int, string> progressCallback, double weight, float zoom)
+        private void ProjectToLDF(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings,
+            AbstractWarpDataset prdWriter, SpatialReference dstSpatialRef, Action<int, string> progressCallback,
+            double weight, float zoom)
         {
-
-
         }
 
-        private void ProjectRaster(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, Action<int, string> progressCallback, AbstractWarpDataset prdWriter, UInt16 fillValue)
+        private void ProjectRaster(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings,
+            Action<int, string> progressCallback, AbstractWarpDataset prdWriter, UInt16 fillValue)
         {
             ProjectRaster(srcRaster, prjSettings, prdWriter, progressCallback, fillValue, 0, 1, 1);
         }
@@ -380,9 +407,11 @@ namespace PIE.Meteo.FileProject
         #endregion
 
         #region 文件读写
-        private void WriteDataToLDF<T>(AbstractWarpDataset prdWriter, PixelDataType dataType, int outWidth, int rowStep, int oRow, T[] dstBandData, int b)
+
+        private void WriteDataToLDF<T>(AbstractWarpDataset prdWriter, DataType dataType, int outWidth, int rowStep,
+            int oRow, T[] dstBandData, int b)
         {
-            IRasterBand band = null;
+            Band band = null;
             try
             {
                 band = prdWriter.GetRasterBand(b);
@@ -390,11 +419,10 @@ namespace PIE.Meteo.FileProject
                 try
                 {
                     IntPtr bufferPtr = h.AddrOfPinnedObject();
-                    bool writeState = band.Write(0, oRow, outWidth, rowStep, bufferPtr, outWidth, rowStep, dataType);
-                    if (!writeState)
+                    var writeState = band.WriteRaster(0, oRow, outWidth, rowStep, bufferPtr, outWidth, rowStep, dataType,0,0);
+                    if (writeState== CPLErr.CE_Failure)
                     {
                         System.Diagnostics.Debug.WriteLine("文件写入失败");
-                        MyLog.Log.Print.Error("文件写入失败:" + prdWriter.fileName);
                     }
                 }
                 finally
@@ -412,12 +440,14 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        private void WriteDataToLDF<T>(AbstractWarpDataset prdWriter, PixelDataType dataType, int outWidth, int rowStep, int oRow, T[] dstBandData, int b, double dataweight, float zoom)
+        private void WriteDataToLDF<T>(AbstractWarpDataset prdWriter, DataType dataType, int outWidth, int rowStep,
+            int oRow, T[] dstBandData, int b, double dataweight, float zoom)
         {
-            IRasterBand band = null;
+            Band band = null;
 
             for (int i = 0; i < dstBandData.Length; i++)
-                dstBandData[i] = (T)Convert.ChangeType(Convert.ToDouble(dstBandData[i]) * dataweight * zoom, typeof(T));
+                dstBandData[i] =
+                    (T) Convert.ChangeType(Convert.ToDouble(dstBandData[i]) * dataweight * zoom, typeof(T));
             try
             {
                 band = prdWriter.GetRasterBand(b + 1);
@@ -425,7 +455,7 @@ namespace PIE.Meteo.FileProject
                 try
                 {
                     IntPtr bufferPtr = h.AddrOfPinnedObject();
-                    band.Write(0, oRow, outWidth, rowStep, bufferPtr, outWidth, rowStep, dataType);
+                    band.WriteRaster(0, oRow, outWidth, rowStep, bufferPtr, outWidth, rowStep, dataType,0,0);
                 }
                 finally
                 {
@@ -442,18 +472,19 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        private void ReadBandData<T>(T[] bandData, int bandIndex, int xOffset, int yOffset, int blockWidth, int blockHeight, PixelDataType dataType)
+        private void ReadBandData<T>(T[] bandData, int bandIndex, int xOffset, int yOffset, int blockWidth,
+            int blockHeight, DataType dataType)
         {
-            IRasterBand latBand = _rasterDataBands[bandIndex];//
+            Band latBand = _rasterDataBands[bandIndex]; //
             GCHandle h = h = GCHandle.Alloc(bandData, GCHandleType.Pinned);
             try
             {
                 IntPtr bufferPtr = h.AddrOfPinnedObject();
-                bool readState = latBand.Read(xOffset, yOffset, blockWidth, blockHeight, bufferPtr, blockWidth, blockHeight, dataType);
-                if (!readState)
+                var readState = latBand.ReadRaster(xOffset, yOffset, blockWidth, blockHeight, bufferPtr, blockWidth,
+                    blockHeight, dataType,0,0);
+                if (readState== CPLErr.CE_Failure)
                 {
                     System.Diagnostics.Debug.WriteLine("文件读取失败");
-                    MyLog.Log.Print.Error("文件读取失败:GeosProject _rasterDataBands");
                 }
             }
             finally
@@ -461,13 +492,16 @@ namespace PIE.Meteo.FileProject
                 h.Free();
             }
         }
+
         #endregion
 
         #region 创建输出文件
+
         /// <summary>
         /// 创建输出文件
         /// </summary>
-        protected void CreateDstRaster(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, ISpatialReference dstSpatialRef, Action<int, string> progressCallback)
+        protected void CreateDstRaster(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings,
+            SpatialReference dstSpatialRef, Action<int, string> progressCallback)
         {
             ArgsCheck(srcRaster, prjSettings, dstSpatialRef);
 
@@ -479,7 +513,8 @@ namespace PIE.Meteo.FileProject
             _prdWriter = CreateOutFile(srcRaster, prjSettings, dstSpatialRef, srcRaster.DataType);
         }
 
-        protected AbstractWarpDataset CreateOutFile(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, ISpatialReference dstSpatial, PixelDataType dataType)
+        protected AbstractWarpDataset CreateOutFile(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings,
+            SpatialReference dstSpatial, DataType dataType)
         {
             float resolutionX = prjSettings.OutResolutionX;
             float resolutionY = prjSettings.OutResolutionY;
@@ -490,40 +525,50 @@ namespace PIE.Meteo.FileProject
 
             CheckAndCreateDir(Path.GetDirectoryName(filename));
 
-            PIE.Geometry.Envelope env = new Geometry.Envelope()
+            Envelope env = new Envelope()
             {
-                XMax = prjSettings.OutEnvelope.MaxX,
-                XMin = prjSettings.OutEnvelope.MinX,
-                YMax = prjSettings.OutEnvelope.MaxY,
-                YMin = prjSettings.OutEnvelope.MinY,
+                MaxX = prjSettings.OutEnvelope.MaxX,
+                MinX = prjSettings.OutEnvelope.MinX,
+                MaxY = prjSettings.OutEnvelope.MaxY,
+                MinY = prjSettings.OutEnvelope.MinY,
             };
-            string[] _options = new string[] { "header_offset=128" };
-            double[] geoTrans = new double[] { env.XMin, Convert.ToDouble(resolutionX.ToString("f6")), 0, env.YMax, 0, -Convert.ToDouble(resolutionY.ToString("f6")) };
-            var ds = DatasetFactory.CreateRasterDataset(filename, outSize.Width, outSize.Height, bandCount, PixelDataType.UInt16, "ENVI", null);
+            string[] _options = new string[] {"header_offset=128"};
+            double[] geoTrans = new double[]
+            {
+                env.MinX, Convert.ToDouble(resolutionX.ToString("f6")), 0, env.MaxY, 0,
+                -Convert.ToDouble(resolutionY.ToString("f6"))
+            };
+            var ds = DatasetFactory.CreateRasterDataset(filename, outSize.Width, outSize.Height, bandCount,
+                DataType.GDT_UInt16, "ENVI", null);
             ds.SetGeoTransform(geoTrans);
             if (ds == null)
                 throw new ArgumentException("请检查输出文件路径");
-            ds.SpatialReference = dstSpatial;
+            ds.SetProjection(dstSpatial.ExportToWkt());
             Enumerable.Range(0, bandCount).ToList().ForEach(t => ds.GetRasterBand(t).SetNoDataValue(NODATA_VALUE));
-            return new WarpDataset(ds);
+            return new WarpDataset(ds,filename);
         }
+
         #endregion
 
         #region 设置输出文件无效值
+
         protected void SetPrdwritterNodata(AbstractWarpDataset dstRaster, double nodatavalue)
         {
-            Enumerable.Range(0, dstRaster.BandCount).ToList().ForEach(t => dstRaster.GetRasterBand(t).SetNoDataValue(nodatavalue));
+            Enumerable.Range(0, dstRaster.BandCount).ToList()
+                .ForEach(t => dstRaster.GetRasterBand(t).SetNoDataValue(nodatavalue));
         }
+
         #endregion
 
         #region 坐标360°修正
+
         /// <summary>
         /// 经度跨越180度，进行修正
         /// </summary>
-        protected void GeosCorrection(ISpatialReference dstSpatialRef, double[] xs, double[] ys)
+        protected void GeosCorrection(SpatialReference dstSpatialRef, double[] xs, double[] ys)
         {
             //都是WGS84
-            if (dstSpatialRef.IsSame(SpatialReferenceFactory.CreateSpatialReference(4326)))
+            if (dstSpatialRef.IsSame(SpatialReferenceFactory.CreateSpatialReference(4326))==1)
             {
                 for (int i = 0; i < xs.Length; i++)
                 {
@@ -538,10 +583,10 @@ namespace PIE.Meteo.FileProject
         /// <summary>
         /// 经度跨越180度，进行修正
         /// </summary>
-        protected void GeosInverCorrection(ISpatialReference dstSpatialRef, double[] xs, double[] ys)
+        protected void GeosInverCorrection(SpatialReference dstSpatialRef, double[] xs, double[] ys)
         {
             //都是WGS84
-            if (dstSpatialRef.IsSame(SpatialReferenceFactory.CreateSpatialReference(4326)))
+            if (dstSpatialRef.IsSame(SpatialReferenceFactory.CreateSpatialReference(4326))==1)
             {
                 for (int i = 0; i < xs.Length; i++)
                 {
@@ -552,6 +597,7 @@ namespace PIE.Meteo.FileProject
                 }
             }
         }
+
         #endregion
     }
 }

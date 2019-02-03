@@ -39,7 +39,7 @@ namespace PIE.Meteo.FileProject
     {
         private FY3L2L3FilePrjSettings _prjSettings = null;
         private AbstractWarpDataset _locationRaster = null;
-        private ISpatialReference _srcSpatialRef = null;
+        private SpatialReference _srcSpatialRef = null;
 
         public FY3L2L3FileProjector()
             : base()
@@ -57,7 +57,7 @@ namespace PIE.Meteo.FileProject
             return false;
         }
 
-        public override void ComputeDstEnvelope(AbstractWarpDataset srcRaster, ISpatialReference dstSpatialRef, out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback)
+        public override void ComputeDstEnvelope(AbstractWarpDataset srcRaster, SpatialReference dstSpatialRef, out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback)
         {
             throw new NotImplementedException();
         }
@@ -129,7 +129,7 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        public override void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, ISpatialReference dstSpatialRef, Action<int, string> progressCallback)
+        public override void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, SpatialReference dstSpatialRef, Action<int, string> progressCallback)
         {
             try
             {
@@ -250,7 +250,7 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        private void ReadyArgs(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, ISpatialReference dstSpatialRef, Action<int, string> progressCallback)
+        private void ReadyArgs(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, SpatialReference dstSpatialRef, Action<int, string> progressCallback)
         {
             float resolutionScale = 1f;
             _readyProgress = 0;
@@ -327,7 +327,7 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        private void TryCreateDefaultArg(AbstractWarpDataset srcRaster, FY3L2L3FilePrjSettings prjSettings, ref ISpatialReference dstSpatialRef)
+        private void TryCreateDefaultArg(AbstractWarpDataset srcRaster, FY3L2L3FilePrjSettings prjSettings, ref SpatialReference dstSpatialRef)
         {
             if (dstSpatialRef == null)
                 dstSpatialRef = _srcSpatialRef;
@@ -372,7 +372,7 @@ namespace PIE.Meteo.FileProject
             return _prjSettings;
         }
 
-        private void DoSession(AbstractWarpDataset srcRaster, ISpatialReference dstSpatialRef, FY3L2L3FilePrjSettings prjSettings, Action<int, string> progressCallback)
+        private void DoSession(AbstractWarpDataset srcRaster, SpatialReference dstSpatialRef, FY3L2L3FilePrjSettings prjSettings, Action<int, string> progressCallback)
         {
             if (_curSession == null || _curSession != srcRaster || _isBeginSession)
             {
@@ -399,7 +399,7 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        private void ReadyLocations(AbstractWarpDataset locationRaster, ISpatialReference dstSpatialRef,
+        private void ReadyLocations(AbstractWarpDataset locationRaster, SpatialReference dstSpatialRef,
             out double[] xs, out double[] ys, out PrjEnvelope maxPrjEnvelope, out Size locationSize, Action<int, string> progressCallback)
         {
             if (progressCallback != null)
