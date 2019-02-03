@@ -1,17 +1,17 @@
-﻿using PIE.Geometry;
-using PIE.Meteo.RasterProject;
+﻿using PIE.Meteo.RasterProject;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OSGeo.OSR;
 
 namespace PIE.Meteo.FileProject
 {
     public class PrjFileName
     {
-        public static string GetPrjFileName(string outDir, string filename, ISpatialReference projRef, string blockname)
+        public static string GetPrjFileName(string outDir, string filename, SpatialReference projRef, string blockname)
         {
             string outFileNmae = "";
             string orbitFilename = Path.GetFileName(filename);
@@ -22,15 +22,16 @@ namespace PIE.Meteo.FileProject
             return CreateOnlyFilename(outFileNmae);
         }
 
-        private static string GetPrjShortName(ISpatialReference projRef)
+        private static string GetPrjShortName(SpatialReference projRef)
         {
             string prjIdentify;
-            if (projRef == null || string.IsNullOrWhiteSpace(projRef.Name))
+
+            if (projRef == null || string.IsNullOrWhiteSpace(projRef.__str__()))
                 prjIdentify = "GLL";
-            else if (projRef.Type== SpatialReferenceType.GeographicCS)
-                prjIdentify = GenericFilename.GetProjectionIdentify((projRef as GeographicCoordinateSystem).Name);
+            else if (projRef.IsGeographic() == 1)
+                prjIdentify = GenericFilename.GetProjectionIdentify(projRef.__str__());
             else
-                prjIdentify = GenericFilename.GetProjectionIdentify((projRef as ProjectedCoordinateSystem).Name);
+                prjIdentify = GenericFilename.GetProjectionIdentify(projRef.__str__());
             return prjIdentify;
         }
 
@@ -45,19 +46,23 @@ namespace PIE.Meteo.FileProject
         /// <param name="blockName"></param>
         /// <param name="resolution"></param>
         /// <returns></returns>
-        public static string GetL1PrjFilenameWithOutDir(string filename, string satellite, string sensor, DateTime datetime, ISpatialReference spatialRef, string blockName, float resolution)
+        public static string GetL1PrjFilenameWithOutDir(string filename, string satellite, string sensor,
+            DateTime datetime, SpatialReference spatialRef, string blockName, float resolution)
         {
             string prjIdentify = GetPrjShortName(spatialRef);
-            return GetL1PrjFilenameWithOutDir(filename, satellite, sensor, datetime, prjIdentify, blockName, resolution);
+            return GetL1PrjFilenameWithOutDir(filename, satellite, sensor, datetime, prjIdentify, blockName,
+                resolution);
         }
 
-        public static string GetL1PrjFilenameWithOutDir(string orbitFilename, string satellite, string sensor, DateTime orbitTime, string prjIdentify, string blockName, float resolution)
+        public static string GetL1PrjFilenameWithOutDir(string orbitFilename, string satellite, string sensor,
+            DateTime orbitTime, string prjIdentify, string blockName, float resolution)
         {
             if (string.IsNullOrWhiteSpace(satellite) || string.IsNullOrWhiteSpace(sensor))
             {
                 string filename = new GenericFilename().PrjBlockFilename(orbitFilename, prjIdentify, blockName, ".ldf");
                 return Path.GetFileName(filename);
             }
+
             return string.Format("{0}_{1}_{2}_{3}_{4}_{5}_{6}_{7}.ldf",
                 satellite,
                 sensor,
@@ -67,12 +72,12 @@ namespace PIE.Meteo.FileProject
                 orbitTime.ToString("yyyyMMdd"),
                 orbitTime.ToString("HHmm"),
                 prjIdentify == "GLL" ? GLLResolutionIdentify(resolution) : ResolutionIdentify(resolution)
-                );
+            );
         }
 
-        public static string ResolutionIdentify(float resolution, ISpatialReference projRef)
+        public static string ResolutionIdentify(float resolution, SpatialReference projRef)
         {
-            if (projRef == null || projRef.Type ==  SpatialReferenceType.GeographicCS)
+            if (projRef == null || projRef.IsGeographic()==1)
                 return GLLResolutionIdentify(resolution);
             else
                 return ResolutionIdentify(resolution);
@@ -159,6 +164,5 @@ namespace PIE.Meteo.FileProject
             else
                 return true;
         }
-
     }
 }

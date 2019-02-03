@@ -1,10 +1,9 @@
-﻿using PIE.Geometry;
-using PIE.Meteo.Core;
-using PIE.Meteo.RasterProject;
+﻿using PIE.Meteo.RasterProject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using OSGeo.OSR;
 
 namespace PIE.Meteo.FileProject
 {
@@ -38,18 +37,18 @@ namespace PIE.Meteo.FileProject
         /// <param name="prjSettings">投影参数</param>
         /// <param name="dstSpatial">目标投影</param>
         /// <param name="progressCallback">进度条</param>
-        void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, ISpatialReference dstSpatial, Action<int, string> progressCallback);
+        void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, SpatialReference dstSpatial, Action<int, string> progressCallback);
         
         //拼接投影到目标，如果目标为空则创建新的
         AbstractWarpDataset Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, AbstractWarpDataset dstRaster, int beginBandIndex, Action<int, string> progressCallback);
         
         //计算目标投影下范围
-        void ComputeDstEnvelope(AbstractWarpDataset srcRaster, ISpatialReference dstSpatialRef,out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback);
+        void ComputeDstEnvelope(AbstractWarpDataset srcRaster, SpatialReference dstSpatialRef,out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback);
 
         FilePrjSettings CreateDefaultPrjSettings();
 
-        bool HasVaildEnvelope(AbstractWarpDataset locationRaster, PrjEnvelope validEnv, ISpatialReference envSpatialReference);
+        bool HasVaildEnvelope(AbstractWarpDataset locationRaster, PrjEnvelope validEnv, SpatialReference envSpatialReference);
 
-        bool ValidEnvelope(AbstractWarpDataset locationRaster, PrjEnvelope validEnv, ISpatialReference envSpatialReference, out double validRate, out PrjEnvelope outEnv);
+        bool ValidEnvelope(AbstractWarpDataset locationRaster, PrjEnvelope validEnv, SpatialReference envSpatialReference, out double validRate, out PrjEnvelope outEnv);
     }
 }

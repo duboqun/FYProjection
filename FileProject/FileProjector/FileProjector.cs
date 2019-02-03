@@ -7,24 +7,23 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using OSGeo.GDAL;
+using OSGeo.OSR;
 using PIE.Meteo.RasterProject;
-using PIE.DataSource;
-using PIE.Meteo.Common;
-using PIE.Meteo.Core;
-using PIE.Geometry;
 
 namespace PIE.Meteo.FileProject
 {
     public abstract class FileProjector : IFileProjector
     {
         #region 派生字段
+
         protected string _name = null;
         protected string _fullname = null;
         protected AbstractWarpDataset _curSession = null;
         protected bool _isBeginSession = false;
         protected RasterProjector _rasterProjector { get; set; } = null;
-        protected IRasterBand[] _rasterDataBands = null; //用于投影的通道数据集。其数组顺序即为输出目标文件的通道顺序
-        protected IRasterBand[] _dstDataBands = null; //用于投影的通道数据集。其数组顺序即为输出目标文件的通道顺序
+        protected Band[] _rasterDataBands = null; //用于投影的通道数据集。其数组顺序即为输出目标文件的通道顺序
+        protected Band[] _dstDataBands = null; //用于投影的通道数据集。其数组顺序即为输出目标文件的通道顺序
 
         //protected Action<int, string> progressCallback;
         protected int progress = 0;
@@ -34,24 +33,28 @@ namespace PIE.Meteo.FileProject
         protected PrjEnvelope _maxPrjEnvelope = null;
         protected AbstractWarpDataset _solarZenithCacheRaster { get; set; } = null; //太阳高度角通道
         protected Size _srcLocationSize;
-        protected ISpatialReference _dstSpatialRef;
+
+        protected SpatialReference _dstSpatialRef;
+
         //当前投影范围，需要使用的原始轨道数据最小范围
         protected Block _orbitBlock = null;
-        protected double[] _xs = null;                //经纬度值或者公里数，存储的实际是计算后的值
-        protected double[] _ys = null;                //经纬度值或者公里数，存储的实际是计算后的值
+        protected double[] _xs = null; //经纬度值或者公里数，存储的实际是计算后的值
+        protected double[] _ys = null; //经纬度值或者公里数，存储的实际是计算后的值
 
-        protected bool _isRadRef = false;        //亮温订正
-        protected bool _isRad = false;          //辐射定标
-        protected bool _isSolarZenith = false;      //太阳天顶角订正
+        protected bool _isRadRef = false; //亮温订正
+        protected bool _isRad = false; //辐射定标
+        protected bool _isSolarZenith = false; //太阳天顶角订正
+
         /// <summary>
         /// 是否对亮温（辐亮度）进行临边变暗订正，公式如下
         /// T = Tb + deltaT
         /// deltaT == (Math.Pow(Math.E,0.00012*theta*theta)-1)*(0.1072*Tb-26.81)  //theta是卫星天顶角
         /// </summary>
         protected bool _isSensorZenith = false;
+
         //卫星天顶角通道。
         protected AbstractWarpDataset _sensorSenithRaster = null;
-        protected IRasterBand _sensorSenithBand;
+        protected Band _sensorSenithBand;
         protected string _outFormat = "GTiff";
         protected string _outfilename = "";
         protected string _dstProj4 = "";
@@ -62,35 +65,43 @@ namespace PIE.Meteo.FileProject
         protected float _outResolutionY = 0;
         protected float _srcImgResolution = 1.0f;
 
-        protected string[] _supportAngles = new string[] { "SensorAzimuth", "SensorZenith", "SolarAzimuth", "SolarZenith" };
-        protected IRasterBand[] _angleBands = null;                   //输出的角度文件
+        protected string[] _supportAngles = new string[]
+            {"SensorAzimuth", "SensorZenith", "SolarAzimuth", "SolarZenith"};
+
+        protected Band[] _angleBands = null; //输出的角度文件
         protected AbstractWarpDataset[] _dstAngleRasters = null;
-        protected IRasterBand[] _dstAngleBands = null;
+        protected Band[] _dstAngleBands = null;
 
         protected int _readyProgress = 0;
-        protected IRasterBand _longitudeBand = null;     //用于投影的经纬度通道
-        protected IRasterBand _latitudeBand = null;
+        protected Band _longitudeBand = null; //用于投影的经纬度通道
+        protected Band _latitudeBand = null;
         protected double _geoIntercept = 0d; //地理数据截距
-        protected double _geoSlope = 1d;     //地理数据斜率
+        protected double _geoSlope = 1d; //地理数据斜率
 
         //左右去除像元个数格式LeftRightInvalid={8,8}
-        private Regex _leftRightInvalidArgReg = new Regex(@"LeftRightInvalid=\{(?<left>\d+?)\|(?<right>\d+?)\}", RegexOptions.Compiled);
+        private Regex _leftRightInvalidArgReg =
+            new Regex(@"LeftRightInvalid=\{(?<left>\d+?)\|(?<right>\d+?)\}", RegexOptions.Compiled);
+
         protected int _left = 0; //读取轨道数据时候左右去除像元个数
         protected int _right = 0;
-        protected int _sacnLineWidth = 10;//扫描线宽度,默认为10，MERSI和MODIS的经纬度数据的扫描线。
+
+        protected int _sacnLineWidth = 10; //扫描线宽度,默认为10，MERSI和MODIS的经纬度数据的扫描线。
+
         //投影扩展通道
         protected string[] _supportExtBandNames = null;
-        protected IRasterBand[] _extSrcBands = null;
-        protected IRasterBand[] _extDstBands = null;
+        protected Band[] _extSrcBands = null;
+        protected Band[] _extDstBands = null;
         protected AbstractWarpDataset[] _extDstRasters = null;
         protected double? _NODATA_VALUE = null;
 
-        protected IRasterBand[] _extSrcBands2 = null;//地形校正，真彩校正需要的波段
-        protected AbstractWarpDataset[] _extDstRasters2 = null;//真彩校正需要的波段
-        protected IRasterBand[] _extDstBands2 = null;//真彩输出波段
+        protected Band[] _extSrcBands2 = null; //地形校正，真彩校正需要的波段
+        protected AbstractWarpDataset[] _extDstRasters2 = null; //真彩校正需要的波段
+        protected Band[] _extDstBands2 = null; //真彩输出波段
+
         #endregion
 
         private FilePrjSettings _prjSettings;
+
         public string Name
         {
             get { return _name; }
@@ -102,24 +113,32 @@ namespace PIE.Meteo.FileProject
         }
 
         #region 虚方法
+
         public abstract bool IsSupport(string fileName);
-        public abstract void ComputeDstEnvelope(AbstractWarpDataset srcRaster, ISpatialReference dstSpatialRef, out RasterProject.PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback);
+
+        public abstract void ComputeDstEnvelope(AbstractWarpDataset srcRaster, SpatialReference dstSpatialRef,
+            out RasterProject.PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback);
+
         public abstract FilePrjSettings CreateDefaultPrjSettings();
 
         #endregion
 
         #region 未实现方法
-        public virtual void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, ISpatialReference dstSpatial, Action<int, string> progressCallback)
+
+        public virtual void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings,
+            SpatialReference dstSpatial, Action<int, string> progressCallback)
         {
             throw new NotImplementedException();
         }
 
-        public virtual AbstractWarpDataset Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, AbstractWarpDataset dstRaster, int beginBandIndex, Action<int, string> progressCallback)
+        public virtual AbstractWarpDataset Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings,
+            AbstractWarpDataset dstRaster, int beginBandIndex, Action<int, string> progressCallback)
         {
             throw new NotImplementedException();
         }
 
-        public virtual void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, ISpatialReference dstSpatialRef, Action<int, string> progressCallback, double weight, float zoom)
+        public virtual void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings,
+            SpatialReference dstSpatialRef, Action<int, string> progressCallback, double weight, float zoom)
         {
             throw new NotImplementedException();
         }
@@ -127,14 +146,17 @@ namespace PIE.Meteo.FileProject
         #endregion
 
         #region Read
-        internal void ReadBandData(out float[] bandData, AbstractWarpDataset srcRaster, int bandNo, int xOffset, int yOffset, int blockWidth, int blockHeight)
+
+        internal void ReadBandData(out float[] bandData, AbstractWarpDataset srcRaster, int bandNo, int xOffset,
+            int yOffset, int blockWidth, int blockHeight)
         {
             bandData = new float[blockWidth * blockHeight];
-            IRasterBand latBand = null;
+            Band latBand = null;
             try
             {
                 latBand = srcRaster.GetRasterBand(bandNo);
-                latBand.Read(xOffset, yOffset, blockWidth, blockHeight, bandData, blockWidth, blockHeight, PixelDataType.Float32);
+                latBand.ReadRaster(xOffset, yOffset, blockWidth, blockHeight, bandData,
+                    blockWidth, blockHeight, 0, 0);
             }
             finally
             {
@@ -142,7 +164,9 @@ namespace PIE.Meteo.FileProject
                     (latBand as IDisposable).Dispose();
             }
         }
-        internal void ReadBandData(out float[] bandData, IRasterBand band, int xOffset, int yOffset, int blockWidth, int blockHeight)
+
+        internal void ReadBandData(out float[] bandData, Band band, int xOffset, int yOffset, int blockWidth,
+            int blockHeight)
         {
             bandData = null;
             if (band == null)
@@ -150,28 +174,23 @@ namespace PIE.Meteo.FileProject
             try
             {
                 bandData = new float[blockWidth * blockHeight];
-                band.Read(xOffset, yOffset, blockWidth, blockHeight, bandData, blockWidth, blockHeight, PixelDataType.Float32);
+                band.ReadRaster(xOffset, yOffset, blockWidth, blockHeight, bandData,
+                    blockWidth, blockHeight, 0, 0);
             }
             finally
             {
             }
         }
 
-        internal short[] ReadBandData(IRasterBand band, int xOffset, int yOffset, int blockWidth, int blockHeight)
+        internal short[] ReadBandData(Band band, int xOffset, int yOffset, int blockWidth, int blockHeight)
         {
             if (band == null)
                 return null;
             try
             {
                 short[] bandData = new short[blockWidth * blockHeight];
-                unsafe
-                {
-                    fixed (short* ptr = bandData)
-                    {
-                        IntPtr bufferptr = new IntPtr(ptr);
-                        band.Read(xOffset, yOffset, blockWidth, blockHeight, bufferptr, blockWidth, blockHeight, PixelDataType.Int16);
-                    }
-                }
+                band.ReadRaster(xOffset, yOffset, blockWidth, blockHeight, bandData,
+                    blockWidth, blockHeight, 0, 0);
                 return bandData;
             }
             finally
@@ -179,20 +198,14 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        internal void ReadBandData(IRasterBand band, out float[] bandData, out Size srcSize)
+        internal void ReadBandData(Band band, out float[] bandData, out Size srcSize)
         {
-            int width = band.GetXSize();
-            int height = band.GetYSize();
+            int width = band.XSize;
+            int height = band.YSize;
             srcSize = new Size(width, height);
             bandData = new float[width * height];
-            unsafe
-            {
-                fixed (float* ptrLong = bandData)
-                {
-                    IntPtr bufferPtrLong = new IntPtr(ptrLong);
-                    band.Read(0, 0, width, height, bufferPtrLong, width, height, PixelDataType.Float32);
-                }
-            }
+
+            band.ReadRaster(0, 0, width, height, bandData, width, height, 0, 0);
         }
 
         /// <summary>
@@ -205,42 +218,42 @@ namespace PIE.Meteo.FileProject
         /// <param name="yOffset"></param>
         /// <param name="blockWidth"></param>
         /// <param name="blockHeight"></param>
-        internal void ReadImgBand(out ushort[] bandData, int dstBandIndex, int xOffset, int yOffset, int blockWidth, int blockHeight)
+        internal void ReadImgBand(out ushort[] bandData, int dstBandIndex, int xOffset, int yOffset, int blockWidth,
+            int blockHeight)
         {
-            IRasterBand latBand = _rasterDataBands[dstBandIndex];//
+            Band latBand = _rasterDataBands[dstBandIndex]; //
             bandData = new ushort[blockWidth * blockHeight];
             bool ok = false;
             try
             {
-                unsafe
-                {
-                    fixed (ushort* ptr = bandData)
-                    {
-                        IntPtr bufferptr = new IntPtr(ptr);
-                        ok = latBand.Read(xOffset, yOffset, blockWidth, blockHeight, bufferptr, blockWidth, blockHeight, PixelDataType.UInt16);
-                    }
-                }
+                CPLErr e = latBand.ReadRaster(xOffset, yOffset, blockWidth, blockHeight, bandData, blockWidth,
+                    blockHeight,
+                    0, 0);
+                if (e != CPLErr.CE_Failure)
+                    ok = true;
             }
             finally
             {
                 if (!ok)
                 {
                     System.Diagnostics.Debug.WriteLine("ReadImgBand  Index:{0}失败", dstBandIndex);
-                    MyLog.Log.Print.Error(string.Format("ReadImgBand  Index:{0}失败", dstBandIndex));
                 }
+
                 //latBand.Dispose();//现在貌似还不能释放...
             }
         }
 
-        internal void ReadImgBand<T>(out T[] bandData, PixelDataType dataType, int dstBandIndex, int xOffset, int yOffset, int blockWidth, int blockHeight)
+        internal void ReadImgBand<T>(out T[] bandData, DataType dataType, int dstBandIndex, int xOffset,
+            int yOffset, int blockWidth, int blockHeight)
         {
-            IRasterBand latBand = _rasterDataBands[dstBandIndex];//
+            Band latBand = _rasterDataBands[dstBandIndex]; //
             bandData = new T[blockWidth * blockHeight];
             GCHandle h = GCHandle.Alloc(bandData, GCHandleType.Pinned);
             try
             {
                 IntPtr bufferPtr = h.AddrOfPinnedObject();
-                latBand.Read(xOffset, yOffset, blockWidth, blockHeight, bufferPtr, blockWidth, blockHeight, dataType);
+                latBand.ReadRaster(xOffset, yOffset, blockWidth, blockHeight, bufferPtr, blockWidth, blockHeight,
+                    dataType, 0, 0)
             }
             finally
             {
@@ -248,26 +261,23 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        internal void ReadImgBand(IRasterBand band, int xOffset, int yOffset, int xSize, int ySize, Size bufferSize, out ushort[] bandData)
+        internal void ReadImgBand(Band band, int xOffset, int yOffset, int xSize, int ySize, Size bufferSize,
+            out ushort[] bandData)
         {
             bandData = new ushort[bufferSize.Width * bufferSize.Height];
-            unsafe
-            {
-                fixed (ushort* ptr = bandData)
-                {
-                    IntPtr bufferptr = new IntPtr(ptr);
-                    band.Read(xOffset, yOffset, xSize, ySize, bufferptr, bufferSize.Width, bufferSize.Height, PixelDataType.UInt16);
-                }
-            }
+            band.ReadRaster(xOffset, yOffset, xSize, ySize, bandData, bufferSize.Width, bufferSize.Height, 0, 0);
         }
-        internal virtual void ReadBandForPrj<T>(IRasterBand band, int xOffset, int yOffset, int xSize, int ySize, Size bufferSize, out T[] bandData)
+
+        internal virtual void ReadBandForPrj<T>(Band band, int xOffset, int yOffset, int xSize, int ySize,
+            Size bufferSize, out T[] bandData)
         {
             bandData = new T[bufferSize.Width * bufferSize.Height];
             GCHandle h = GCHandle.Alloc(bandData, GCHandleType.Pinned);
             try
             {
                 IntPtr bufferPtr = h.AddrOfPinnedObject();
-                band.Read(xOffset, yOffset, xSize, ySize, bufferPtr, bufferSize.Width, bufferSize.Height, BlockOper.DataTypeHelper.Type2PixelDataType(typeof(T)));
+                band.ReadRaster(xOffset, yOffset, xSize, ySize, bufferPtr, bufferSize.Width, bufferSize.Height,
+                    BlockOper.DataTypeHelper.Type2PixelDataType(typeof(T)), 0, 0);
             }
             finally
             {
@@ -275,28 +285,26 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        internal virtual void ReadAgileBand(IRasterBand band, int xOffset, int yOffset, int xSize, int ySize, Size bufferSize, out short[] bandData)
+        internal virtual void ReadAgileBand(Band band, int xOffset, int yOffset, int xSize, int ySize, Size bufferSize,
+            out short[] bandData)
         {
             bandData = new short[bufferSize.Width * bufferSize.Height];
-            unsafe
-            {
-                fixed (short* ptr = bandData)
-                {
-                    IntPtr bufferptr = new IntPtr(ptr);
-                    band.Read(xOffset, yOffset, xSize, ySize, bufferptr, bufferSize.Width, bufferSize.Height, PixelDataType.Int16);
-                }
-            }
+
+            band.ReadRaster(xOffset, yOffset, xSize, ySize, bandData, bufferSize.Width, bufferSize.Height, 0, 0);
         }
 
-        protected virtual void ReadLocations(AbstractWarpDataset geoRaster, out IRasterBand longitudeBand, out IRasterBand latitudeBand)
+        protected virtual void ReadLocations(AbstractWarpDataset geoRaster, out Band longitudeBand,
+            out Band latitudeBand)
         {
-            IRasterBand[] lonsBands = geoRaster.GetBands("Longitude");
-            IRasterBand[] latBands = geoRaster.GetBands("Latitude");
-            if (lonsBands == null || latBands == null || lonsBands.Length == 0 || latBands.Length == 0 || lonsBands[0] == null || latBands[0] == null)
+            Band[] lonsBands = geoRaster.GetBands("Longitude");
+            Band[] latBands = geoRaster.GetBands("Latitude");
+            if (lonsBands == null || latBands == null || lonsBands.Length == 0 || latBands.Length == 0 ||
+                lonsBands[0] == null || latBands[0] == null)
                 throw new Exception("获取经纬度数据集失败");
             longitudeBand = lonsBands[0];
             latitudeBand = latBands[0];
         }
+
         /// <summary>
         /// 按照指定的偏移量读取
         /// </summary>
@@ -306,14 +314,15 @@ namespace PIE.Meteo.FileProject
         /// <param name="blockWidth"></param>
         /// <param name="blockHeight"></param>
         /// <returns></returns>
-        protected double[] ReadBlockDatas(IRasterBand rasterBand, int xOffset, int yOffset, int blockWidth, int blockHeight)
+        protected double[] ReadBlockDatas(Band rasterBand, int xOffset, int yOffset, int blockWidth, int blockHeight)
         {
             double[] bandData = new double[blockWidth * blockHeight];
             GCHandle h = GCHandle.Alloc(bandData, GCHandleType.Pinned);
             try
             {
                 IntPtr bufferPtr = h.AddrOfPinnedObject();
-                rasterBand.Read(xOffset, yOffset, blockWidth, blockHeight, bufferPtr, blockWidth, blockHeight, PixelDataType.Float64);
+                rasterBand.Read(xOffset, yOffset, blockWidth, blockHeight, bufferPtr, blockWidth, blockHeight,
+                    PixelDataType.Float64);
                 return bandData;
             }
             finally
@@ -331,14 +340,15 @@ namespace PIE.Meteo.FileProject
         /// <param name="blockWidth"></param>
         /// <param name="blockHeight"></param>
         /// <returns></returns>
-        internal double[] ReadSampleDatas(IRasterBand rasterBand, int xOffset, int yOffset, int blockWidth, int blockHeight)
+        internal double[] ReadSampleDatas(Band rasterBand, int xOffset, int yOffset, int blockWidth, int blockHeight)
         {
             double[] bandData = new double[blockWidth * blockHeight];
             GCHandle h = GCHandle.Alloc(bandData, GCHandleType.Pinned);
             try
             {
                 IntPtr bufferPtr = h.AddrOfPinnedObject();
-                rasterBand.Read(xOffset, yOffset, rasterBand.GetXSize(), rasterBand.GetYSize(), bufferPtr, blockWidth, blockHeight, PixelDataType.Float64);
+                rasterBand.Read(xOffset, yOffset, rasterBand.GetXSize(), rasterBand.GetYSize(), bufferPtr, blockWidth,
+                    blockHeight, PixelDataType.Float64);
                 return bandData;
             }
             finally
@@ -346,7 +356,9 @@ namespace PIE.Meteo.FileProject
                 h.Free();
             }
         }
-        protected abstract void ReadLocations(AbstractWarpDataset srcRaster, out double[] xs, out double[] ys, out Size locationSize);
+
+        protected abstract void ReadLocations(AbstractWarpDataset srcRaster, out double[] xs, out double[] ys,
+            out Size locationSize);
 
         /// <summary>
         /// 指定采样大小，读取经纬度数据集数据
@@ -357,7 +369,8 @@ namespace PIE.Meteo.FileProject
         /// <param name="xs"></param>
         /// <param name="ys"></param>
         /// <param name="locationSize"></param>
-        protected void ReadLocations(IRasterBand longitudeBand, IRasterBand latitudeBand, Size maxGeoSize, out double[] xs, out double[] ys, out Size locationSize)
+        protected void ReadLocations(Band longitudeBand, Band latitudeBand, Size maxGeoSize, out double[] xs,
+            out double[] ys, out Size locationSize)
         {
             int sampleWidth = longitudeBand.GetXSize();
             int sampleHeight = longitudeBand.GetYSize();
@@ -378,7 +391,7 @@ namespace PIE.Meteo.FileProject
         /// <param name="sampleSize"></param>
         /// <param name="bandData"></param>
         /// <param name="srcSize"></param>
-        private void ReadBandData(IRasterBand band, Size sampleSize, out double[] bandData)
+        private void ReadBandData(Band band, Size sampleSize, out double[] bandData)
         {
             int width = band.GetXSize();
             int height = band.GetYSize();
@@ -394,9 +407,11 @@ namespace PIE.Meteo.FileProject
                 }
             }
         }
+
         #endregion
 
         #region Ready
+
         /// <summary>
         /// 准备要投影的四个角度波段
         /// </summary>
@@ -405,21 +420,22 @@ namespace PIE.Meteo.FileProject
         /// <param name="prjSettings"></param>
         /// <param name="outSize"></param>
         /// <param name="options"></param>
-        internal void ReadyAngleFiles(AbstractWarpDataset srcAngleRaster, string mainFilename, FilePrjSettings prjSettings, Size outSize, string[] options)
+        internal void ReadyAngleFiles(AbstractWarpDataset srcAngleRaster, string mainFilename,
+            FilePrjSettings prjSettings, Size outSize, string[] options)
         {
             this._prjSettings = prjSettings;
             _angleBands = null;
             if (prjSettings.ExtArgs == null || prjSettings.ExtArgs.Length == 0)
                 return;
-            List<IRasterBand> srcAngleBands = new List<IRasterBand>();
+            List<Band> srcAngleBands = new List<Band>();
             List<AbstractWarpDataset> dstAngleRasters = new List<AbstractWarpDataset>();
-            List<IRasterBand> dstAngleBands = new List<IRasterBand>();
+            List<Band> dstAngleBands = new List<Band>();
 
             foreach (string extarg in prjSettings.ExtArgs)
             {
                 if (_supportAngles.Contains(extarg))
                 {
-                    IRasterBand[] band = srcAngleRaster.GetBands(extarg);
+                    Band[] band = srcAngleRaster.GetBands(extarg);
                     if (band != null && band.Length != 0)
                     {
                         srcAngleBands.Add(band[0]);
@@ -427,29 +443,36 @@ namespace PIE.Meteo.FileProject
 
                         List<string> opts = new List<string>(options);
                         opts.Add("BANDNAMES=" + extarg);
-                        AbstractWarpDataset dstAngleRaster = CreateOutFile(fileName, 1, outSize, PixelDataType.Int16, opts.ToArray());
-                        IRasterBand dstband = dstAngleRaster.GetRasterBand(0);
+                        AbstractWarpDataset dstAngleRaster =
+                            CreateOutFile(fileName, 1, outSize, PixelDataType.Int16, opts.ToArray());
+                        Band dstband = dstAngleRaster.GetRasterBand(0);
                         dstAngleRasters.Add(dstAngleRaster);
                         dstAngleBands.Add(dstband);
                     }
                 }
             }
+
             _angleBands = srcAngleBands.ToArray();
             _dstAngleRasters = dstAngleRasters.ToArray();
             _dstAngleBands = dstAngleBands.ToArray();
         }
+
         /// <summary> 
         /// 准备定位信息,计算投影后的值，并计算范围
         /// </summary>
-        protected void ReadyLocations(AbstractWarpDataset geoRaster, ISpatialReference srcSpatialRef, ISpatialReference dstSpatialRef, out Size geoSize,
+        protected void ReadyLocations(AbstractWarpDataset geoRaster, SpatialReference srcSpatialRef,
+            SpatialReference dstSpatialRef, out Size geoSize,
             out double[] xs, out double[] ys, out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback)
         {
             ReadLocations(geoRaster, out xs, out ys, out geoSize);
             TryResetLonlatForLeftRightInvalid(xs, ys, geoSize);
             //PrjEnvelope maskEnvelope = new PrjEnvelope(-180d, 180d, -90d, 90d);
-            _rasterProjector.ComputeDstEnvelope(srcSpatialRef, xs, ys, geoSize, dstSpatialRef, out maxPrjEnvelope, progressCallback);
+            _rasterProjector.ComputeDstEnvelope(srcSpatialRef, xs, ys, geoSize, dstSpatialRef, out maxPrjEnvelope,
+                progressCallback);
         }
-        internal virtual void ReadyExtBands(AbstractWarpDataset srcRaster, string mainFilename, FilePrjSettings prjSettings, Size outSize, string[] options)
+
+        internal virtual void ReadyExtBands(AbstractWarpDataset srcRaster, string mainFilename,
+            FilePrjSettings prjSettings, Size outSize, string[] options)
         {
             _extSrcBands = null;
             if (prjSettings.ExtArgs == null || prjSettings.ExtArgs.Length == 0)
@@ -459,73 +482,81 @@ namespace PIE.Meteo.FileProject
             string[] extBandNames = TryParseExtBands("ExtBands", prjSettings.ExtArgs);
             if (extBandNames == null || extBandNames.Length == 0)
                 return;
-            List<IRasterBand> srcBands = new List<IRasterBand>();
+            List<Band> srcBands = new List<Band>();
             List<AbstractWarpDataset> dstRasters = new List<AbstractWarpDataset>();
-            List<IRasterBand> dstBands = new List<IRasterBand>();
+            List<Band> dstBands = new List<Band>();
 
             foreach (string extBandName in extBandNames)
             {
                 if (_supportExtBandNames.Contains(extBandName))
                 {
-                    IRasterBand[] band = srcRaster.GetBands(extBandName);
+                    Band[] band = srcRaster.GetBands(extBandName);
                     if (band != null && band.Length != 0)
                     {
                         srcBands.Add(band[0]);
                         string fileName = Path.ChangeExtension(mainFilename, extBandName + ".ldf");
                         List<string> opts = new List<string>(options);
                         opts.Add("BANDNAMES=" + extBandName);
-                        AbstractWarpDataset dstAngleRaster = CreateOutFile(fileName, 1, outSize, band[0].GetRasterDataType(), opts.ToArray());
-                        IRasterBand dstband = dstAngleRaster.GetRasterBand(0);
+                        AbstractWarpDataset dstAngleRaster = CreateOutFile(fileName, 1, outSize,
+                            band[0].GetRasterDataType(), opts.ToArray());
+                        Band dstband = dstAngleRaster.GetRasterBand(0);
                         dstRasters.Add(dstAngleRaster);
                         dstBands.Add(dstband);
                     }
                 }
             }
+
             _extSrcBands = srcBands.ToArray();
             _extDstRasters = dstRasters.ToArray();
             _extDstBands = dstBands.ToArray();
         }
 
-        protected void ReadyExtBands2(AbstractWarpDataset srcRaster, string mainFilename, FilePrjSettings prjSettings, Size outSize, string[] options)
-        {//OutTrueColor
+        protected void ReadyExtBands2(AbstractWarpDataset srcRaster, string mainFilename, FilePrjSettings prjSettings,
+            Size outSize, string[] options)
+        {
+            //OutTrueColor
             _extSrcBands2 = null;
             if (prjSettings.ExtArgs == null || prjSettings.ExtArgs.Length == 0)
                 return;
             string[] extBandNames = TryParseExtBands("ExtBands2", prjSettings.ExtArgs);
             if (extBandNames == null || extBandNames.Length == 0)
                 return;
-            List<IRasterBand> srcBands = new List<IRasterBand>();
+            List<Band> srcBands = new List<Band>();
 
             foreach (string extBandName in extBandNames)
             {
-
-                IRasterBand[] band = srcRaster.GetBands(extBandName);
+                Band[] band = srcRaster.GetBands(extBandName);
                 if (band != null && band.Length != 0)
                 {
                     srcBands.Add(band[0]);
                 }
             }
+
             if (srcBands.Count == 5 && prjSettings.ExtArgs.Contains("OutTrueColor"))
             {
-                if (prjSettings.OutBandNos.Contains(1) && prjSettings.OutBandNos.Contains(2) && prjSettings.OutBandNos.Contains(3))
+                if (prjSettings.OutBandNos.Contains(1) && prjSettings.OutBandNos.Contains(2) &&
+                    prjSettings.OutBandNos.Contains(3))
                 {
                     List<AbstractWarpDataset> dstRasters = new List<AbstractWarpDataset>();
-                    List<IRasterBand> dstBands = new List<IRasterBand>();
+                    List<Band> dstBands = new List<Band>();
                     string fileName = Path.ChangeExtension(mainFilename, "TrueColor.ldf");
                     AbstractWarpDataset dstRaster = CreateOutFile(fileName, 3, outSize, PixelDataType.Byte, null);
                     dstRasters.Add(dstRaster);
                     for (int i = 0; i < dstRaster.BandCount; i++)
                     {
-                        IRasterBand band = dstRaster.GetRasterBand(i);
+                        Band band = dstRaster.GetRasterBand(i);
                         //band.SetNoDataValue(0);
                         dstBands.Add(band);
                     }
+
                     _extDstRasters2 = dstRasters.ToArray();
                     _extDstBands2 = dstBands.ToArray();
                 }
             }
+
             _extSrcBands2 = srcBands.ToArray();
         }
+
         #endregion
 
 
@@ -549,8 +580,10 @@ namespace PIE.Meteo.FileProject
                         _rasterDataBands[i] = null;
                     }
                 }
+
                 _rasterDataBands = null;
             }
+
             if (_dstAngleRasters != null && _dstAngleRasters.Length != 0)
             {
                 for (int i = 0; i < _dstAngleRasters.Length; i++)
@@ -561,23 +594,28 @@ namespace PIE.Meteo.FileProject
                         _dstAngleRasters[i] = null;
                     }
                 }
+
                 _dstAngleRasters = null;
             }
+
             if (_solarZenithCacheRaster != null)
             {
                 _solarZenithCacheRaster.Dispose();
                 _solarZenithCacheRaster = null;
             }
+
             if (_sensorSenithBand != null)
             {
                 (_sensorSenithBand as IDisposable).Dispose();
                 _sensorSenithBand = null;
             }
+
             if (_sensorSenithRaster != null)
             {
                 _sensorSenithRaster.Dispose();
                 _sensorSenithRaster = null;
             }
+
             if (_extSrcBands != null && _extSrcBands.Length != 0)
             {
                 for (int i = 0; i < _extSrcBands.Length; i++)
@@ -588,8 +626,10 @@ namespace PIE.Meteo.FileProject
                         _extSrcBands[i] = null;
                     }
                 }
+
                 _extSrcBands = null;
             }
+
             if (_extDstBands != null && _extDstBands.Length != 0)
             {
                 for (int i = 0; i < _extDstBands.Length; i++)
@@ -600,8 +640,10 @@ namespace PIE.Meteo.FileProject
                         _extDstBands[i] = null;
                     }
                 }
+
                 _extDstBands = null;
             }
+
             if (_extDstBands2 != null && _extDstBands2.Length != 0)
             {
                 for (int i = 0; i < _extDstBands2.Length; i++)
@@ -612,8 +654,10 @@ namespace PIE.Meteo.FileProject
                         _extDstBands2[i] = null;
                     }
                 }
+
                 _extDstBands = null;
             }
+
             if (_extDstRasters != null && _extDstRasters.Length != 0)
             {
                 for (int i = 0; i < _extDstRasters.Length; i++)
@@ -624,8 +668,10 @@ namespace PIE.Meteo.FileProject
                         _extDstRasters[i] = null;
                     }
                 }
+
                 _extDstRasters = null;
             }
+
             if (_extDstRasters2 != null && _extDstRasters2.Length != 0)
             {
                 for (int i = 0; i < _extDstRasters2.Length; i++)
@@ -636,6 +682,7 @@ namespace PIE.Meteo.FileProject
                         _extDstRasters2[i] = null;
                     }
                 }
+
                 _extDstRasters2 = null;
             }
         }
@@ -679,11 +726,13 @@ namespace PIE.Meteo.FileProject
                     }
                 }
             }
+
             if (!hasContain)
             {
                 block = Block.Empty;
                 return;
             }
+
             //扩大16个像素，防止投影变形造成边缘像素缺失
             int sc = 16;
             xMin = xMin - sc < 0 ? 0 : xMin - sc;
@@ -700,13 +749,15 @@ namespace PIE.Meteo.FileProject
                 if (pYMax != 0)
                     yMax = yMax + (_sacnLineWidth - pYMax);
             }
+
             //防止偏移扫描线偏移后,超过范围
             yMin = yMin < 0 ? 0 : yMin;
             yMax = yMax >= h - 1 ? h - 1 : yMax;
-            block = new Block { xBegin = xMin, xEnd = xMax, yBegin = yMin, yEnd = yMax };
+            block = new Block {xBegin = xMin, xEnd = xMax, yBegin = yMin, yEnd = yMax};
         }
 
-        internal void GetBlockDatas(double[] xs, double[] ys, int w, int h, int offBeginx, int offBeginy, int blockW, int blockH, out double[] blockXs, out double[] blockYs)
+        internal void GetBlockDatas(double[] xs, double[] ys, int w, int h, int offBeginx, int offBeginy, int blockW,
+            int blockH, out double[] blockXs, out double[] blockYs)
         {
             blockXs = new double[blockW * blockH];
             blockYs = new double[blockW * blockH];
@@ -724,17 +775,21 @@ namespace PIE.Meteo.FileProject
         {
             return GetCacheFilename(srcFilename, "solarZenith.ldf");
         }
+
         #region 缓存目录
+
         protected string _catchDir = null;
 
         internal string GetCacheFilename(string srcFilename, string dstFilename)
         {
-            _catchDir = mPathHelper.Instance.LocalTempDir.FullName + "\\.prjChche\\" + Path.GetFileName(srcFilename) + "\\";
+            _catchDir = mPathHelper.Instance.LocalTempDir.FullName + "\\.prjChche\\" + Path.GetFileName(srcFilename) +
+                        "\\";
             string dataFilename = _catchDir + dstFilename;
             if (!Directory.Exists(_catchDir))
                 Directory.CreateDirectory(_catchDir);
             return dataFilename;
         }
+
         internal void TryDeleteCurCatch()
         {
             if (!string.IsNullOrWhiteSpace(_catchDir) && Directory.Exists(_catchDir))
@@ -749,8 +804,8 @@ namespace PIE.Meteo.FileProject
                 }
             }
         }
-        #endregion
 
+        #endregion
 
 
         internal void InvalidLongLat(double[] xs, double[] ys, int width, int height, int left, int right)
@@ -763,6 +818,7 @@ namespace PIE.Meteo.FileProject
                     int index = j * width + m;
                     xs[index] = 999d;
                 }
+
                 for (int n = rightBegin; n < width; n++)
                 {
                     int index = j * width + n;
@@ -773,11 +829,12 @@ namespace PIE.Meteo.FileProject
 
         internal AbstractWarpDataset WriteData(float[] data, string fileName, int width, int height)
         {
-            string[] _options = new string[] { "header_offset=128" };
-            IRasterDataset ds = DatasetFactory.CreateRasterDataset(fileName, width, height, 1, PixelDataType.Float32, "ENVI", null);
+            string[] _options = new string[] {"header_offset=128"};
+            IRasterDataset ds =
+                DatasetFactory.CreateRasterDataset(fileName, width, height, 1, PixelDataType.Float32, "ENVI", null);
             if (ds == null)
                 throw new ArgumentException("请检查输出文件路径");
-            IRasterBand band = ds.GetRasterBand(0);
+            Band band = ds.GetRasterBand(0);
             unsafe
             {
                 fixed (float* ptr = data)
@@ -786,43 +843,54 @@ namespace PIE.Meteo.FileProject
                     band.Write(0, 0, width, height, bufferPtr, width, height, PixelDataType.Float32);
                 }
             }
+
             AbstractWarpDataset cacheWriter = new WarpDataset(ds as IDataset);
             return cacheWriter;
         }
 
         internal AbstractWarpDataset CreateOutFile(string outfilename, int dstBandCount, Size outSize, string[] options)
         {
-
             CheckAndCreateDir(Path.GetDirectoryName(outfilename));
-            string[] _options = new string[] { "header_offset=128" };
+            string[] _options = new string[] {"header_offset=128"};
             IRasterDataset ds = DatasetFactory.CreateRasterDataset(outfilename, outSize.Width, outSize.Height
                 , dstBandCount, PixelDataType.UInt16, "ENVI", null);
             if (ds == null)
                 throw new ArgumentException("请检查输出文件路径");
             var srs = _dstSpatialRef;
-            double[] geoTrans = new double[6] { _dstEnvelope.MinX, Convert.ToDouble(_outResolutionX.ToString("f6")), 0, _dstEnvelope.MaxY, 0, -Convert.ToDouble(_outResolutionY.ToString("f6")) };
+            double[] geoTrans = new double[6]
+            {
+                _dstEnvelope.MinX, Convert.ToDouble(_outResolutionX.ToString("f6")), 0, _dstEnvelope.MaxY, 0,
+                -Convert.ToDouble(_outResolutionY.ToString("f6"))
+            };
             ds.SpatialReference = srs;
             ds.SetGeoTransform(geoTrans);
             if (_NODATA_VALUE.HasValue)
-                Enumerable.Range(0, dstBandCount).ToList().ForEach(t => ds.GetRasterBand(t).SetNoDataValue(_NODATA_VALUE.Value));
+                Enumerable.Range(0, dstBandCount).ToList()
+                    .ForEach(t => ds.GetRasterBand(t).SetNoDataValue(_NODATA_VALUE.Value));
             return new WarpDataset(ds);
         }
 
         internal void UpdateNodataValue(AbstractWarpDataset ds)
         {
             if (_NODATA_VALUE.HasValue)
-                Enumerable.Range(0, ds.BandCount).ToList().ForEach(t => ds.GetRasterBand(t).SetNoDataValue(_NODATA_VALUE.Value));
+                Enumerable.Range(0, ds.BandCount).ToList()
+                    .ForEach(t => ds.GetRasterBand(t).SetNoDataValue(_NODATA_VALUE.Value));
         }
 
-        internal AbstractWarpDataset CreateOutFile(string outfilename, int dstBandCount, Size outSize, PixelDataType dataType, string[] options)
+        internal AbstractWarpDataset CreateOutFile(string outfilename, int dstBandCount, Size outSize,
+            PixelDataType dataType, string[] options)
         {
             CheckAndCreateDir(Path.GetDirectoryName(outfilename));
-            string[] _options = new string[] { "header_offset=128" };
+            string[] _options = new string[] {"header_offset=128"};
             IRasterDataset ds = DatasetFactory.CreateRasterDataset(outfilename, outSize.Width, outSize.Height
-    , dstBandCount, dataType, "ENVI", null);
+                , dstBandCount, dataType, "ENVI", null);
 
             var srs = _dstSpatialRef;
-            double[] geoTrans = new double[6] { _dstEnvelope.MinX,Convert.ToDouble( _outResolutionX.ToString("f6")), 0, _dstEnvelope.MaxY, 0, -Convert.ToDouble( _outResolutionY.ToString("f6")) };
+            double[] geoTrans = new double[6]
+            {
+                _dstEnvelope.MinX, Convert.ToDouble(_outResolutionX.ToString("f6")), 0, _dstEnvelope.MaxY, 0,
+                -Convert.ToDouble(_outResolutionY.ToString("f6"))
+            };
             ds.SpatialReference = srs;
             ds.SetGeoTransform(geoTrans);
             //Enumerable.Range(0, dstBandCount).ToList().ForEach(t => ds.GetRasterBand(t).SetNoDataValue(9999));
@@ -852,12 +920,16 @@ namespace PIE.Meteo.FileProject
                     }
                 }
             }
+
             return null;
         }
 
-        internal void ProjectAngle(Size dstbufferSize, Size srcBufferSize, int blockWidth, int blockHeight, int blockYIndex, int blockXIndex, Block curOrbitblock, UInt16[] dstRowLookUpTable, UInt16[] dstColLookUpTable, Action<int, string> progressCallback)
+        internal void ProjectAngle(Size dstbufferSize, Size srcBufferSize, int blockWidth, int blockHeight,
+            int blockYIndex, int blockXIndex, Block curOrbitblock, UInt16[] dstRowLookUpTable,
+            UInt16[] dstColLookUpTable, Action<int, string> progressCallback)
         {
-            if (_angleBands != null && _angleBands.Length != 0 && _dstAngleRasters != null && _dstAngleRasters.Length != 0)
+            if (_angleBands != null && _angleBands.Length != 0 && _dstAngleRasters != null &&
+                _dstAngleRasters.Length != 0)
             {
                 short[] srcBandData = null;
                 short[] dstBandData = new short[dstbufferSize.Width * dstbufferSize.Height];
@@ -869,38 +941,47 @@ namespace PIE.Meteo.FileProject
                         percent = progress * 100 / progressCount;
                         progressCallback(percent, string.Format("投影角度数据{0}%", percent));
                     }
-                    IRasterBand srcAngleBand = _angleBands[i];
-                    ReadAgileBand(srcAngleBand, curOrbitblock.xBegin, curOrbitblock.yBegin, curOrbitblock.Width, curOrbitblock.Height, srcBufferSize, out srcBandData);
-                    _rasterProjector.Project<short>(srcBandData, srcBufferSize, dstRowLookUpTable, dstColLookUpTable, dstbufferSize, dstBandData, 0, null);
-                    IRasterBand dstAngleBand = _dstAngleBands[i];
+
+                    Band srcAngleBand = _angleBands[i];
+                    ReadAgileBand(srcAngleBand, curOrbitblock.xBegin, curOrbitblock.yBegin, curOrbitblock.Width,
+                        curOrbitblock.Height, srcBufferSize, out srcBandData);
+                    _rasterProjector.Project<short>(srcBandData, srcBufferSize, dstRowLookUpTable, dstColLookUpTable,
+                        dstbufferSize, dstBandData, 0, null);
+                    Band dstAngleBand = _dstAngleBands[i];
                     int blockOffsetY = blockYIndex * blockHeight;
                     int blockOffsetX = blockXIndex * blockWidth;
-                    dstAngleBand.Write(blockOffsetX, blockOffsetY, blockWidth, blockHeight, dstBandData, dstbufferSize.Width, dstbufferSize.Height, PixelDataType.Int16);
+                    dstAngleBand.Write(blockOffsetX, blockOffsetY, blockWidth, blockHeight, dstBandData,
+                        dstbufferSize.Width, dstbufferSize.Height, PixelDataType.Int16);
                 }
             }
         }
 
 
-        internal void ProjectTrueColor(AbstractWarpDataset srcImgRaster, Size dstbufferSize, Size srcBufferSize, int blockWidth, int blockHeight, int blockYNo, int blockXNo, Block curOrbitblock, UInt16[] dstRowLookUpTable, UInt16[] dstColLookUpTable, Action<int, string> progressCallback)
+        internal void ProjectTrueColor(AbstractWarpDataset srcImgRaster, Size dstbufferSize, Size srcBufferSize,
+            int blockWidth, int blockHeight, int blockYNo, int blockXNo, Block curOrbitblock,
+            UInt16[] dstRowLookUpTable, UInt16[] dstColLookUpTable, Action<int, string> progressCallback)
         {
             if (_extDstBands2 == null || _extDstBands2.Length != 3)
             {
                 return;
             }
+
             if (_extSrcBands2 != null && _extSrcBands2.Length == 5 && _prjSettings.ExtArgs.Contains("OutTrueColor"))
             {
-                if (_prjSettings.OutBandNos.Contains(1) && _prjSettings.OutBandNos.Contains(2) && _prjSettings.OutBandNos.Contains(3))
+                if (_prjSettings.OutBandNos.Contains(1) && _prjSettings.OutBandNos.Contains(2) &&
+                    _prjSettings.OutBandNos.Contains(3))
                 {
-
                     if (progressCallback != null)
                     {
                         progress++;
                         percent = progress * 100 / progressCount;
                         progressCallback(percent, string.Format("投影真彩色数据{0}%,请耐心等待", percent));
                     }
+
                     int angle2geoRatioX = _srcLocationSize.Width / _solarZenithCacheRaster.Width;
                     int angle2geoRatioY = _srcLocationSize.Height / _solarZenithCacheRaster.Height;
-                    Size angleBlockSize = new Size(curOrbitblock.Width / angle2geoRatioX, curOrbitblock.Height / angle2geoRatioY);
+                    Size angleBlockSize = new Size(curOrbitblock.Width / angle2geoRatioX,
+                        curOrbitblock.Height / angle2geoRatioY);
                     int xOffset = curOrbitblock.xBegin / angle2geoRatioX;
                     int yOffset = curOrbitblock.yBegin / angle2geoRatioY;
 
@@ -911,7 +992,7 @@ namespace PIE.Meteo.FileProject
                     Size angleBufferSize = new Size(srcBlockImgWidth, srcBlockImgHeight);
 
                     float[] refCalData = new float[3 * 19];
-                    IRasterBand[] rasterBands = srcImgRaster.GetBands("Calibration/VIS_Cal_Coeff");
+                    Band[] rasterBands = srcImgRaster.GetBands("Calibration/VIS_Cal_Coeff");
                     if (rasterBands != null && rasterBands.Length > 0)
                     {
                         rasterBands[0].Read(0, 0, 3, 19, refCalData, 3, 19, PixelDataType.Float32);
@@ -920,77 +1001,93 @@ namespace PIE.Meteo.FileProject
                     {
                         return;
                     }
+
                     //读取三波段数据
                     //读取四种角度数据和DEM
                     //SensorAzimuth;SensorZenith;SolarAzimuth;SolarZenith;DEM
                     ushort[][] srcBuffer = new ushort[3][];
-                    float[] demData = null, sensorAzimuthData = null, sensorZenithData = null, solarAzimuthData = null, solarZenithData = null;
-                    ReadImgBand(out srcBuffer[0], 0, curOrbitblock.xBegin * imgLocationRatioX, curOrbitblock.yBegin * imgLocationRatioY, srcBlockImgWidth, srcBlockImgHeight);
-                    ReadImgBand(out srcBuffer[1], 1, curOrbitblock.xBegin * imgLocationRatioX, curOrbitblock.yBegin * imgLocationRatioY, srcBlockImgWidth, srcBlockImgHeight);
-                    ReadImgBand(out srcBuffer[2], 2, curOrbitblock.xBegin * imgLocationRatioX, curOrbitblock.yBegin * imgLocationRatioY, srcBlockImgWidth, srcBlockImgHeight);
-                    ReadBandForPrj(_extSrcBands2[0], xOffset, yOffset, angleBlockSize.Width, angleBlockSize.Height, angleBufferSize, out sensorAzimuthData);
-                    ReadBandForPrj(_extSrcBands2[1], xOffset, yOffset, angleBlockSize.Width, angleBlockSize.Height, angleBufferSize, out sensorZenithData);
-                    ReadBandForPrj(_extSrcBands2[2], xOffset, yOffset, angleBlockSize.Width, angleBlockSize.Height, angleBufferSize, out solarAzimuthData);
-                    ReadBandForPrj(_extSrcBands2[3], xOffset, yOffset, angleBlockSize.Width, angleBlockSize.Height, angleBufferSize, out solarZenithData);
-                    ReadBandForPrj(_extSrcBands2[4], xOffset, yOffset, angleBlockSize.Width, angleBlockSize.Height, angleBufferSize, out demData);
+                    float[] demData = null,
+                        sensorAzimuthData = null,
+                        sensorZenithData = null,
+                        solarAzimuthData = null,
+                        solarZenithData = null;
+                    ReadImgBand(out srcBuffer[0], 0, curOrbitblock.xBegin * imgLocationRatioX,
+                        curOrbitblock.yBegin * imgLocationRatioY, srcBlockImgWidth, srcBlockImgHeight);
+                    ReadImgBand(out srcBuffer[1], 1, curOrbitblock.xBegin * imgLocationRatioX,
+                        curOrbitblock.yBegin * imgLocationRatioY, srcBlockImgWidth, srcBlockImgHeight);
+                    ReadImgBand(out srcBuffer[2], 2, curOrbitblock.xBegin * imgLocationRatioX,
+                        curOrbitblock.yBegin * imgLocationRatioY, srcBlockImgWidth, srcBlockImgHeight);
+                    ReadBandForPrj(_extSrcBands2[0], xOffset, yOffset, angleBlockSize.Width, angleBlockSize.Height,
+                        angleBufferSize, out sensorAzimuthData);
+                    ReadBandForPrj(_extSrcBands2[1], xOffset, yOffset, angleBlockSize.Width, angleBlockSize.Height,
+                        angleBufferSize, out sensorZenithData);
+                    ReadBandForPrj(_extSrcBands2[2], xOffset, yOffset, angleBlockSize.Width, angleBlockSize.Height,
+                        angleBufferSize, out solarAzimuthData);
+                    ReadBandForPrj(_extSrcBands2[3], xOffset, yOffset, angleBlockSize.Width, angleBlockSize.Height,
+                        angleBufferSize, out solarZenithData);
+                    ReadBandForPrj(_extSrcBands2[4], xOffset, yOffset, angleBlockSize.Width, angleBlockSize.Height,
+                        angleBufferSize, out demData);
                     Parallel.For(0, srcBlockImgWidth * srcBlockImgHeight, i =>
-                     {
-                         float t0 = solarZenithData[i] * 0.01f;//太阳天顶角
-                         float t1 = sensorZenithData[i] * 0.01f;//卫星天顶角
-                         float ph0 = solarAzimuthData[i] * 0.01f;//太阳方位角
-                         float ph1 = sensorAzimuthData[i] * 0.01f;//卫星方位角
+                    {
+                        float t0 = solarZenithData[i] * 0.01f; //太阳天顶角
+                        float t1 = sensorZenithData[i] * 0.01f; //卫星天顶角
+                        float ph0 = solarAzimuthData[i] * 0.01f; //太阳方位角
+                        float ph1 = sensorAzimuthData[i] * 0.01f; //卫星方位角
 
-                         float phi = ph0 - ph1;//相对方位角
-                         float mus = Convert.ToSingle(Math.Cos(t0 * DEG2RAD));
-                         float muv = Convert.ToSingle(Math.Cos(t1 * DEG2RAD));
+                        float phi = ph0 - ph1; //相对方位角
+                        float mus = Convert.ToSingle(Math.Cos(t0 * DEG2RAD));
+                        float muv = Convert.ToSingle(Math.Cos(t1 * DEG2RAD));
 
-                         float[] sphalb = new float[3];
-                         float[] rhoray = new float[3];
-                         float[] TtotraytH2O = new float[3];
-                         float[] tOG = new float[3];
-                         if (t0 > 89.0)
-                         {//dark night 
-                             srcBuffer[0][i] = 0;
-                             srcBuffer[1][i] = 0;
-                             srcBuffer[2][i] = 0;
-                         }
-                         else
-                         {
-                             int atmok = getatmvariables(mus, muv, phi, demData[i], sphalb, rhoray, TtotraytH2O, tOG);
-                             if (atmok == 0)
-                             {
-                                 //0 1 2
-                                 //3 4 5
-                                 //6 7 8
-                                 //refCalData
-                                 for (int iband = 0; iband < 3; ++iband)
-                                 {
-                                     double bval = srcBuffer[iband][i];//dn值
-                                     double refl = bval * bval * refCalData[2 + iband * 3] + bval * refCalData[1 + iband * 3] + refCalData[iband * 3];//反射率
-                                     refl /= 100.0;
-                                     double rtoa = refl / mus;//大气顶层反射率
-                                     if (rtoa < 0) rtoa = 0;
-                                     if (rtoa > 1.1) rtoa = 1.1;
+                        float[] sphalb = new float[3];
+                        float[] rhoray = new float[3];
+                        float[] TtotraytH2O = new float[3];
+                        float[] tOG = new float[3];
+                        if (t0 > 89.0)
+                        {
+                            //dark night 
+                            srcBuffer[0][i] = 0;
+                            srcBuffer[1][i] = 0;
+                            srcBuffer[2][i] = 0;
+                        }
+                        else
+                        {
+                            int atmok = getatmvariables(mus, muv, phi, demData[i], sphalb, rhoray, TtotraytH2O, tOG);
+                            if (atmok == 0)
+                            {
+                                //0 1 2
+                                //3 4 5
+                                //6 7 8
+                                //refCalData
+                                for (int iband = 0; iband < 3; ++iband)
+                                {
+                                    double bval = srcBuffer[iband][i]; //dn值
+                                    double refl = bval * bval * refCalData[2 + iband * 3] +
+                                                  bval * refCalData[1 + iband * 3] + refCalData[iband * 3]; //反射率
+                                    refl /= 100.0;
+                                    double rtoa = refl / mus; //大气顶层反射率
+                                    if (rtoa < 0) rtoa = 0;
+                                    if (rtoa > 1.1) rtoa = 1.1;
 
-                                     //返回大气校正后的反射率
-                                     double acVal = correctedrefl(rtoa, TtotraytH2O[iband], tOG[iband], rhoray[iband], sphalb[iband]);
+                                    //返回大气校正后的反射率
+                                    double acVal = correctedrefl(rtoa, TtotraytH2O[iband], tOG[iband], rhoray[iband],
+                                        sphalb[iband]);
 
-                                     //linear 0-255
-                                     ushort newdn = linear255(acVal);
+                                    //linear 0-255
+                                    ushort newdn = linear255(acVal);
 
-                                     // inlinear 0-255
-                                     newdn = jac255(newdn);
-                                     srcBuffer[iband][i] = newdn;
-                                 }
-                             }
-                             else
-                             {
-                                 srcBuffer[0][i] = 0;
-                                 srcBuffer[1][i] = 0;
-                                 srcBuffer[2][i] = 0;
-                             }
-                         }
-                     });
+                                    // inlinear 0-255
+                                    newdn = jac255(newdn);
+                                    srcBuffer[iband][i] = newdn;
+                                }
+                            }
+                            else
+                            {
+                                srcBuffer[0][i] = 0;
+                                srcBuffer[1][i] = 0;
+                                srcBuffer[2][i] = 0;
+                            }
+                        }
+                    });
                     //for (int i = 0; i < srcBlockImgWidth * srcBlockImgHeight; i++)
                     //{
                     //}
@@ -999,11 +1096,13 @@ namespace PIE.Meteo.FileProject
                     for (int i = 0; i < 3; i++)
                     {
                         ushort[] dstBandData = new ushort[dstbufferSize.Width * dstbufferSize.Height];
-                        _rasterProjector.Project<ushort>(srcBuffer[2 - i], angleBufferSize, dstRowLookUpTable, dstColLookUpTable, dstbufferSize, dstBandData, 0, null);
-                        IRasterBand trueColorBand = _extDstBands2[i];
+                        _rasterProjector.Project<ushort>(srcBuffer[2 - i], angleBufferSize, dstRowLookUpTable,
+                            dstColLookUpTable, dstbufferSize, dstBandData, 0, null);
+                        Band trueColorBand = _extDstBands2[i];
                         int blockOffsetY = blockYNo * blockHeight;
                         int blockOffsetX = blockXNo * blockWidth;
-                        trueColorBand.Write(blockOffsetX, blockOffsetY, blockWidth, blockHeight, dstBandData, dstbufferSize.Width, dstbufferSize.Height, PixelDataType.UInt16);
+                        trueColorBand.Write(blockOffsetX, blockOffsetY, blockWidth, blockHeight, dstBandData,
+                            dstbufferSize.Width, dstbufferSize.Height, PixelDataType.UInt16);
                     }
 
                     //Size angleSize = new Size(srcBlockJdWidth, srcBlockJdHeight);
@@ -1012,37 +1111,54 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        internal void ProjectExtBands(Size dstbufferSize, Size srcBufferSize, int blockWidth, int blockHeight, int blockYNo, int blockXNo, Block curOrbitblock, UInt16[] dstRowLookUpTable, UInt16[] dstColLookUpTable, Action<int, string> progressCallback)
+        internal void ProjectExtBands(Size dstbufferSize, Size srcBufferSize, int blockWidth, int blockHeight,
+            int blockYNo, int blockXNo, Block curOrbitblock, UInt16[] dstRowLookUpTable, UInt16[] dstColLookUpTable,
+            Action<int, string> progressCallback)
         {
-            if (_extSrcBands != null && _extSrcBands.Length != 0 && _extDstRasters != null && _extDstRasters.Length != 0)
+            if (_extSrcBands != null && _extSrcBands.Length != 0 && _extDstRasters != null &&
+                _extDstRasters.Length != 0)
             {
                 for (int i = 0; i < _extSrcBands.Length; i++)
                 {
-                    IRasterBand srcBand = _extSrcBands[i];
-                    IRasterBand dstBand = _extDstBands[i];
+                    Band srcBand = _extSrcBands[i];
+                    Band dstBand = _extDstBands[i];
                     PixelDataType dataType = srcBand.GetRasterDataType();
                     switch (dataType)
                     {
                         case PixelDataType.Byte:
-                            ProjectExtBands<Byte>(srcBand, dstBand, dstbufferSize, srcBufferSize, blockWidth, blockHeight, blockYNo, blockXNo, curOrbitblock, dstRowLookUpTable, dstColLookUpTable, progressCallback);
+                            ProjectExtBands<Byte>(srcBand, dstBand, dstbufferSize, srcBufferSize, blockWidth,
+                                blockHeight, blockYNo, blockXNo, curOrbitblock, dstRowLookUpTable, dstColLookUpTable,
+                                progressCallback);
                             break;
                         case PixelDataType.Float64:
-                            ProjectExtBands<Double>(srcBand, dstBand, dstbufferSize, srcBufferSize, blockWidth, blockHeight, blockYNo, blockXNo, curOrbitblock, dstRowLookUpTable, dstColLookUpTable, progressCallback);
+                            ProjectExtBands<Double>(srcBand, dstBand, dstbufferSize, srcBufferSize, blockWidth,
+                                blockHeight, blockYNo, blockXNo, curOrbitblock, dstRowLookUpTable, dstColLookUpTable,
+                                progressCallback);
                             break;
                         case PixelDataType.Float32:
-                            ProjectExtBands<Single>(srcBand, dstBand, dstbufferSize, srcBufferSize, blockWidth, blockHeight, blockYNo, blockXNo, curOrbitblock, dstRowLookUpTable, dstColLookUpTable, progressCallback);
+                            ProjectExtBands<Single>(srcBand, dstBand, dstbufferSize, srcBufferSize, blockWidth,
+                                blockHeight, blockYNo, blockXNo, curOrbitblock, dstRowLookUpTable, dstColLookUpTable,
+                                progressCallback);
                             break;
                         case PixelDataType.Int16:
-                            ProjectExtBands<short>(srcBand, dstBand, dstbufferSize, srcBufferSize, blockWidth, blockHeight, blockYNo, blockXNo, curOrbitblock, dstRowLookUpTable, dstColLookUpTable, progressCallback);
+                            ProjectExtBands<short>(srcBand, dstBand, dstbufferSize, srcBufferSize, blockWidth,
+                                blockHeight, blockYNo, blockXNo, curOrbitblock, dstRowLookUpTable, dstColLookUpTable,
+                                progressCallback);
                             break;
                         case PixelDataType.Int32:
-                            ProjectExtBands<Int32>(srcBand, dstBand, dstbufferSize, srcBufferSize, blockWidth, blockHeight, blockYNo, blockXNo, curOrbitblock, dstRowLookUpTable, dstColLookUpTable, progressCallback);
+                            ProjectExtBands<Int32>(srcBand, dstBand, dstbufferSize, srcBufferSize, blockWidth,
+                                blockHeight, blockYNo, blockXNo, curOrbitblock, dstRowLookUpTable, dstColLookUpTable,
+                                progressCallback);
                             break;
                         case PixelDataType.UInt16:
-                            ProjectExtBands<UInt16>(srcBand, dstBand, dstbufferSize, srcBufferSize, blockWidth, blockHeight, blockYNo, blockXNo, curOrbitblock, dstRowLookUpTable, dstColLookUpTable, progressCallback);
+                            ProjectExtBands<UInt16>(srcBand, dstBand, dstbufferSize, srcBufferSize, blockWidth,
+                                blockHeight, blockYNo, blockXNo, curOrbitblock, dstRowLookUpTable, dstColLookUpTable,
+                                progressCallback);
                             break;
                         case PixelDataType.UInt32:
-                            ProjectExtBands<UInt32>(srcBand, dstBand, dstbufferSize, srcBufferSize, blockWidth, blockHeight, blockYNo, blockXNo, curOrbitblock, dstRowLookUpTable, dstColLookUpTable, progressCallback);
+                            ProjectExtBands<UInt32>(srcBand, dstBand, dstbufferSize, srcBufferSize, blockWidth,
+                                blockHeight, blockYNo, blockXNo, curOrbitblock, dstRowLookUpTable, dstColLookUpTable,
+                                progressCallback);
                             break;
                         case PixelDataType.Unknown:
                             Console.WriteLine("不支持Unknow类型的波段数据投影");
@@ -1050,6 +1166,7 @@ namespace PIE.Meteo.FileProject
                         default:
                             break;
                     }
+
                     if (progressCallback != null)
                     {
                         progress++;
@@ -1060,19 +1177,24 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        internal void ProjectExtBands<T>(IRasterBand srcBand, IRasterBand dstBand, Size dstbufferSize, Size srcBufferSize, int blockWidth, int blockHeight, int blockYIndex, int blockXIndex, Block curOrbitblock, UInt16[] dstRowLookUpTable, UInt16[] dstColLookUpTable, Action<int, string> progressCallback)
+        internal void ProjectExtBands<T>(Band srcBand, Band dstBand, Size dstbufferSize, Size srcBufferSize,
+            int blockWidth, int blockHeight, int blockYIndex, int blockXIndex, Block curOrbitblock,
+            UInt16[] dstRowLookUpTable, UInt16[] dstColLookUpTable, Action<int, string> progressCallback)
         {
             T[] srcBandData = null;
-            ReadBandForPrj(srcBand, curOrbitblock.xBegin, curOrbitblock.yBegin, curOrbitblock.Width, curOrbitblock.Height, srcBufferSize, out srcBandData);
+            ReadBandForPrj(srcBand, curOrbitblock.xBegin, curOrbitblock.yBegin, curOrbitblock.Width,
+                curOrbitblock.Height, srcBufferSize, out srcBandData);
             T[] dstBandData = new T[dstbufferSize.Width * dstbufferSize.Height];
             GCHandle h = GCHandle.Alloc(dstBandData, GCHandleType.Pinned);
             try
             {
                 IntPtr bufferPtr = h.AddrOfPinnedObject();
-                _rasterProjector.Project<T>(srcBandData, srcBufferSize, dstRowLookUpTable, dstColLookUpTable, dstbufferSize, dstBandData, default(T), null);
+                _rasterProjector.Project<T>(srcBandData, srcBufferSize, dstRowLookUpTable, dstColLookUpTable,
+                    dstbufferSize, dstBandData, default(T), null);
                 int blockOffsetY = blockYIndex * blockHeight;
                 int blockOffsetX = blockXIndex * blockWidth;
-                dstBand.Write(blockOffsetX, blockOffsetY, blockWidth, blockHeight, bufferPtr, dstbufferSize.Width, dstbufferSize.Height, PixelDataType.Int16);
+                dstBand.Write(blockOffsetX, blockOffsetY, blockWidth, blockHeight, bufferPtr, dstbufferSize.Width,
+                    dstbufferSize.Height, PixelDataType.Int16);
             }
             finally
             {
@@ -1080,7 +1202,8 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        protected void ProjectRaster(AbstractWarpDataset srcRaster, AbstractWarpDataset prdWriter, int beginBandIndex, Action<int, string> progressCallback)
+        protected void ProjectRaster(AbstractWarpDataset srcRaster, AbstractWarpDataset prdWriter, int beginBandIndex,
+            Action<int, string> progressCallback)
         {
             switch (srcRaster.DataType)
             {
@@ -1113,7 +1236,8 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        protected void ProjectRaster(AbstractWarpDataset srcRaster, AbstractWarpDataset prdWriter, int beginBandIndex, double invalidValue, Action<int, string> progressCallback)
+        protected void ProjectRaster(AbstractWarpDataset srcRaster, AbstractWarpDataset prdWriter, int beginBandIndex,
+            double invalidValue, Action<int, string> progressCallback)
         {
             switch (srcRaster.DataType)
             {
@@ -1123,37 +1247,39 @@ namespace PIE.Meteo.FileProject
                 //    ProjectRaster<sbyte>(srcRaster, prdWriter, 0, (sbyte)invalidValue, progressCallback);
                 //    break;
                 case PixelDataType.Byte:
-                    ProjectRaster<byte>(srcRaster, prdWriter, 0, (byte)invalidValue, progressCallback);
+                    ProjectRaster<byte>(srcRaster, prdWriter, 0, (byte) invalidValue, progressCallback);
                     break;
                 case PixelDataType.Float64:
-                    ProjectRaster<Double>(srcRaster, prdWriter, 0, (double)invalidValue, progressCallback);
+                    ProjectRaster<Double>(srcRaster, prdWriter, 0, (double) invalidValue, progressCallback);
                     break;
                 case PixelDataType.Float32:
-                    ProjectRaster<float>(srcRaster, prdWriter, 0, (float)invalidValue, progressCallback);
+                    ProjectRaster<float>(srcRaster, prdWriter, 0, (float) invalidValue, progressCallback);
                     break;
                 case PixelDataType.Int16:
-                    ProjectRaster<Int16>(srcRaster, prdWriter, 0, (Int16)invalidValue, progressCallback);
+                    ProjectRaster<Int16>(srcRaster, prdWriter, 0, (Int16) invalidValue, progressCallback);
                     break;
                 case PixelDataType.Int32:
-                    ProjectRaster<Int32>(srcRaster, prdWriter, 0, (Int32)invalidValue, progressCallback);
+                    ProjectRaster<Int32>(srcRaster, prdWriter, 0, (Int32) invalidValue, progressCallback);
                     break;
                 case PixelDataType.UInt16:
-                    ProjectRaster<UInt16>(srcRaster, prdWriter, 0, (UInt16)invalidValue, progressCallback);
+                    ProjectRaster<UInt16>(srcRaster, prdWriter, 0, (UInt16) invalidValue, progressCallback);
                     break;
                 case PixelDataType.UInt32:
-                    ProjectRaster<UInt32>(srcRaster, prdWriter, 0, (UInt32)invalidValue, progressCallback);
+                    ProjectRaster<UInt32>(srcRaster, prdWriter, 0, (UInt32) invalidValue, progressCallback);
                     break;
                 default:
                     throw new Exception("未知数据类型");
             }
         }
 
-        private void ProjectRaster<T>(AbstractWarpDataset srcImgRaster, AbstractWarpDataset prdWriter, int beginBandIndex, Action<int, string> progressCallback)
+        private void ProjectRaster<T>(AbstractWarpDataset srcImgRaster, AbstractWarpDataset prdWriter,
+            int beginBandIndex, Action<int, string> progressCallback)
         {
             ProjectRaster<T>(srcImgRaster, prdWriter, beginBandIndex, default(T), progressCallback);
         }
 
-        private void ProjectRaster<T>(AbstractWarpDataset srcImgRaster, AbstractWarpDataset prdWriter, int beginBandIndex, T invalidValue, Action<int, string> progressCallback)
+        private void ProjectRaster<T>(AbstractWarpDataset srcImgRaster, AbstractWarpDataset prdWriter,
+            int beginBandIndex, T invalidValue, Action<int, string> progressCallback)
         {
             if (srcImgRaster == null || srcImgRaster.Width == 0 || srcImgRaster.Height == 0)
                 throw new Exception("投影数据失败：无法读取源数据,或者源数据高或宽为0。");
@@ -1173,14 +1299,17 @@ namespace PIE.Meteo.FileProject
                 bufferResolutionX = _outResolutionX;
                 bufferResolutionY = _outResolutionY;
             }
+
             int blockXNum;
             int blockYNum;
             int blockWidth;
             int blockHeight;
-            GetBlockNumber(outSize, _srcLocationSize, outXScale, outYScale, out blockXNum, out blockYNum, out blockWidth, out blockHeight);
-            int imgLocationRatioX = (int)Math.Round(srcImgSize.Width * 1.0 / _srcLocationSize.Width);
-            int imgLocationRatioY = (int)Math.Round(srcImgSize.Height * 1.0 / _srcLocationSize.Height);
-            int outBandCount = (_dstBandCount + (_angleBands == null ? 0 : _angleBands.Length) + (_extSrcBands == null ? 0 : _extSrcBands.Length));
+            GetBlockNumber(outSize, _srcLocationSize, outXScale, outYScale, out blockXNum, out blockYNum,
+                out blockWidth, out blockHeight);
+            int imgLocationRatioX = (int) Math.Round(srcImgSize.Width * 1.0 / _srcLocationSize.Width);
+            int imgLocationRatioY = (int) Math.Round(srcImgSize.Height * 1.0 / _srcLocationSize.Height);
+            int outBandCount = (_dstBandCount + (_angleBands == null ? 0 : _angleBands.Length) +
+                                (_extSrcBands == null ? 0 : _extSrcBands.Length));
 
             progressCount = blockYNum * blockXNum * outBandCount;
             progress = 0;
@@ -1206,17 +1335,19 @@ namespace PIE.Meteo.FileProject
                     double blockMaxX = blockMinX + blockWidth * _outResolutionX;
                     double blockMaxY = _dstEnvelope.MaxY - beginY * _outResolutionY;
                     double blockMinY = blockMaxY - blockHeight * _outResolutionY;
-                    PrjEnvelope blockEnvelope = new PrjEnvelope(blockMinX, blockMaxX, blockMinY, blockMaxY, _dstSpatialRef);
+                    PrjEnvelope blockEnvelope =
+                        new PrjEnvelope(blockMinX, blockMaxX, blockMinY, blockMaxY, _dstSpatialRef);
                     bufferSize = blockEnvelope.GetSize(bufferResolutionX, bufferResolutionY);
                     //根据当前输出块,反算出对应的源数据块起始行列，为了减小后面需要读取的源数据大小
-                    Block curOrbitblock = null;//经纬度数据集，计算轨道数据范围偏移
+                    Block curOrbitblock = null; //经纬度数据集，计算轨道数据范围偏移
                     double[] srcBlockXs;
                     double[] srcBlockYs;
-                    if (blockYNum == 1 && blockXNum == 1)                           //没分块的情况
+                    if (blockYNum == 1 && blockXNum == 1) //没分块的情况
                     {
                         curOrbitblock = _orbitBlock.Clone() as Block;
 
-                        if (curOrbitblock.Width == _srcLocationSize.Width && curOrbitblock.Height == _srcLocationSize.Height)
+                        if (curOrbitblock.Width == _srcLocationSize.Width &&
+                            curOrbitblock.Height == _srcLocationSize.Height)
                         {
                             useGlobeBlock = true;
                             srcBlockXs = _xs;
@@ -1224,22 +1355,28 @@ namespace PIE.Meteo.FileProject
                         }
                         else
                         {
-                            GetBlockDatas(_xs, _ys, _srcLocationSize.Width, _srcLocationSize.Height, curOrbitblock.xBegin, curOrbitblock.yBegin, curOrbitblock.Width, curOrbitblock.Height, out srcBlockXs, out srcBlockYs);
+                            GetBlockDatas(_xs, _ys, _srcLocationSize.Width, _srcLocationSize.Height,
+                                curOrbitblock.xBegin, curOrbitblock.yBegin, curOrbitblock.Width, curOrbitblock.Height,
+                                out srcBlockXs, out srcBlockYs);
                         }
                     }
                     else
                     {
-                        GetEnvelope(_xs, _ys, _srcLocationSize.Width, _srcLocationSize.Height, blockEnvelope, out curOrbitblock);
-                        if (curOrbitblock.Width <= 0 || curOrbitblock.Height <= 0)      //当前分块不在图像内部
+                        GetEnvelope(_xs, _ys, _srcLocationSize.Width, _srcLocationSize.Height, blockEnvelope,
+                            out curOrbitblock);
+                        if (curOrbitblock.Width <= 0 || curOrbitblock.Height <= 0) //当前分块不在图像内部
                         {
                             progress += _dstBandCount;
                             continue;
                         }
+
                         if (curOrbitblock.xBegin > _left)
                             curOrbitblock.xBegin = _left;
                         if (curOrbitblock.xEnd > _srcLocationSize.Width - 1 - _right)
                             curOrbitblock.xEnd = _srcLocationSize.Width - 1 - _right;
-                        GetBlockDatas(_xs, _ys, _srcLocationSize.Width, _srcLocationSize.Height, curOrbitblock.xBegin, curOrbitblock.yBegin, curOrbitblock.Width, curOrbitblock.Height, out srcBlockXs, out srcBlockYs);
+                        GetBlockDatas(_xs, _ys, _srcLocationSize.Width, _srcLocationSize.Height, curOrbitblock.xBegin,
+                            curOrbitblock.yBegin, curOrbitblock.Width, curOrbitblock.Height, out srcBlockXs,
+                            out srcBlockYs);
                     }
 
                     int srcBlockJdWidth = curOrbitblock.Width;
@@ -1253,44 +1390,52 @@ namespace PIE.Meteo.FileProject
                     UInt16[] dstRowLookUpTable = new UInt16[bufferSize.Width * bufferSize.Height];
                     UInt16[] dstColLookUpTable = new UInt16[bufferSize.Width * bufferSize.Height];
                     if (imgLocationRatioX == 1)
-                        _rasterProjector.ComputeIndexMapTable(srcBlockXs, srcBlockYs, srcBlockImgSize, bufferSize, blockEnvelope, _maxPrjEnvelope,
+                        _rasterProjector.ComputeIndexMapTable(srcBlockXs, srcBlockYs, srcBlockImgSize, bufferSize,
+                            blockEnvelope, _maxPrjEnvelope,
                             out dstRowLookUpTable, out dstColLookUpTable, null);
                     else
-                        _rasterProjector.ComputeIndexMapTable(srcBlockXs, srcBlockYs, srcBlockLocationSize, srcBlockImgSize, bufferSize, blockEnvelope, //_maxPrjEnvelope,
+                        _rasterProjector.ComputeIndexMapTable(srcBlockXs, srcBlockYs, srcBlockLocationSize,
+                            srcBlockImgSize, bufferSize, blockEnvelope, //_maxPrjEnvelope,
                             out dstRowLookUpTable, out dstColLookUpTable, null, _sacnLineWidth);
                     PixelDataType dataType = srcImgRaster.DataType;
                     //执行投影
-                    for (int i = 0; i < _dstBandCount; i++)  //读取原始通道值，投影到目标区域
+                    for (int i = 0; i < _dstBandCount; i++) //读取原始通道值，投影到目标区域
                     {
                         T[] srcBandData = null;
                         T[] dstBandData = new T[bufferSize.Width * bufferSize.Height];
                         if (progressCallback != null)
                         {
                             progress++;
-                            percent = (int)(progress * 100 / progressCount);
+                            percent = (int) (progress * 100 / progressCount);
                             System.Diagnostics.Debug.WriteLine("投影完成{0}%", percent);
                             MyLog.Log.Print.Info(string.Format("投影完成{0}%", percent));
                             progressCallback(percent, string.Format("投影完成{0}%", percent));
                         }
-                        ReadImgBand(out srcBandData, dataType, i, curOrbitblock.xBegin * imgLocationRatioX, curOrbitblock.yBegin * imgLocationRatioY, srcBlockImgWidth, srcBlockImgHeight);
+
+                        ReadImgBand(out srcBandData, dataType, i, curOrbitblock.xBegin * imgLocationRatioX,
+                            curOrbitblock.yBegin * imgLocationRatioY, srcBlockImgWidth, srcBlockImgHeight);
                         Size angleSize = new Size(srcBlockJdWidth, srcBlockJdHeight);
-                        _rasterProjector.Project<T>(srcBandData, srcBlockImgSize, dstRowLookUpTable, dstColLookUpTable, bufferSize, dstBandData, invalidValue, null);
+                        _rasterProjector.Project<T>(srcBandData, srcBlockImgSize, dstRowLookUpTable, dstColLookUpTable,
+                            bufferSize, dstBandData, invalidValue, null);
                         srcBandData = null;
-                        IRasterBand band = prdWriter.GetRasterBand(i);
+                        Band band = prdWriter.GetRasterBand(i);
                         GCHandle h = GCHandle.Alloc(dstBandData, GCHandleType.Pinned);
                         try
                         {
                             IntPtr bufferPtr = h.AddrOfPinnedObject();
                             int blockOffsetY = blockHeight * blockYIndex;
                             int blockOffsetX = blockWidth * blockXIndex;
-                            band.Write(blockOffsetX, blockOffsetY, blockWidth, blockHeight, bufferPtr, bufferSize.Width, bufferSize.Height, dataType);
+                            band.Write(blockOffsetX, blockOffsetY, blockWidth, blockHeight, bufferPtr, bufferSize.Width,
+                                bufferSize.Height, dataType);
                         }
                         finally
                         {
                             h.Free();
                         }
+
                         dstBandData = null;
                     }
+
                     //ReleaseZenithData();
                     //Size srcBufferSize = new Size(srcBlockImgWidth, srcBlockImgHeight);
                     //ProjectAngle(bufferSize, srcBufferSize, blockWidth, blockHeight, blockYIndex, blockXIndex, curOrbitblock, dstRowLookUpTable, dstColLookUpTable, progressCallback);
@@ -1300,7 +1445,8 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        protected void ProjectToLDF(AbstractWarpDataset srcImgRaster, AbstractWarpDataset dstImgRaster, int beginBandIndex, Action<int, string> progressCallback)
+        protected void ProjectToLDF(AbstractWarpDataset srcImgRaster, AbstractWarpDataset dstImgRaster,
+            int beginBandIndex, Action<int, string> progressCallback)
         {
             MyLog.Log.Print.Info($"投影处理开始：{srcImgRaster.fileName}");
             //progressCallback = progressCallback;
@@ -1322,12 +1468,15 @@ namespace PIE.Meteo.FileProject
                 bufferResolutionX = _outResolutionX;
                 bufferResolutionY = _outResolutionY;
             }
+
             int blockXCount, blockYCount, blockWidth, blockHeight;
             //后面投影需要的内存：（double）经纬度数据、（int16）原始通道数据、（int16）投影后通道、（int16）其他（如角度数据等）
-            GetBlockNumber(outSize, _srcLocationSize, outXScale, outYScale, out blockXCount, out blockYCount, out blockWidth, out blockHeight);
+            GetBlockNumber(outSize, _srcLocationSize, outXScale, outYScale, out blockXCount, out blockYCount,
+                out blockWidth, out blockHeight);
             int imgLocationRatioX = srcImgSize.Width / _srcLocationSize.Width;
             int imgLocationRatioY = srcImgSize.Height / _srcLocationSize.Height;
-            int outBandCount = _dstBandCount + (_angleBands == null ? 0 : _angleBands.Length) + (_extSrcBands == null ? 0 : _extSrcBands.Length);
+            int outBandCount = _dstBandCount + (_angleBands == null ? 0 : _angleBands.Length) +
+                               (_extSrcBands == null ? 0 : _extSrcBands.Length);
             if (_prjSettings.ExtArgs != null)
                 outBandCount += _prjSettings.ExtArgs.Contains("OutTrueColor") ? 1 : 0;
             progressCount = blockYCount * blockXCount * outBandCount;
@@ -1335,6 +1484,7 @@ namespace PIE.Meteo.FileProject
             percent = 0;
 
             #region 在需要分块的情况下，采样经纬度数据集
+
             int bC = 1;
             int tmpWidth = 0;
             int tmpHeight = 0;
@@ -1342,22 +1492,26 @@ namespace PIE.Meteo.FileProject
             double[] tmpys = null;
             if (blockYCount * blockXCount > 1 && (_xs == null || _ys == null))
             {
-                bC = (int)Math.Sqrt(blockXCount * blockYCount) + 1;
+                bC = (int) Math.Sqrt(blockXCount * blockYCount) + 1;
                 tmpWidth = _srcLocationSize.Width / bC;
                 tmpHeight = _srcLocationSize.Height / bC;
                 tmpxs = ReadSampleDatas(_longitudeBand, 0, 0, tmpWidth, tmpHeight);
                 tmpys = ReadSampleDatas(_latitudeBand, 0, 0, tmpWidth, tmpHeight);
                 TryApplyGeoInterceptSlope(tmpxs, tmpys);
-                _rasterProjector.Transform(SpatialReferenceFactory.CreateSpatialReference(4326), tmpxs, tmpys, _dstSpatialRef);
+                _rasterProjector.Transform(SpatialReferenceFactory.CreateSpatialReference(4326), tmpxs, tmpys,
+                    _dstSpatialRef);
             }
+
             #endregion
 
             for (int blockXNo = 0; blockXNo < blockXCount; blockXNo++)
             {
                 for (int blockYNo = 0; blockYNo < blockYCount; blockYNo++)
                 {
-                    System.Diagnostics.Debug.WriteLine("分块投影处理，共{0}块,开始处理{1}块", blockXCount * blockYCount, blockYNo + blockXNo * blockYCount);
-                    MyLog.Log.Print.Info(string.Format("分块投影处理，共{0}块,开始处理{1}块", blockXCount * blockYCount, blockYNo + blockXNo * blockYCount));
+                    System.Diagnostics.Debug.WriteLine("分块投影处理，共{0}块,开始处理{1}块", blockXCount * blockYCount,
+                        blockYNo + blockXNo * blockYCount);
+                    MyLog.Log.Print.Info(string.Format("分块投影处理，共{0}块,开始处理{1}块", blockXCount * blockYCount,
+                        blockYNo + blockXNo * blockYCount));
                     //起始偏移，结束偏移
                     int beginX = blockWidth * blockXNo;
                     int beginY = blockHeight * blockYNo;
@@ -1373,7 +1527,8 @@ namespace PIE.Meteo.FileProject
                     double blockMaxX = blockMinX + blockWidth * _outResolutionX;
                     double blockMaxY = _dstEnvelope.MaxY - beginY * _outResolutionY;
                     double blockMinY = blockMaxY - blockHeight * _outResolutionY;
-                    PrjEnvelope blockEnvelope = new PrjEnvelope(blockMinX, blockMaxX, blockMinY, blockMaxY, _dstSpatialRef);
+                    PrjEnvelope blockEnvelope =
+                        new PrjEnvelope(blockMinX, blockMaxX, blockMinY, blockMaxY, _dstSpatialRef);
                     Size curBufferSize = blockEnvelope.GetSize(bufferResolutionX, bufferResolutionY);
                     //根据当前输出块,反算出对应的源数据块(轨道)起始行列，为了减小后面需要读取的源数据大小
                     Block curOrbitblock = null;
@@ -1381,15 +1536,17 @@ namespace PIE.Meteo.FileProject
                     double[] srcBlockXs;
                     double[] srcBlockYs;
 
-                    if (blockYCount == 1 && blockXCount == 1)                           //没分块的情况
+                    if (blockYCount == 1 && blockXCount == 1) //没分块的情况
                     {
                         #region 没分块的情况
+
                         curOrbitblock = _orbitBlock.Clone() as Block;
                         if (curOrbitblock.xBegin < _left)
                             curOrbitblock.xBegin = _left;
                         if (curOrbitblock.xEnd > _srcLocationSize.Width - 1 - _right)
                             curOrbitblock.xEnd = _srcLocationSize.Width - 1 - _right;
-                        if (curOrbitblock.Width == _srcLocationSize.Width && curOrbitblock.Height == _srcLocationSize.Height)
+                        if (curOrbitblock.Width == _srcLocationSize.Width &&
+                            curOrbitblock.Height == _srcLocationSize.Height)
                         {
                             if (_xs != null && _ys != null)
                             {
@@ -1398,35 +1555,46 @@ namespace PIE.Meteo.FileProject
                             }
                             else
                             {
-                                srcBlockXs = ReadBlockDatas(_longitudeBand, curOrbitblock.xBegin, curOrbitblock.yBegin, curOrbitblock.Width, curOrbitblock.Height);
-                                srcBlockYs = ReadBlockDatas(_latitudeBand, curOrbitblock.xBegin, curOrbitblock.yBegin, curOrbitblock.Width, curOrbitblock.Height);
+                                srcBlockXs = ReadBlockDatas(_longitudeBand, curOrbitblock.xBegin, curOrbitblock.yBegin,
+                                    curOrbitblock.Width, curOrbitblock.Height);
+                                srcBlockYs = ReadBlockDatas(_latitudeBand, curOrbitblock.xBegin, curOrbitblock.yBegin,
+                                    curOrbitblock.Width, curOrbitblock.Height);
 
                                 TryApplyGeoInterceptSlope(srcBlockXs, srcBlockYs);
-                                _rasterProjector.Transform(SpatialReferenceFactory.CreateSpatialReference(4326), srcBlockXs, srcBlockYs, _dstSpatialRef);
+                                _rasterProjector.Transform(SpatialReferenceFactory.CreateSpatialReference(4326),
+                                    srcBlockXs, srcBlockYs, _dstSpatialRef);
                             }
                         }
                         else
                         {
                             if (_xs != null && _ys != null)
                             {
-                                GetBlockDatas(_xs, _ys, _srcLocationSize.Width, _srcLocationSize.Height, curOrbitblock.xBegin, curOrbitblock.yBegin, curOrbitblock.Width, curOrbitblock.Height, out srcBlockXs, out srcBlockYs);
+                                GetBlockDatas(_xs, _ys, _srcLocationSize.Width, _srcLocationSize.Height,
+                                    curOrbitblock.xBegin, curOrbitblock.yBegin, curOrbitblock.Width,
+                                    curOrbitblock.Height, out srcBlockXs, out srcBlockYs);
                             }
                             else
                             {
-                                srcBlockXs = ReadBlockDatas(_longitudeBand, curOrbitblock.xBegin, curOrbitblock.yBegin, curOrbitblock.Width, curOrbitblock.Height);
-                                srcBlockYs = ReadBlockDatas(_latitudeBand, curOrbitblock.xBegin, curOrbitblock.yBegin, curOrbitblock.Width, curOrbitblock.Height);
+                                srcBlockXs = ReadBlockDatas(_longitudeBand, curOrbitblock.xBegin, curOrbitblock.yBegin,
+                                    curOrbitblock.Width, curOrbitblock.Height);
+                                srcBlockYs = ReadBlockDatas(_latitudeBand, curOrbitblock.xBegin, curOrbitblock.yBegin,
+                                    curOrbitblock.Width, curOrbitblock.Height);
                                 TryApplyGeoInterceptSlope(srcBlockXs, srcBlockYs);
-                                _rasterProjector.Transform(SpatialReferenceFactory.CreateSpatialReference(4326), srcBlockXs, srcBlockYs, _dstSpatialRef);
+                                _rasterProjector.Transform(SpatialReferenceFactory.CreateSpatialReference(4326),
+                                    srcBlockXs, srcBlockYs, _dstSpatialRef);
                             }
                         }
+
                         #endregion
                     }
                     else
                     {
                         #region 分块
+
                         if (_xs != null && _ys != null)
                         {
-                            GetEnvelope(_xs, _ys, _srcLocationSize.Width, _srcLocationSize.Height, blockEnvelope, out curOrbitblock);
+                            GetEnvelope(_xs, _ys, _srcLocationSize.Width, _srcLocationSize.Height, blockEnvelope,
+                                out curOrbitblock);
                         }
                         else
                         {
@@ -1434,28 +1602,37 @@ namespace PIE.Meteo.FileProject
                             GetEnvelope(tmpxs, tmpys, tmpWidth, tmpHeight, blockEnvelope, out curOrbitblock);
                             curOrbitblock = curOrbitblock.Zoom(bC, bC);
                         }
-                        if (curOrbitblock.Width <= 0 || curOrbitblock.Height <= 0)      //当前分块不在图像内部
+
+                        if (curOrbitblock.Width <= 0 || curOrbitblock.Height <= 0) //当前分块不在图像内部
                         {
                             progress += _dstBandCount;
                             continue;
                         }
+
                         if (curOrbitblock.xBegin < _left)
                             curOrbitblock.xBegin = _left;
                         if (curOrbitblock.xEnd > _srcLocationSize.Width - 1 - _right)
                             curOrbitblock.xEnd = _srcLocationSize.Width - 1 - _right;
                         if (_xs != null && _ys != null)
                         {
-                            GetBlockDatas(_xs, _ys, _srcLocationSize.Width, _srcLocationSize.Height, curOrbitblock.xBegin, curOrbitblock.yBegin, curOrbitblock.Width, curOrbitblock.Height, out srcBlockXs, out srcBlockYs);
+                            GetBlockDatas(_xs, _ys, _srcLocationSize.Width, _srcLocationSize.Height,
+                                curOrbitblock.xBegin, curOrbitblock.yBegin, curOrbitblock.Width, curOrbitblock.Height,
+                                out srcBlockXs, out srcBlockYs);
                         }
                         else
                         {
-                            srcBlockXs = ReadBlockDatas(_longitudeBand, curOrbitblock.xBegin, curOrbitblock.yBegin, curOrbitblock.Width, curOrbitblock.Height);
-                            srcBlockYs = ReadBlockDatas(_latitudeBand, curOrbitblock.xBegin, curOrbitblock.yBegin, curOrbitblock.Width, curOrbitblock.Height);
+                            srcBlockXs = ReadBlockDatas(_longitudeBand, curOrbitblock.xBegin, curOrbitblock.yBegin,
+                                curOrbitblock.Width, curOrbitblock.Height);
+                            srcBlockYs = ReadBlockDatas(_latitudeBand, curOrbitblock.xBegin, curOrbitblock.yBegin,
+                                curOrbitblock.Width, curOrbitblock.Height);
                             TryApplyGeoInterceptSlope(srcBlockXs, srcBlockYs);
-                            _rasterProjector.Transform(SpatialReferenceFactory.CreateSpatialReference(4326), srcBlockXs, srcBlockYs, _dstSpatialRef);
+                            _rasterProjector.Transform(SpatialReferenceFactory.CreateSpatialReference(4326), srcBlockXs,
+                                srcBlockYs, _dstSpatialRef);
                         }
+
                         #endregion
                     }
+
                     int srcBlockJdWidth = curOrbitblock.Width;
                     int srcBlockJdHeight = curOrbitblock.Height;
                     int srcBlockImgWidth = curOrbitblock.Width * imgLocationRatioX;
@@ -1471,21 +1648,26 @@ namespace PIE.Meteo.FileProject
                     if (_isRadRef && _isSolarZenith)
                     {
                         #region 辐射定标 太阳高度角
-                        if (_solarZenithCacheRaster != null)    //太阳天顶角数据
+
+                        if (_solarZenithCacheRaster != null) //太阳天顶角数据
                         {
                             int angle2geoRatioX = _srcLocationSize.Width / _solarZenithCacheRaster.Width;
                             int angle2geoRatioY = _srcLocationSize.Height / _solarZenithCacheRaster.Height;
-                            srcAngleBlockSize = new Size(curOrbitblock.Width / angle2geoRatioX, curOrbitblock.Height / angle2geoRatioY);
+                            srcAngleBlockSize = new Size(curOrbitblock.Width / angle2geoRatioX,
+                                curOrbitblock.Height / angle2geoRatioY);
                             int xOffset = curOrbitblock.xBegin / angle2geoRatioX;
                             int yOffset = curOrbitblock.yBegin / angle2geoRatioY;
-                            ReadBandData(out solarZenithData, _solarZenithCacheRaster, 0, xOffset, yOffset, srcAngleBlockSize.Width, srcAngleBlockSize.Height);
+                            ReadBandData(out solarZenithData, _solarZenithCacheRaster, 0, xOffset, yOffset,
+                                srcAngleBlockSize.Width, srcAngleBlockSize.Height);
                             //亮温临边变暗订正,读取卫星天顶角数据。
                             if (_isSensorZenith)
-                                ReadBandData(out sensorZenithData, _sensorSenithBand, xOffset, yOffset, srcAngleBlockSize.Width, srcAngleBlockSize.Height);
+                                ReadBandData(out sensorZenithData, _sensorSenithBand, xOffset, yOffset,
+                                    srcAngleBlockSize.Width, srcAngleBlockSize.Height);
                             //TryReadZenithData(curOrbitblock.xBegin / angle2geoRatioX, curOrbitblock.yBegin / angle2geoRatioY, srcAngleBlockSize.Width, srcAngleBlockSize.Height);
                         }
                         else
-                            srcAngleBlockSize = new Size(srcBlockJdWidth, srcBlockJdHeight);//认为角度和经纬度数据一致
+                            srcAngleBlockSize = new Size(srcBlockJdWidth, srcBlockJdHeight); //认为角度和经纬度数据一致
+
                         #endregion
                     }
 
@@ -1498,15 +1680,20 @@ namespace PIE.Meteo.FileProject
 
                         int angle2geoRatioX = _srcLocationSize.Width / _solarZenithCacheRaster.Width;
                         int angle2geoRatioY = _srcLocationSize.Height / _solarZenithCacheRaster.Height;
-                        Size angleBlockSize = new Size(curOrbitblock.Width / angle2geoRatioX, curOrbitblock.Height / angle2geoRatioY);
+                        Size angleBlockSize = new Size(curOrbitblock.Width / angle2geoRatioX,
+                            curOrbitblock.Height / angle2geoRatioY);
                         int xOffset = curOrbitblock.xBegin / angle2geoRatioX;
                         int yOffset = curOrbitblock.yBegin / angle2geoRatioY;
                         if (_extSrcBands2 != null && _extSrcBands2.Length == 5)
                         {
-                            ReadBandForPrj(_extSrcBands2[4], xOffset, yOffset, angleBlockSize.Width, angleBlockSize.Height, curOrbitblock.Size, out demData);
-                            ReadBandForPrj(_extSrcBands2[0], xOffset, yOffset, angleBlockSize.Width, angleBlockSize.Height, curOrbitblock.Size, out sAzimuthData);
-                            ReadBandForPrj(_extSrcBands2[1], xOffset, yOffset, angleBlockSize.Width, angleBlockSize.Height, curOrbitblock.Size, out sensorZenithData);
+                            ReadBandForPrj(_extSrcBands2[4], xOffset, yOffset, angleBlockSize.Width,
+                                angleBlockSize.Height, curOrbitblock.Size, out demData);
+                            ReadBandForPrj(_extSrcBands2[0], xOffset, yOffset, angleBlockSize.Width,
+                                angleBlockSize.Height, curOrbitblock.Size, out sAzimuthData);
+                            ReadBandForPrj(_extSrcBands2[1], xOffset, yOffset, angleBlockSize.Width,
+                                angleBlockSize.Height, curOrbitblock.Size, out sensorZenithData);
                         }
+
                         TerrainCorrection(srcBlockXs, srcBlockYs, sAzimuthData, sensorZenithData, demData);
                     }
 
@@ -1514,36 +1701,42 @@ namespace PIE.Meteo.FileProject
                     UInt16[] dstRowLookUpTable = null;
                     UInt16[] dstColLookUpTable = null;
                     if (imgLocationRatioX == 1)
-                        _rasterProjector.ComputeIndexMapTable(srcBlockXs, srcBlockYs, srcBlockImgSize, curBufferSize, blockEnvelope, _maxPrjEnvelope,out dstRowLookUpTable, out dstColLookUpTable, null);
+                        _rasterProjector.ComputeIndexMapTable(srcBlockXs, srcBlockYs, srcBlockImgSize, curBufferSize,
+                            blockEnvelope, _maxPrjEnvelope, out dstRowLookUpTable, out dstColLookUpTable, null);
                     else
-                        _rasterProjector.ComputeIndexMapTable(srcBlockXs, srcBlockYs, srcBlockLocationSize, srcBlockImgSize, curBufferSize, blockEnvelope, //_maxPrjEnvelope,
+                        _rasterProjector.ComputeIndexMapTable(srcBlockXs, srcBlockYs, srcBlockLocationSize,
+                            srcBlockImgSize, curBufferSize, blockEnvelope, //_maxPrjEnvelope,
                             out dstRowLookUpTable, out dstColLookUpTable, null, _sacnLineWidth);
 
                     //执行投影
                     UInt16[] srcBandData = null;
                     UInt16[] dstBandData = new UInt16[curBufferSize.Width * curBufferSize.Height];
 
-                    for (int i = 0; i < _dstBandCount; i++)  //读取原始通道值，投影到目标区域
+                    for (int i = 0; i < _dstBandCount; i++) //读取原始通道值，投影到目标区域
                     {
                         if (progressCallback != null)
                         {
                             progress++;
-                            percent = (int)(progress * 100 / progressCount);
+                            percent = (int) (progress * 100 / progressCount);
                             progressCallback(percent, string.Format("投影完成{0}%", percent));
                         }
-                        ReadImgBand(out srcBandData, i, curOrbitblock.xBegin * imgLocationRatioX, curOrbitblock.yBegin * imgLocationRatioY, srcBlockImgSize.Width, srcBlockImgSize.Height);
+
+                        ReadImgBand(out srcBandData, i, curOrbitblock.xBegin * imgLocationRatioX,
+                            curOrbitblock.yBegin * imgLocationRatioY, srcBlockImgSize.Width, srcBlockImgSize.Height);
                         //Size angleSize = new Size(srcBlockJdWidth, srcBlockJdHeight);
                         DoRadiation(srcImgRaster, i, srcBandData, solarZenithData, srcBlockImgSize, srcAngleBlockSize);
                         ushort nodata = 0;
                         if (_NODATA_VALUE.HasValue)
-                            nodata = (ushort)_NODATA_VALUE;
-                        _rasterProjector.Project<UInt16>(srcBandData, srcBlockImgSize, dstRowLookUpTable, dstColLookUpTable, curBufferSize, dstBandData, nodata, null);
+                            nodata = (ushort) _NODATA_VALUE;
+                        _rasterProjector.Project<UInt16>(srcBandData, srcBlockImgSize, dstRowLookUpTable,
+                            dstColLookUpTable, curBufferSize, dstBandData, nodata, null);
                         srcBandData = null;
-                        IRasterBand band = dstImgRaster.GetRasterBand(i + beginBandIndex);
+                        Band band = dstImgRaster.GetRasterBand(i + beginBandIndex);
 
                         int blockOffsetY = blockHeight * blockYNo;
                         int blockOffsetX = blockWidth * blockXNo;
-                        band.Write(blockOffsetX, blockOffsetY, blockWidth, blockHeight, dstBandData, curBufferSize.Width, curBufferSize.Height, PixelDataType.UInt16);
+                        band.Write(blockOffsetX, blockOffsetY, blockWidth, blockHeight, dstBandData,
+                            curBufferSize.Width, curBufferSize.Height, PixelDataType.UInt16);
 
                         (band as IDisposable).Dispose();
                     }
@@ -1555,11 +1748,14 @@ namespace PIE.Meteo.FileProject
 
                     ReleaseZenithData();
                     //投影角度
-                    ProjectAngle(curBufferSize, srcBlockImgSize, blockWidth, blockHeight, blockYNo, blockXNo, curOrbitblock, dstRowLookUpTable, dstColLookUpTable, progressCallback);
+                    ProjectAngle(curBufferSize, srcBlockImgSize, blockWidth, blockHeight, blockYNo, blockXNo,
+                        curOrbitblock, dstRowLookUpTable, dstColLookUpTable, progressCallback);
                     //投影扩展波段
-                    ProjectExtBands(curBufferSize, srcBlockImgSize, blockWidth, blockHeight, blockYNo, blockXNo, curOrbitblock, dstRowLookUpTable, dstColLookUpTable, progressCallback);
+                    ProjectExtBands(curBufferSize, srcBlockImgSize, blockWidth, blockHeight, blockYNo, blockXNo,
+                        curOrbitblock, dstRowLookUpTable, dstColLookUpTable, progressCallback);
                     //真彩色投影
-                    ProjectTrueColor(srcImgRaster, curBufferSize, srcBlockImgSize, blockWidth, blockHeight, blockYNo, blockXNo, curOrbitblock, dstRowLookUpTable, dstColLookUpTable, progressCallback);
+                    ProjectTrueColor(srcImgRaster, curBufferSize, srcBlockImgSize, blockWidth, blockHeight, blockYNo,
+                        blockXNo, curOrbitblock, dstRowLookUpTable, dstColLookUpTable, progressCallback);
                     dstColLookUpTable = new ushort[1];
                     dstRowLookUpTable = new ushort[1];
                     dstRowLookUpTable = null;
@@ -1569,19 +1765,24 @@ namespace PIE.Meteo.FileProject
 
                     GC.Collect();
                     GC.WaitForFullGCComplete();
-                    System.Diagnostics.Debug.WriteLine("分块投影处理，共{0}块,处理完成{1}块", blockXCount * blockYCount, blockYNo + blockXNo * blockYCount);
-                    MyLog.Log.Print.Info(string.Format("分块投影处理，共{0}块,处理完成{1}块", blockXCount * blockYCount, blockYNo + blockXNo * blockYCount));
+                    System.Diagnostics.Debug.WriteLine("分块投影处理，共{0}块,处理完成{1}块", blockXCount * blockYCount,
+                        blockYNo + blockXNo * blockYCount);
+                    MyLog.Log.Print.Info(string.Format("分块投影处理，共{0}块,处理完成{1}块", blockXCount * blockYCount,
+                        blockYNo + blockXNo * blockYCount));
                 }
             }
+
             MyLog.Log.Print.Info($"投影处理结束：{srcImgRaster.fileName}");
         }
 
         #region 地形校正
+
         const double D2G = 3.1415926 / 180.0;
         const double er1 = 6378137;
         const double er2 = 6356752;
         const double er1s = er1 * er1;
         const double er2s = er2 * er2;
+
         double computeEarthRadius(double lat)
         {
             double cosb = Math.Cos(lat * D2G);
@@ -1594,16 +1795,20 @@ namespace PIE.Meteo.FileProject
             double R = Math.Sqrt(R2);
             return R;
         }
-        private void TerrainCorrection(double[] srcBlockXs, double[] srcBlockYs, float[] sAzimuthData, float[] sensorZenithData, float[] demData)
+
+        private void TerrainCorrection(double[] srcBlockXs, double[] srcBlockYs, float[] sAzimuthData,
+            float[] sensorZenithData, float[] demData)
         {
-            if (srcBlockXs == null || srcBlockYs == null || sAzimuthData == null || sensorZenithData == null || demData == null)
+            if (srcBlockXs == null || srcBlockYs == null || sAzimuthData == null || sensorZenithData == null ||
+                demData == null)
             {
                 throw new ArgumentNullException("地形校正输入参数为空");
             }
+
             Parallel.For(0, srcBlockXs.Length, (index) =>
             {
                 if (demData[index] < 0) demData[index] = 0;
-                double earthR = computeEarthRadius(srcBlockYs[index]);//latval是纬度
+                double earthR = computeEarthRadius(srcBlockYs[index]); //latval是纬度
                 double latCircleR = Math.Cos(srcBlockYs[index] * D2G) * earthR;
 
                 double tanViewZenith = Math.Tan(D2G * sensorZenithData[index] * 0.01);
@@ -1619,6 +1824,7 @@ namespace PIE.Meteo.FileProject
                 srcBlockYs[index] += dlat;
             });
         }
+
         #endregion
 
         protected void TryApplyGeoInterceptSlope(double[] xs, double[] ys)
@@ -1629,13 +1835,13 @@ namespace PIE.Meteo.FileProject
                 {
                     xs[i] = xs[i] * _geoSlope + _geoIntercept;
                 }
+
                 for (int i = 0; i < ys.Length; i++)
                 {
                     ys[i] = ys[i] * _geoSlope + _geoIntercept;
                 }
             }
         }
-
 
 
         protected virtual void TryReadZenithData(int xOffset, int yOffset, int blockWidth, int blockHeight)
@@ -1659,12 +1865,14 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        private int[] GetAoiIndex(Size bufferSize, PrjEnvelope blockEnvelope, ISpatialReference dstSpatialRef)
-        {//
+        private int[] GetAoiIndex(Size bufferSize, PrjEnvelope blockEnvelope, SpatialReference dstSpatialRef)
+        {
+            //
             return null;
         }
 
-        protected abstract void DoRadiation(AbstractWarpDataset srcImgRaster, int i, ushort[] srcBandData, float[] solarZenithData, Size srcBlockImgSize, Size angleSize);
+        protected abstract void DoRadiation(AbstractWarpDataset srcImgRaster, int i, ushort[] srcBandData,
+            float[] solarZenithData, Size srcBlockImgSize, Size angleSize);
 
         /// <summary>
         /// 修改分块判断综合输出数据尺寸和经纬度数据尺寸
@@ -1677,12 +1885,15 @@ namespace PIE.Meteo.FileProject
         /// <param name="blockYNum"></param>
         /// <param name="blockWidth"></param>
         /// <param name="blockHeight"></param>
-        protected virtual void GetBlockNumber(Size size, Size geoSize, float xScale, float yScale, out int blockXNum, out int blockYNum, out int blockWidth, out int blockHeight)
+        protected virtual void GetBlockNumber(Size size, Size geoSize, float xScale, float yScale, out int blockXNum,
+            out int blockYNum, out int blockWidth, out int blockHeight)
         {
             if (size.Width <= 0)
-                throw new Exception("指定的投影区域的宽度过窄:" + _dstEnvelope.Width + ",无法满足" + _outResolutionX + "分辨率输出的最小要求！宽度" + size.Width + "<1");
+                throw new Exception("指定的投影区域的宽度过窄:" + _dstEnvelope.Width + ",无法满足" + _outResolutionX + "分辨率输出的最小要求！宽度" +
+                                    size.Width + "<1");
             if (size.Height <= 0)
-                throw new Exception("指定的投影区域的高度度过窄:" + _dstEnvelope.Height + ",无法满足" + _outResolutionY + "分辨率输出的最小要求！高度" + size.Height + "<1");
+                throw new Exception("指定的投影区域的高度度过窄:" + _dstEnvelope.Height + ",无法满足" + _outResolutionY +
+                                    "分辨率输出的最小要求！高度" + size.Height + "<1");
             int w = size.Width;
             int h = size.Height;
             blockXNum = 1;
@@ -1696,7 +1907,8 @@ namespace PIE.Meteo.FileProject
                 MaxX = 5000;
                 MaxY = 5000;
             }
-            ulong mem = MemoryHelper.GetAvalidPhyMemory();      //系统剩余内存
+
+            ulong mem = MemoryHelper.GetAvalidPhyMemory(); //系统剩余内存
             //int byteArrayCount = (2 + 2 + 2 + 2 * 2 + 2 * 8) / 2;
             //原数据一个int16，目标数据一个int16，用于订正的天顶角一个int16，查找表2*UInt16(可能还需要两个经纬度数据集)，不过如果用到，应该在之前已经申请
             //ulong maxByteArray = MemoryHelper.GetMaxArrayLength<UInt16>(byteArrayCount);
@@ -1704,24 +1916,24 @@ namespace PIE.Meteo.FileProject
             //double canUsemem = mem > maxByteArray ? maxByteArray : mem;
             double canUsemem = mem;
 
-            MaxY = (int)(canUsemem / w * xScale * yScale);//有些geoSize比较大，比如MERSI250M
+            MaxY = (int) (canUsemem / w * xScale * yScale); //有些geoSize比较大，比如MERSI250M
 
             if (size.Width * size.Height <= MaxX * MaxY)
                 return;
             while (blockWidth > MaxX)
             {
                 blockXNum++;
-                blockWidth = (int)Math.Floor((double)w / blockXNum);
+                blockWidth = (int) Math.Floor((double) w / blockXNum);
             }
+
             while (blockHeight > MaxY)
             {
                 blockYNum++;
-                blockHeight = (int)Math.Floor((double)h / blockYNum);
+                blockHeight = (int) Math.Floor((double) h / blockYNum);
             }
 
             System.Diagnostics.Debug.WriteLine("blockXNum,blockXNum:{0},{1}", blockXNum, blockYNum);
             MyLog.Log.Print.Info(string.Format("blockXNum,blockXNum:{0},{1}", blockXNum, blockYNum));
-
         }
 
         protected string BandNameString(int[] outBandNos)
@@ -1771,7 +1983,8 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        public virtual bool HasVaildEnvelope(AbstractWarpDataset geoRaster, PrjEnvelope validEnv, ISpatialReference dstSpatialRef)
+        public virtual bool HasVaildEnvelope(AbstractWarpDataset geoRaster, PrjEnvelope validEnv,
+            SpatialReference dstSpatialRef)
         {
             if (geoRaster == null)
                 throw new ArgumentNullException("locationRaster", "参数[经纬度数据文件]不能为空");
@@ -1784,14 +1997,15 @@ namespace PIE.Meteo.FileProject
             double[] ys = null;
             Size geoSize;
             Size maxGeoSize = new Size(1024, 1024);
-            IRasterBand longitudeBand, latitudeBand;
-            ReadLocations(geoRaster, out longitudeBand, out latitudeBand);//GetGeoBand
+            Band longitudeBand, latitudeBand;
+            ReadLocations(geoRaster, out longitudeBand, out latitudeBand); //GetGeoBand
             Size srcLocationSize = new Size(longitudeBand.GetXSize(), longitudeBand.GetYSize());
             ReadLocations(longitudeBand, latitudeBand, maxGeoSize, out xs, out ys, out geoSize);
             return _rasterProjector.HasVaildEnvelope(xs, ys, validEnv, null, dstSpatialRef);
         }
 
-        public bool ValidEnvelope(AbstractWarpDataset locationRaster, PrjEnvelope validEnv, ISpatialReference envSpatialReference, out double validRate, out PrjEnvelope outEnv)
+        public bool ValidEnvelope(AbstractWarpDataset locationRaster, PrjEnvelope validEnv,
+            SpatialReference envSpatialReference, out double validRate, out PrjEnvelope outEnv)
         {
             if (locationRaster == null)
                 throw new ArgumentNullException("locationRaster", "参数[经纬度数据文件]不能为空");
@@ -1799,11 +2013,13 @@ namespace PIE.Meteo.FileProject
             double[] xs, ys;
             Size locationSize;
             ReadLocations(locationRaster, out xs, out ys, out locationSize);
-            return _rasterProjector.VaildEnvelope(xs, ys, validEnv, SpatialReferenceFactory.CreateSpatialReference(4326), envSpatialReference, out validRate, out outEnv);
+            return _rasterProjector.VaildEnvelope(xs, ys, validEnv,
+                SpatialReferenceFactory.CreateSpatialReference(4326), envSpatialReference, out validRate, out outEnv);
         }
 
 
-        protected void TryResetLonlatForLeftRightInvalid(double[] longitudes, double[] latitudes, Size locationSize, Size geoRasterSize)
+        protected void TryResetLonlatForLeftRightInvalid(double[] longitudes, double[] latitudes, Size locationSize,
+            Size geoRasterSize)
         {
             int height = locationSize.Height;
             int width = locationSize.Width;
@@ -1812,7 +2028,7 @@ namespace PIE.Meteo.FileProject
             double sample = locationSize.Width * 1d / geoRasterSize.Width;
             if (_left > 0)
             {
-                int left = (int)((_left - 1) * sample);
+                int left = (int) ((_left - 1) * sample);
                 for (int i = 0; i < left; i++)
                 {
                     for (int j = 0; j < height; j++)
@@ -1822,10 +2038,11 @@ namespace PIE.Meteo.FileProject
                     }
                 }
             }
+
             if (_right > 0)
             {
                 //int right = _right - 1;
-                int right = (int)((_right - 1) * sample);
+                int right = (int) ((_right - 1) * sample);
                 for (int i = width - right; i < width; i++)
                 {
                     for (int j = 0; j < height; j++)
@@ -1855,6 +2072,7 @@ namespace PIE.Meteo.FileProject
                     }
                 }
             }
+
             if (_right > 0)
             {
                 int right = _right - 1;
@@ -1876,6 +2094,7 @@ namespace PIE.Meteo.FileProject
         }
 
         #region 真彩校正
+
         static double DEG2RAD = 0.0174532925199;
         static double UO3 = 0.319;
         static double UH2O = 2.93;
@@ -1892,18 +2111,28 @@ namespace PIE.Meteo.FileProject
         static double HDF_DAY = 1;
         static double HDF_NIGHT = 2;
         static double HDF_BAD = 0;
-        static float[] aH2O = new float[] { 0, 0, -5.60723f };
-        static float[] bH2O = new float[] { 0, 0, 0.820175f };
-        static float[] aO3 = new float[] { 0.00743232f, 0.089691f, 0.0715289f };
-        static float[] taur0 = new float[] { 0.19325f, 0.09536f, 0.05100f };
+        static float[] aH2O = new float[] {0, 0, -5.60723f};
+        static float[] bH2O = new float[] {0, 0, 0.820175f};
+        static float[] aO3 = new float[] {0.00743232f, 0.089691f, 0.0715289f};
+        static float[] taur0 = new float[] {0.19325f, 0.09536f, 0.05100f};
         static float[] sphalb0 = new float[MAXNUMSPHALBVALUES];
         static bool first_time = true;
-        static float[] a = new float[] {-.57721566f, 0.99999193f,-0.24991055f,
-                    0.05519968f,-0.00976004f, 0.00107857f};
-        static float[] as0 = new float[]{0.33243832f, 0.16285370f, -0.30924818f, -0.10324388f, 0.11493334f,
-                           -6.777104e-02f, 1.577425e-03f, -1.240906e-02f, 3.241678e-02f, -3.503695e-02f};
-        static float[] as1 = new float[] { 0.19666292f, -5.439061e-02f };
-        static float[] as2 = new float[] { 0.14545937f, -2.910845e-02f };
+
+        static float[] a = new float[]
+        {
+            -.57721566f, 0.99999193f, -0.24991055f,
+            0.05519968f, -0.00976004f, 0.00107857f
+        };
+
+        static float[] as0 = new float[]
+        {
+            0.33243832f, 0.16285370f, -0.30924818f, -0.10324388f, 0.11493334f,
+            -6.777104e-02f, 1.577425e-03f, -1.240906e-02f, 3.241678e-02f, -3.503695e-02f
+        };
+
+        static float[] as1 = new float[] {0.19666292f, -5.439061e-02f};
+        static float[] as2 = new float[] {0.14545937f, -2.910845e-02f};
+
         UInt16 jac255(UInt16 val)
         {
             if (val < 30)
@@ -1927,18 +2156,22 @@ namespace PIE.Meteo.FileProject
                 return Convert.ToUInt16(Math.Min(255, val * 0.2308f + 196.15));
             }
         }
+
         private ushort linear255(double val)
         {
             if (val < 0) val = 0;
             return Convert.ToUInt16(Math.Min(val * 231.9f, 255));
         }
+
         private double correctedrefl(double refl, float TtotraytH2O, float tOG, float rhoray, float sphalb)
         {
             double corr_refl = (refl / tOG - rhoray) / TtotraytH2O;
             corr_refl /= (1 + corr_refl * sphalb);
             return corr_refl;
         }
-        private unsafe void chand(float phi, float muv, float mus, double[] taur, float[] rhoray, double[] trup, double[] trdown)
+
+        private unsafe void chand(float phi, float muv, float mus, double[] taur, float[] rhoray, double[] trup,
+            double[] trdown)
         {
             const double xfd = 0.958725775;
             const float xbeta2 = 0.5f;
@@ -1980,6 +2213,7 @@ namespace PIE.Meteo.FileProject
                 rhoray[ib] = Convert.ToSingle(xitot1 * xcosf1 + xitot2 * xcosf2 * 2 + xitot3 * xcosf3 * 2);
             }
         }
+
         double fintexp1(double tau)
         {
             double xx, xftau;
@@ -1992,17 +2226,22 @@ namespace PIE.Meteo.FileProject
                 xftau *= tau;
                 xx += a[i] * xftau;
             }
+
             return xx - Math.Log(tau);
         }
+
         double fintexp3(double tau)
         {
             return (Math.Exp(-tau) * (1.0 - tau) + tau * tau * fintexp1(tau)) / 2.0;
         }
+
         double csalbr(double tau)
         {
             return (3 * tau - fintexp3(tau) * (4 + 2 * tau) + 2 * Math.Exp(-tau)) / (4 + 3 * tau);
         }
-        private int getatmvariables(float mus, float muv, float phi, float height, float[] sphalb, float[] rhoray, float[] TtotraytH2O, float[] tOG)
+
+        private int getatmvariables(float mus, float muv, float phi, float height, float[] sphalb, float[] rhoray,
+            float[] TtotraytH2O, float[] tOG)
         {
             double m, Ttotrayu, Ttotrayd, tO3, tO2, tH2O, psurfratio;
             int j, ib;
@@ -2019,14 +2258,18 @@ namespace PIE.Meteo.FileProject
             if (first_time)
             {
                 sphalb0[0] = 0;
-                for (j = 1; j < MAXNUMSPHALBVALUES; j++)        /* taur <= 0.3 for bands 1 to 7 (including safety margin for height<~0) */
-                    sphalb0[j] = Convert.ToSingle(csalbr(j * TAUSTEP4SPHALB));//! compute molcular spherical albedo from tau 0.0 to 0.3.
+                for (j = 1;
+                    j < MAXNUMSPHALBVALUES;
+                    j++) /* taur <= 0.3 for bands 1 to 7 (including safety margin for height<~0) */
+                    sphalb0[j] =
+                        Convert.ToSingle(
+                            csalbr(j * TAUSTEP4SPHALB)); //! compute molcular spherical albedo from tau 0.0 to 0.3.
                 first_time = false;
             }
 
             m = 1 / mus + 1 / muv;
             if (m > MAXAIRMASS) return -1;
-            psurfratio = Math.Exp(-height / (float)SCALEHEIGHT);
+            psurfratio = Math.Exp(-height / (float) SCALEHEIGHT);
             for (ib = 0; ib < 3; ib++)
                 taur[ib] = taur0[ib] * psurfratio;
 
@@ -2034,7 +2277,7 @@ namespace PIE.Meteo.FileProject
 
             for (ib = 0; ib < 3; ib++)
             {
-                int tauindex = (int)(taur[ib] / TAUSTEP4SPHALB + 0.5); //bug fixed for tau greater 0.3
+                int tauindex = (int) (taur[ib] / TAUSTEP4SPHALB + 0.5); //bug fixed for tau greater 0.3
                 tauindex = Math.Min(MAXNUMSPHALBVALUES - 1, tauindex);
                 sphalb[ib] = sphalb0[tauindex];
                 Ttotrayu = ((2 / 3.0 + muv) + (2 / 3.0 - muv) * trup[ib]) / (4 / 3.0 + taur[ib]);
@@ -2045,8 +2288,10 @@ namespace PIE.Meteo.FileProject
                 TtotraytH2O[ib] = Convert.ToSingle(Ttotrayu * Ttotrayd * tH2O);
                 tOG[ib] = Convert.ToSingle(tO3 * tO2);
             }
+
             return 0;
         }
+
         #endregion
 
         public static IFileProjector GetFileProjectByName(string name)
@@ -2076,10 +2321,12 @@ namespace PIE.Meteo.FileProject
                     throw new Exception(string.Format("未找到{0}投影库", name));
                     break;
             }
+
             return prj;
         }
 
-        public static  bool WriteMetaData(AbstractWarpDataset srcRaster, AbstractWarpDataset dstRaster, FilePrjSettings prjSettings)
+        public static bool WriteMetaData(AbstractWarpDataset srcRaster, AbstractWarpDataset dstRaster,
+            FilePrjSettings prjSettings)
         {
             bool ok = false;
             string originalName = Path.GetFileName(srcRaster.fileName);
@@ -2088,6 +2335,7 @@ namespace PIE.Meteo.FileProject
             {
                 bandStr += item + ",";
             }
+
             if (bandStr.Last() == ',')
                 bandStr = bandStr.Substring(0, bandStr.Length - 1);
             IRasterDataset outDs = dstRaster.ds as IRasterDataset;
@@ -2097,6 +2345,7 @@ namespace PIE.Meteo.FileProject
                 outDs.SetMetadataItem("OutBandNos", bandStr, "Extend");
                 ok = true;
             }
+
             return ok;
         }
     }

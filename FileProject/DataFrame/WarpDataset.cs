@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -16,6 +17,7 @@ using System.Runtime.CompilerServices;
 using  OSGeo.GDAL;
 using OSGeo.OGR;
 using OSGeo.OSR;
+using PIE.Meteo.Model;
 
 
 namespace PIE.Meteo.FileProject
@@ -40,9 +42,9 @@ namespace PIE.Meteo.FileProject
             
             var ds = Gdal.OpenShared(filePath, Access.GA_ReadOnly);
             if (ds == null)
-                return new WarpDataset(null) { fileName = filePath };
+                return new WarpDataset(null,string.Empty) { fileName = filePath };
             else
-                return new WarpDataset(ds);
+                return new WarpDataset(ds,filePath);
         }
 
         public override Band[] GetBands(string v)
@@ -53,11 +55,12 @@ namespace PIE.Meteo.FileProject
             int index = SearchSubDatasetIndex(v);
             if (index != -1)
             {
-                var subRasterDs = (ds as IMultiDataset).GetDataset(index) as IRasterDataset;
-                bands = new IRasterBand[subRasterDs.GetBandCount()];
-                for (int i = 0; i < subRasterDs.GetBandCount(); i++)
+                string subDsPath = ds.GetSubDatasets().Values.ToList()[index];
+                var subRasterDs = Gdal.OpenShared(subDsPath, Access.GA_ReadOnly);
+                bands = new Band[subRasterDs.RasterCount];
+                for (int i = 0; i < subRasterDs.RasterCount; i++)
                 {
-                    bands[i] = subRasterDs.GetRasterBand(i);
+                    bands[i] = subRasterDs.GetRasterBand(i+1);
                 }
             }
             return bands;
@@ -68,34 +71,31 @@ namespace PIE.Meteo.FileProject
             WarpDataset rds = null;
             if (isMultiDs)
             {
-                var subDs = (ds as IMultiDataset).GetDataset(name);
-                if (subDs == null)
+                var subDsDic = ds.GetSubDatasets();
+                
+                if (!subDsDic.ContainsKey(name))
                     throw new Exception(string.Format("不存在名称为{0}的数据集", name));
-                rds = new WarpDataset(subDs);
+                
+                rds = WarpDataset.Open(subDsDic[name]);
             }
             return rds;
         }
 
-        public override RasterBand GetRasterBand(int bandNo)
+        public override Band GetRasterBand(int bandNo)
         {
-            RasterBand band = null;
+            Band band = null;
             if (isMultiDs)
             {
-                var subDs = (ds as IMultiDataset).GetDataset(bandNo - 1);
-                if (subDs != null && subDs.Type == DatasetType.Raster)
-                    band = (subDs as IRasterDataset).GetRasterBand(0);
+                var subDsPathList =ds.GetSubDatasets().Values.ToList();
+                if (subDsPathList.Count >= bandNo)
+                {
+                    var subDs = Open(subDsPathList[bandNo-1]);
+                    band = subDs.GetRasterBand(0);
+                }
             }
             else
             {
-                if (ds.Type == DatasetType.Raster)
-                {
-                    var rDs = (ds as IRasterDataset);
-                    if (rDs.GetBandCount() == bandNo)
-                    {
-
-                    }
-                    band = (ds as IRasterDataset).GetRasterBand(bandNo);
-                }
+                    band = ds.GetRasterBand(bandNo+1);
             }
             return band;
         }
@@ -143,7 +143,7 @@ namespace PIE.Meteo.FileProject
         {
             this.ds = ds;
             var subDsDic = ds.GetSubDatasets();
-            if (ds.Type == DatasetType.Multi)
+            if (subDsDic.Count>0)
             {
                 isMultiDs = true;
 
@@ -155,68 +155,69 @@ namespace PIE.Meteo.FileProject
                     H5F.close(_h5FileId);
                 }
 
-                IMultiDataset multiDs = ds as IMultiDataset;
-                GetAllSubDatasetFullpaths(multiDs);
+                GetAllSubDatasetFullpaths(ds);
 
                 TryGetSizeOfMultiDs();
             }
-            else if (ds.Type == DatasetType.Raster)
+            else if (ds.RasterCount>0)
             {
-                IRasterDataset rasterDs = ds as IRasterDataset;
-                double[] geoTrans = rasterDs.GetGeoTransform();
-                Width = rasterDs.GetRasterXSize();
-                Height = rasterDs.GetRasterYSize();
+                double[] geoTrans = new double[6];
+                ds.GetGeoTransform(geoTrans);
+
+                Width = ds.RasterXSize;
+                Height = ds.RasterYSize;
                 ResolutionX = Convert.ToSingle(geoTrans[1]);
                 ResolutionY = Math.Abs(Convert.ToSingle(geoTrans[5]));
-                BandCount = rasterDs.GetBandCount();
-                DataType = rasterDs.GetRasterBand(0).GetRasterDataType();
-                DriverName = rasterDs.DataSourceType;
-                if (rasterDs.SpatialReference != null)
-                    SpatialRef = rasterDs.SpatialReference;
+                BandCount = ds.RasterCount;
+                DataType = ds.GetRasterBand(1).DataType;
+                DriverName = ds.GetDriver().ShortName;
+                string wkt = ds.GetProjection();
+                if(!string.IsNullOrEmpty(wkt))
+                    SpatialRef = new SpatialReference(wkt);
             }
         }
 
         protected void TryGetSizeOfMultiDs()
         {
-            IMultiDataset mDs = ds as IMultiDataset;
-            RasterSourceTypeSingleInfo info = mRasterSourceManager.GetInstance().GetInputfileRasterSourceInfo(ds.FullName);
-            if (mDs != null && mDs.GetDatasetCount() > 0)
+            var subDsDic = ds.GetSubDatasets();
+            var subDsPathList = ds.GetSubDatasets().Values.ToList();
+            RasterSourceTypeSingleInfo info = mRasterSourceManager.GetInstance().GetInputfileRasterSourceInfo(fileName);
+            if (subDsDic.Count>0)
             {
                 if (info != null)
                 {
                     string name = info.defaultDisplayDataset;
-                    for (int i = 0; i < mDs.GetDatasetCount(); i++)
-                    {
-                        var ds = mDs.GetDataset(i);
-                        if (ds.Name.Contains(name))
-                        {
-                            Width = (ds as IRasterDataset).GetRasterXSize();
-                            Height = (ds as IRasterDataset).GetRasterYSize();
-                            return;
-                        }
-                    }
+                    var subDs = Gdal.OpenShared(subDsDic[name], Access.GA_ReadOnly);
+                    Width = subDs.RasterXSize;
+                    Height = subDs.RasterYSize;
+                    subDs.Dispose();
+                    return;
                 }
                 else
                 {
-                    for (int i = 0; i < mDs.GetDatasetCount() - 1; i++)
+                    for (int i = 0; i < subDsDic.Count-1; i++)
                     {
-                        var curDs = mDs.GetDataset(i);
-                        var nextDs = mDs.GetDataset(i + 1);
-                        if (curDs.Type == DatasetType.Raster && nextDs.Type == DatasetType.Raster)
+                        using (var curDs = Gdal.Open(subDsPathList[i], Access.GA_ReadOnly))
+                        using (var nextDs = Gdal.Open(subDsPathList[i+1], Access.GA_ReadOnly))
                         {
-                            if ((curDs as IRasterDataset).GetRasterXSize() != (nextDs as IRasterDataset).GetRasterXSize() ||
-                                (curDs as IRasterDataset).GetRasterYSize() != (nextDs as IRasterDataset).GetRasterYSize())
+                            if (curDs!=null&&nextDs!=null)
                             {
-                                Width = Height = 0;
-                                return;
+                                if (curDs.RasterXSize != nextDs.RasterXSize ||
+                                    (curDs.RasterYSize != nextDs.RasterYSize))
+                                {
+                                    Width = Height = 0;
+                                    return;
+                                }
                             }
                         }
                     }
 
-                    IRasterDataset rDs = mDs.GetDataset(0) as IRasterDataset;
-                    Width = rDs.GetRasterXSize();
-                    Height = rDs.GetRasterYSize();
-                    return;
+                    using (var rDs = Gdal.Open(subDsPathList[0], Access.GA_ReadOnly))
+                    {
+                        Width = rDs.RasterXSize;
+                        Height = rDs.RasterYSize;
+                        return;
+                    }
                 }
             }
         }
@@ -290,7 +291,7 @@ namespace PIE.Meteo.FileProject
             if (_datasetAttrCache.ContainsKey(originalDatasetName))
                 return _datasetAttrCache[originalDatasetName];
 
-            int h5FileId = 0;
+            long h5FileId = 0;
             H5DataSetId datasetId = 0;
             H5GroupId groupId = 0;
             H5DataTypeId typeId = 0;
@@ -623,13 +624,13 @@ namespace PIE.Meteo.FileProject
         }
 
 
-        protected string GetDatasetFullNames(string datasetName, int fileId)
+        protected string GetDatasetFullNames(string datasetName, long fileId)
         {
             string shortDatasetName = GetDatasetShortName(datasetName);
             return FindDatasetFullNames(shortDatasetName, fileId);
         }
 
-        protected string FindDatasetFullNames(string shortDatasetName, int fileId)
+        protected string FindDatasetFullNames(string shortDatasetName, long fileId)
         {
             for (int i = 0; i < DatasetNames.Count; i++)
             {
@@ -663,9 +664,10 @@ namespace PIE.Meteo.FileProject
         public Dictionary<string, string> TryReadDataTable(string datasetName)
         {
             Dictionary<string, string> result = null;
-            if (ds.Type == DatasetType.Multi)
+            var subDsDic = ds.GetSubDatasets();
+            if (subDsDic.Count>0)
             {
-                long h5FileId = H5F.open(ds.FullName, H5F.ACC_RDONLY);
+                long h5FileId = H5F.open(fileName, H5F.ACC_RDONLY);
                 long datasetId = H5D.open(h5FileId, datasetName);
                 long typeId = H5D.get_type(datasetId);
                 long spaceId = H5D.get_space(datasetId);

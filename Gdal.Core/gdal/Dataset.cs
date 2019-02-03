@@ -10,6 +10,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using OSGeo.OGR;
 
 namespace OSGeo.GDAL {
 
@@ -487,6 +488,14 @@ public CPLErr SetGCPs(GCP[] pGCPs, string pszGCPProjection) {
     GdalPINVOKE.Dataset_GetGeoTransform(swigCPtr, argout);
     if (GdalPINVOKE.SWIGPendingException.Pending) throw GdalPINVOKE.SWIGPendingException.Retrieve();
   }
+  
+  public double[] GetGeoTransform()
+  {
+      double[] argout = new Double[6];
+      GdalPINVOKE.Dataset_GetGeoTransform(swigCPtr, argout);
+      if (GdalPINVOKE.SWIGPendingException.Pending) throw GdalPINVOKE.SWIGPendingException.Retrieve();
+      return argout;
+  }
 
   public CPLErr SetGeoTransform(double[] argin) {
     CPLErr ret = (CPLErr)GdalPINVOKE.Dataset_SetGeoTransform(swigCPtr, argin);
@@ -635,6 +644,16 @@ public CPLErr SetGCPs(GCP[] pGCPs, string pszGCPProjection) {
     if (GdalPINVOKE.SWIGPendingException.Pending) throw GdalPINVOKE.SWIGPendingException.Retrieve();
   }
 
+  public Envelope GetExtent()
+  {
+      double[] geoTrans = GetGeoTransform();
+      Envelope env = new Envelope();
+      env.MinX = geoTrans[0];
+      env.MaxY = geoTrans[3];
+      env.MaxX = geoTrans[0] + RasterXSize * geoTrans[1];
+      env.MinX = geoTrans[3] + RasterYSize * geoTrans[5];
+      return env;
+  }
 }
 
 }
