@@ -29,9 +29,9 @@ namespace PIE.Meteo.FileProject
             if (projRef == null || string.IsNullOrWhiteSpace(projRef.__str__()))
                 prjIdentify = "GLL";
             else if (projRef.IsGeographic() == 1)
-                prjIdentify = GenericFilename.GetProjectionIdentify(projRef.__str__());
+                prjIdentify = GenericFilename.GetProjectionIdentify(projRef.GetAttrValue("GEOGCS",0));
             else
-                prjIdentify = GenericFilename.GetProjectionIdentify(projRef.__str__());
+                prjIdentify = GenericFilename.GetProjectionIdentify(projRef.GetAttrValue("PROJCS",0));
             return prjIdentify;
         }
 

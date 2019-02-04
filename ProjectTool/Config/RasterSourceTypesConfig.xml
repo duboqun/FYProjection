@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="GBK" ?>
+<!--识别数据源文件名的关键字，查找RasterDatasetsConfig获取数据波段信息-->
+<!--默认渲染方案设置-->
+<RasterSourceTypes describe="栅格数据源类型定义">
+	<!--真彩色-->
+	<RasterSourceType ID="TrueColor,tif,tiff"  describe="标称数据投影文件" datasetsID="Common" bandID="" displayDataset="true" >
+    <KeyNames key="TrueColor" suffix="ldf,tif,tiff"></KeyNames>
+		<Render defaultband="1,2,3" ifCalibration="true" ifVector="true">
+      <BandRender bandID="1,2,3" rendermin="0" rendermax="255" colorClass="" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+	<!-- DataID是识别数据类型的末级信息，可以使用产品级别例如L1，也可以使用产品类型例如CLC-->
+	<!--bandID识别数据源中包含哪几个波段的数据 -->
+	<!--FY2E数据，支持hdf、ldf,tif,tiff格式-->
+  <RasterSourceType ID="FY2E-IR+VIS-NOMFile"  describe="标称数据文件" datasetsID="FY2E-IR+VIS-All" bandID="1,2,3,4" displayDataset="false" defaultDisplayDataset="NOMChannelIR1">
+		<KeyNames key="FY2E,ALL,NOM" suffix="hdf"></KeyNames>
+    <!--有的数据源类型的MetadataReader可以为空，所有信息在配置文件中完成，没有附属文件-->
+		<Render defaultband="1" ifCalibration="true" ifVector="true">
+
+		</Render>
+  </RasterSourceType>
+  <RasterSourceType ID="FY2E-IR+VIS-NOM-ldf,tif,tiff" describe="标称数据投影文件" datasetsID="FY2E-IR+VIS-All" bandID="" displayDataset="true">
+    <KeyNames key="FY2E,ALL,NOM"  suffix="ldf,tif,tiff" ></KeyNames>
+		  <Render defaultband="3,2,1" ifCalibration="true" ifVector="true">
+			  <BandRender bandID="1,2,3,4" rendermin="2200" rendermax="3500" colorClass="" colorTable=""></BandRender>
+			  <BandRender bandID="5" rendermin="0" rendermax="1000" colorClass="" colorTable=""></BandRender>
+			  <BandRender bandID="6" rendermin="0" rendermax="255" colorClass="" colorTable=""></BandRender>
+
+    </Render>
+  </RasterSourceType>
+	<!--FY2E数据，支持hdf格式-->
+  <RasterSourceType ID="FY2F-IR+VIS-NOMFile"  describe="标称数据文件" datasetsID="FY2F-IR+VIS-All" bandID="1,2,3,4" displayDataset="false" defaultDisplayDataset="NOMChannelIR1">
+    <KeyNames key="FY2F,ALL,NOM" suffix="hdf"></KeyNames>
+		<Render defaultband="1" ifCalibration="true" ifVector="true">
+
+    </Render>
+  </RasterSourceType>
+  <RasterSourceType ID="FY2F-IR+VIS-NOM-ldf,tif,tiff"  describe="标称数据文件" datasetsID="FY2F-IR+VIS-All" bandID="1,2,3,4" displayDataset="false" >
+    <KeyNames key="FY2F,ALL,NOM" suffix="ldf,tif,tiff"></KeyNames>
+		<Render defaultband="1" ifCalibration="true" ifVector="true">
+			 <BandRender bandID="1,2,3,4" rendermin="2200" rendermax="3500" colorClass="" colorTable=""></BandRender>
+			 <BandRender bandID="5" rendermin="0" rendermax="1000" colorClass="" colorTable=""></BandRender>
+			 <BandRender bandID="6" rendermin="0" rendermax="255" colorClass="" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+	<!--FY2E数据，支持hdf、ldf,tif,tiff格式-->
+  <RasterSourceType ID="FY2G-IR+VIS-NOMFile"  describe="标称数据文件" datasetsID="FY2G-IR+VIS-All" bandID="1,2,3,4" displayDataset="false" defaultDisplayDataset="NOMChannelIR1">
+		<KeyNames key="FY2G,ALL,NOM" suffix="hdf"></KeyNames>
+    <!--有的数据源类型的MetadataReader可以为空，所有信息在配置文件中完成，没有附属文件-->
+		<Render defaultband="1" ifCalibration="true" ifVector="true">
+
+		</Render>
+  </RasterSourceType>
+  <RasterSourceType ID="FY2G-IR+VIS-NOM-ldf,tif,tiff" describe="标称数据投影文件" datasetsID="FY2G-IR+VIS-All" bandID="" displayDataset="true">
+    <KeyNames key="FY2G,ALL,NOM"  suffix="ldf,tif,tiff" ></KeyNames>
+		  <Render defaultband="3,2,1" ifCalibration="true" ifVector="true">
+			  <BandRender bandID="1,2,3,4" rendermin="2200" rendermax="3500" colorClass="" colorTable=""></BandRender>
+			  <BandRender bandID="5" rendermin="0" rendermax="1000" colorClass="" colorTable=""></BandRender>
+			  <BandRender bandID="6" rendermin="0" rendermax="255" colorClass="" colorTable=""></BandRender>
+
+    </Render>
+  </RasterSourceType>
+  
+	<!--FY2H数据，支持hdf、ldf,tif,tiff格式-->
+  <RasterSourceType ID="FY2H-IR+VIS-NOMFile"  describe="标称数据文件" datasetsID="FY2H-IR+VIS-All" bandID="1,2,3,4" displayDataset="false" defaultDisplayDataset="NOMChannelIR1">
+		<KeyNames key="FY2H,ALL,NOM" suffix="hdf"></KeyNames>
+    <!--有的数据源类型的MetadataReader可以为空，所有信息在配置文件中完成，没有附属文件-->
+		<Render defaultband="1" ifCalibration="true" ifVector="true">
+
+		</Render>
+  </RasterSourceType>
+  <RasterSourceType ID="FY2H-IR+VIS-NOM-ldf,tif,tiff" describe="标称数据投影文件" datasetsID="FY2H-IR+VIS-All" bandID="" displayDataset="true">
+    <KeyNames key="FY2H,ALL,NOM"  suffix="ldf,tif,tiff" ></KeyNames>
+		  <Render defaultband="3,2,1" ifCalibration="true" ifVector="true">
+			  <BandRender bandID="1,2,3,4" rendermin="2200" rendermax="3500" colorClass="" colorTable=""></BandRender>
+			  <BandRender bandID="5" rendermin="0" rendermax="1000" colorClass="" colorTable=""></BandRender>
+			  <BandRender bandID="6" rendermin="0" rendermax="255" colorClass="" colorTable=""></BandRender>
+
+    </Render>
+  </RasterSourceType>
+  
+    <!--FY3A数据，MERSI、VIRRX，支持hdf、ldf,tif,tiff、dat格式-->
+  <RasterSourceType ID="FY3A-MERSI-0250MFile"  describe="标称数据文件" datasetsID="FY3A-MERSI-0250M" bandID="" displayDataset="true" defaultDisplayDataset="EV_250_RefSB_b1">
+    <KeyNames key="FY3A,MERSI,0250M" suffix="hdf"></KeyNames>
+    <KeyNames key="FY3A,MERSI,L1,0250M" suffix="hdf"></KeyNames>
+    <Render defaultband="3,2,1" ifCalibration="true" ifVector="true">
+    </Render>
+  </RasterSourceType>
+  <RasterSourceType ID="FY3A-MERSI-0250M-ldf,tif,tiff"  describe="标称数据文件" datasetsID="FY3A-MERSI-0250M" bandID="" displayDataset="true" >
+    <KeyNames key="FY3A,MERSI,0250M" suffix="ldf,tif,tiff"></KeyNames>
+    <Render defaultband="3,2,1" ifCalibration="true" ifVector="true">
+		    <BandRender bandID="1,2,3,4,6,7,8,9,10,12,13,14,15,16,17,18,19,20" rendermin="0" rendermax="1000" colorClass="" colorTable=""></BandRender>
+      <BandRender bandID="5" rendermin="2200" rendermax="3500" colorClass="" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+  <RasterSourceType ID="FY3A-MERSI-1000MFile"  describe="标称数据文件" datasetsID="FY3A-MERSI-1000M" bandID="" displayDataset="true" defaultDisplayDataset="EV_1KM_RefSB">
+    <KeyNames key="FY3A,MERSI,L1,1000M" suffix="hdf"></KeyNames>
+		<Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+
+    </Render>
+  </RasterSourceType>
+  <RasterSourceType ID="FY3A-MERSI-1000M-ldf,tif,tiff"  describe="标称数据文件" datasetsID="FY3A-MERSI-1000M" bandID="" displayDataset="true" >
+    <KeyNames key="FY3A,MERSI,1000M" suffix="ldf,tif,tiff"></KeyNames>
+		<Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+		      <BandRender bandID="1,2,3,4,6,7,8,9,10,12,13,14,15,16,17,18,19,20" rendermin="0" rendermax="1000" colorClass="" colorTable=""></BandRender>
+      <BandRender bandID="5" rendermin="2200" rendermax="3500" colorClass="" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+  <RasterSourceType ID="FY3A-VIRR-1000MFile"  describe="标称数据文件" datasetsID="FY3A-VIRR-1000M" bandID="" displayDataset="true" defaultDisplayDataset="EV_RefSB">
+    <KeyNames key="FY3A,VIRR,L1,1000M" suffix="hdf"></KeyNames>
+		<Render defaultband="6,2,1" ifCalibration="true" ifVector="true">
+    </Render>
+  </RasterSourceType>
+  <RasterSourceType ID="FY3A-VIRR-1000M-ldf,tif,tiff"  describe="标称数据文件" datasetsID="FY3A-VIRR-1000M" bandID="" displayDataset="true" >
+    <KeyNames key="FY3A,VIRR,1000M" suffix="ldf,tif,tiff"></KeyNames>
+    <Render defaultband="6,2,1" ifCalibration="true" ifVector="true">
+      <BandRender bandID="1,2,6,7,8,9,10" rendermin="0" rendermax="1000" colorClass="RAS" colorTable=""></BandRender>
+      <BandRender bandID="3,4,5" rendermin="2200" rendermax="3500" colorClass="RAS" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+
+    <!--FY3B数据，MERSI、VIRRX，支持hdf、ldf,tif,tiff格式-->
+  <RasterSourceType ID="FY3B-MERSI-1000MFile"  describe="标称数据文件" datasetsID="FY3B-MERSI-1000M"  bandID="" displayDataset="true" defaultDisplayDataset="EV_1KM_RefSB">
+    <KeyNames key="FY3B,MERSI,L1,1000M" suffix="hdf"></KeyNames>
+    <Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+    </Render>
+	</RasterSourceType>
+  <RasterSourceType ID="FY3B-MERSI-1000M-ldf,tif,tiff"  describe="标称数据文件" datasetsID="FY3B-MERSI-1000M"  bandID="" displayDataset="true" >
+    <KeyNames key="FY3B,MERSI,1000M" suffix="ldf,tif,tiff"></KeyNames>
+    <Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+			<BandRender bandID="1,2,3,4,6,7,8,9,10,12,13,14,15,16,17,18,19,20" rendermin="0" rendermax="1000" colorClass="" colorTable=""></BandRender>
+      <BandRender bandID="5" rendermin="2200" rendermax="3500" colorClass="" colorTable=""></BandRender>
+    </Render>
+	</RasterSourceType>
+  <RasterSourceType ID="FY3B-MERSI-0250MFile"  describe="标称数据文件" datasetsID="FY3B-MERSI-0250M"  bandID="" displayDataset="true" defaultDisplayDataset="EV_250_RefSB_b2">
+    <KeyNames key="FY3B,MERSI,L1,0250M" suffix="hdf"></KeyNames>
+		<Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+
+    </Render>
+  </RasterSourceType>
+  <RasterSourceType ID="FY3B-MERSI-0250M-ldf,tif,tiff" describe="标称数据投影文件" datasetsID="FY3B-MERSI-0250M" bandID="" displayDataset="true">
+    <KeyNames key="FY3B,MERSI,0250M"  suffix="ldf,tif,tiff" ></KeyNames>
+		<Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+			<BandRender bandID="1,2,3,4,6,7,8,9,10,12,13,14,15,16,17,18,19,20" rendermin="0" rendermax="1000" colorClass="" colorTable=""></BandRender>
+      <BandRender bandID="5" rendermin="2200" rendermax="3500" colorClass="" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+	<RasterSourceType ID="FY3B-VIRR-1000MFile"  describe="标称数据文件" datasetsID="FY3B-VIRR-1000M"  bandID="1,2,3,4,5,6,7,8,9,10" displayDataset="true" defaultDisplayDataset="EV_RefSB">
+    <KeyNames key="FY3B,VIRR,L1,1000M" suffix="hdf"></KeyNames>
+    <Render defaultband="6,2,1" ifCalibration="true" ifVector="true">
+    </Render>
+  </RasterSourceType>
+  <!--省局FY3B Mersi卫星数据支持-->
+  <RasterSourceType ID="FY3B-MERSI-1000-省局"  describe="标称数据文件" datasetsID="FY3B-MERSI-1000M"  bandID="" displayDataset="true" defaultDisplayDataset="EV_1KM_RefSB">
+    <KeyNames key="FY3B,MERSI,L1B,1000M" suffix="hdf"></KeyNames>
+    <Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+    </Render>
+  </RasterSourceType>
+  <RasterSourceType ID="FY3B-MERSI-1000M-省局-ldf,tif,tiff"  describe="标称数据文件" datasetsID="FY3B-MERSI-1000M"  bandID="" displayDataset="true" >
+    <KeyNames key="FY3B,MERSI,L1B,1000M" suffix="ldf,tif,tiff"></KeyNames>
+    <Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+      <BandRender bandID="1,2,3,4,6,7,8,9,10,12,13,14,15,16,17,18,19,20" rendermin="0" rendermax="1000" colorClass="" colorTable=""></BandRender>
+      <BandRender bandID="5" rendermin="2200" rendermax="3500" colorClass="" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+  <!--省局FY3B Mersi卫星数据支持-->
+
+  <!--省局FY3B卫星数据支持“FY3B_VIRRD_2018_12_04_14_39_L1B.HDF”-->
+  <RasterSourceType ID="FY3B-VIRR-省局"  describe="标称数据文件" datasetsID="FY3B-VIRR-1000M"  bandID="1,2,3,4,5,6,7,8,9,10" displayDataset="true" defaultDisplayDataset="EV_RefSB">
+    <KeyNames key="FY3B,VIRRD,L1B" suffix="hdf"></KeyNames>
+    <Render defaultband="6,2,1" ifCalibration="true" ifVector="true">
+    </Render>
+  </RasterSourceType>
+  <RasterSourceType ID="FY3B-VIRR-省局"  describe="标称数据文件" datasetsID="FY3B-VIRR-1000M"  bandID="1,2,3,4,5,6,7,8,9,10" displayDataset="true" defaultDisplayDataset="EV_RefSB">
+    <KeyNames key="FY3B,VIRRD,L1B,overview" suffix="ldf"></KeyNames>
+    <Render defaultband="6,2,1" ifCalibration="true" ifVector="true">
+      <BandRender bandID="1,2,6,7,8,9,10" rendermin="0" rendermax="1000" colorClass="RAS" colorTable=""></BandRender>
+      <BandRender bandID="3,4,5" rendermin="2200" rendermax="3500" colorClass="RAS" colorTable=""></BandRender>
+  </Render>
+  <!--省局FY3B卫星数据支持-->
+  </RasterSourceType>
+	<RasterSourceType ID="FY3B-VIRR-1000M-ldf,tif,tiff"  describe="标称数据文件" datasetsID="FY3B-VIRR-1000M"  bandID="1,2,3,4,5,6,7,8,9,10" displayDataset="true" >
+    <KeyNames key="FY3B,VIRR,1000M" suffix="ldf,tif,tiff"></KeyNames>
+		<Render defaultband="6,2,1" ifCalibration="true" ifVector="true">
+      <BandRender bandID="1,2,6,7,8,9,10" rendermin="0" rendermax="1000" colorClass="RAS" colorTable=""></BandRender>
+      <BandRender bandID="3,4,5" rendermin="2200" rendermax="3500" colorClass="RAS" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+  
+    <!--FY3B  mrr数据，FY3B_MWRIA_GLL_L2_MRR_MLT_NUL_20181002_0516_025KM_MS-->
+    <RasterSourceType ID="FY3B-MWRIA-025KMFile"  describe="标称数据文件" datasetsID="FY3B-MERSI-1000M"  bandID="" displayDataset="true" defaultDisplayDataset="EV_1KM_RefSB">
+    <KeyNames key="FY3B,MWRIA,L2,025KM" suffix="hdf"></KeyNames>
+    <Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+    </Render>
+  </RasterSourceType>
+  <RasterSourceType ID="FY3B-MWRIA-025KM-ldf,tif,tiff"  describe="标称数据文件" datasetsID="FY3B-MERSI-1000M"  bandID="" displayDataset="true" >
+    <KeyNames key="FY3B,MWRIA,025KM" suffix="ldf,tif,tiff"></KeyNames>
+    <Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+      <BandRender bandID="1,2,3,4,6,7,8,9,10,12,13,14,15,16,17,18,19,20" rendermin="0" rendermax="1000" colorClass="" colorTable=""></BandRender>
+      <BandRender bandID="5" rendermin="2200" rendermax="3500" colorClass="" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+  
+  <!--FY3B  mrr数据，FY3B_MWRIA_DXX_GLL_L1_20180121_0732_010KM_MS-->
+    <RasterSourceType ID="FY3B-MWRIA-010KMFile"  describe="标称数据文件" datasetsID="FY3B-MWRIA-010KM"  bandID="" displayDataset="true" defaultDisplayDataset="EV_1KM_RefSB">
+    <KeyNames key="FY3B,MWRIA,010KM" suffix="hdf"></KeyNames>
+    <Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+    </Render>
+  </RasterSourceType>
+  <RasterSourceType ID="FY3B-MWRIA-010KM-ldf,tif,tiff"  describe="标称数据文件" datasetsID="FY3B-MWRIA-010KM"  bandID="" displayDataset="true" >
+    <KeyNames key="FY3B,MWRIA,010KM" suffix="ldf,tif,tiff"></KeyNames>
+    <Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+    </Render>
+  </RasterSourceType>
+  
+  
+
+    <!--FY3C数据，MERSI、VIRRX，支持hdf、ldf,tif,tiff、dat格式-->
+  <RasterSourceType ID="FY3C-MERSI-1000MFile"  describe="标称数据文件" datasetsID="FY3C-MERSI-1000M"  bandID="" displayDataset="true" defaultDisplayDataset="Data/EV_1KM_RefSB">
+    <KeyNames key="FY3C,MERSI,L1,1000M" suffix="hdf"></KeyNames>
+    <Render defaultband="14,9,6" ifCalibration="true" ifVector="true">
+    </Render>
+	</RasterSourceType>
+	<RasterSourceType ID="FY3C-MERSI-1000M-ldf,tif,tiff"  describe="标称数据投影文件" datasetsID="FY3C-MERSI-1000M" bandID="1,2,3,4,5,6,7,8,9,10" displayDataset="true" defaultDisplayDataset="EV_RefSB">
+    <KeyNames key="FY3C,MERSI,1000M" suffix="ldf,tif,tiff"></KeyNames>
+    <Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+		 	<BandRender bandID="1,2,3,4,6,7,8,9,10,12,13,14,15,16,17,18,19,20" rendermin="0" rendermax="1000" colorClass="" colorTable=""></BandRender>
+      <BandRender bandID="5" rendermin="2200" rendermax="3500" colorClass="" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+  <RasterSourceType ID="FY3C-MERSI-0250MFile"  describe="标称数据文件" datasetsID="FY3C-MERSI-0250M"  bandID="" displayDataset="true" defaultDisplayDataset="Data/EV_250_RefSB_b1">
+    <KeyNames key="FY3C,MERSI,L1,0250M" suffix="hdf"></KeyNames>
+		<Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+
+    </Render>
+  </RasterSourceType>
+	<RasterSourceType ID="FY3C-MERSI-0250M-ldf,tif,tiff"  describe="标称数据投影文件" datasetsID="FY3C-MERSI-0250M"  bandID="1,2,3,4,5,6,7,8,9,10" displayDataset="true" defaultDisplayDataset="NOMChannelIR1">
+    <KeyNames key="FY3C,MERSI,0250M" suffix="ldf,tif,tiff"></KeyNames>
+    <Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+			<BandRender bandID="1,2,3,4,6,7,8,9,10,12,13,14,15,16,17,18,19,20" rendermin="0" rendermax="1000" colorClass="" colorTable=""></BandRender>
+      <BandRender bandID="5" rendermin="2200" rendermax="3500" colorClass="" colorTable=""></BandRender>
+    </Render>
+    </RasterSourceType>
+	<RasterSourceType ID="FY3C-VIRR-1000MFile"  describe="标称数据文件" datasetsID="FY3C-VIRR-1000M"  bandID="1,2,3,4,5,6,7,8,9,10" displayDataset="true" defaultDisplayDataset="Data/EV_RefSB">
+    <KeyNames key="FY3C,VIRR,L1,1000M" suffix="hdf"></KeyNames>
+    <Render defaultband="6,2,1" ifCalibration="true" ifVector="true">
+    </Render>
+	</RasterSourceType>
+	<RasterSourceType ID="FY3C-VIRR-1000M-ldf,tif,tiff"  describe="标称数据文件" datasetsID="FY3C-VIRR-1000M"  bandID="1,2,3,4,5,6,7,8,9,10" displayDataset="true" defaultDisplayDataset="NOMChannelIR1">
+    <KeyNames key="FY3C,VIRR,1000M" suffix="ldf,tif,tiff"></KeyNames>
+    <Render defaultband="6,2,1" ifCalibration="true" ifVector="true">
+      <BandRender bandID="1,2,6,7,8,9,10" rendermin="0" rendermax="1000" colorClass="RAS" colorTable=""></BandRender>
+      <BandRender bandID="3,4,5" rendermin="2200" rendermax="3500" colorClass="RAS" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+  <!--3C省局数据支持-->
+  <RasterSourceType ID="FY3C-VIRR-省局"  describe="标称数据文件" datasetsID="FY3C-VIRR-1000M"  bandID="1,2,3,4,5,6,7,8,9,10" displayDataset="true" defaultDisplayDataset="Data/EV_RefSB">
+    <KeyNames key="FY3C,VIRRD,L1B" suffix="hdf"></KeyNames>
+    <Render defaultband="6,2,1" ifCalibration="true" ifVector="true">
+    </Render>
+  </RasterSourceType>
+  <RasterSourceType ID="FY3C-VIRR-省局-ldf,tif,tiff"  describe="标称数据文件" datasetsID="FY3C-VIRR-1000M"  bandID="1,2,3,4,5,6,7,8,9,10" displayDataset="true" defaultDisplayDataset="NOMChannelIR1">
+    <KeyNames key="FY3C,VIRRD,L1B" suffix="ldf,tif,tiff"></KeyNames>
+    <Render defaultband="6,2,1" ifCalibration="true" ifVector="true">
+      <BandRender bandID="1,2,6,7,8,9,10" rendermin="0" rendermax="1000" colorClass="RAS" colorTable=""></BandRender>
+      <BandRender bandID="3,4,5" rendermin="2200" rendermax="3500" colorClass="RAS" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+  <!--3C省局数据支持-->
+  
+	<RasterSourceType ID="FY3D-MERSI-0250MFile"  describe="" datasetsID="FY3D-MERSI-0250M" bandID="" displayDataset="true" defaultDisplayDataset="Data/EV_250_RefSB_b1">
+    <KeyNames key="FY3D,MERSI,L1,0250M" suffix="hdf"></KeyNames>
+    <Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+    </Render>
+  </RasterSourceType>
+    <RasterSourceType ID="FY3D-MERSI-0250M-ldf,tif,tiff"  describe="标称数据投影文件" datasetsID="FY3D-MERSI-0250M" bandID="" displayDataset="true" >
+    <KeyNames key="FY3D,MERSI,0250M" suffix="ldf,tif,tiff"></KeyNames>
+    <Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+			<BandRender bandID="1,2,3,4,7,8,9,10,12,13,14,15,16,17,18,19,20,21" rendermin="0" rendermax="1000" colorClass="" colorTable=""></BandRender>
+			<BandRender bandID="5,6" rendermin="2200" rendermax="3500" colorClass="" colorTable=""></BandRender>
+      <BandRender bandID="22,23,24,25" rendermin="1700" rendermax="3500" colorClass="" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+	<RasterSourceType ID="FY3D-MERSI-1000MFile"  describe="" datasetsID="FY3D-MERSI-1000M" bandID="" displayDataset="true" defaultDisplayDataset="Data/EV_250_Aggr.1KM_RefSB">
+    <KeyNames key="FY3D,MERSI,L1,1000M" suffix="hdf"></KeyNames>
+    <Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+      <BandRender bandID="1" colorClass="RAS" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+    <RasterSourceType ID="FY3D-MERSI-1000M-ldf,tif,tiff"  describe="标称数据投影文件" datasetsID="FY3D-MERSI-1000M" bandID="" displayDataset="true" >
+    <KeyNames key="FY3D,MERSI,1000M" suffix="ldf,tif,tiff"></KeyNames>
+    <Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+			<BandRender bandID="1,2,3,4,7,8,9,10,12,13,14,15,16,17,18,19,20,21" rendermin="0" rendermax="1000" colorClass="" colorTable=""></BandRender>
+			<BandRender bandID="5,6" rendermin="2200" rendermax="3500" colorClass="" colorTable=""></BandRender>
+      <BandRender bandID="22,23,24,25" rendermin="1700" rendermax="3500" colorClass="" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+
+  <!--3D省局数据支持-->
+  <RasterSourceType ID="FY3D-MERSI-1000M-省局"  describe="" datasetsID="FY3D-MERSI-1000M" bandID="" displayDataset="true" defaultDisplayDataset="Data/EV_250_Aggr.1KM_RefSB">
+    <KeyNames key="FY3D,MERSI,L1B,1000M" suffix="hdf"></KeyNames>
+    <Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+      <BandRender bandID="1" colorClass="RAS" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+  <!--3D省局数据支持-->
+
+	<RasterSourceType ID="FY3D-MERSI-GEO1KFile"  describe="GEO1K文件" datasetsID="FY3D-MERSI-GEO1K" bandID="" displayDataset="false" defaultDisplayDataset="DEM">
+    <KeyNames key="FY3D,MERSI,GEO1K" suffix="hdf"></KeyNames>
+    <Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+      <BandRender bandID="1" colorClass="RAS" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+	<RasterSourceType ID="FY3D-MERSI-GEOQKFile"  describe="GEOQK文件" datasetsID="FY3D-MERSI-GEOQK" bandID="" displayDataset="false" defaultDisplayDataset="Latitude">
+    <KeyNames key="FY3D,MERSI,GEOQK" suffix="hdf"></KeyNames>
+    <Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+      <BandRender bandID="1" colorClass="RAS" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+  
+  <RasterSourceType ID="FY3D-MWRIX"  describe="FY3D-MWRIX文件" datasetsID="FY3D-MWRIX" bandID="" displayDataset="false" defaultDisplayDataset="Latitude">
+    <KeyNames key="FY3D,MWRIX" suffix="dat"></KeyNames>
+    <Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+      <BandRender bandID="1" colorClass="RAS" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+  <RasterSourceType ID="FY3C-MWRIX"  describe="FY3C-MWRIX文件" datasetsID="FY3C-MWRIX" bandID="" displayDataset="false" defaultDisplayDataset="Latitude">
+    <KeyNames key="FY3C,MWRIX" suffix="dat"></KeyNames>
+    <Render defaultband="3,4,2" ifCalibration="true" ifVector="true">
+      <BandRender bandID="1" colorClass="RAS" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+  
+   <!--FY4A数据，AGRI，支持hdf、ldf,tif,tiff、dat格式-->
+   <RasterSourceType ID="FY4A-AGRI-0500MFile" describe="标称数据文件" datasetsID="FY4A-AGRI-0500M"  bandID="" displayDataset="true" defaultDisplayDataset="NOMChannel02">
+    <KeyNames key="FY4A,AGRI,L1,0500M" suffix="hdf"></KeyNames>
+		<Render defaultband="3,2,1" ifCalibration="true" ifVector="true">
+
+    </Render>
+    </RasterSourceType>
+    <RasterSourceType ID="FY4A-AGRI-0500M-ldf,tif,tiff" describe="标称数据文件" datasetsID="FY4A-AGRI-0500M"  bandID="" displayDataset="true" >
+    <KeyNames key="FY4A,AGRI,L1,0500M" suffix="ldf,tif,tiff"></KeyNames>
+		<Render defaultband="3,2,1" ifCalibration="true" ifVector="true">
+			<BandRender bandID="1,2,3,4,5,6" rendermin="0" rendermax="1000" colorClass="" colorTable=""></BandRender>
+			<BandRender bandID="7" rendermin="2500" rendermax="500" colorClass="" colorTable=""></BandRender>
+      <BandRender bandID="8,9,10,11,12,13,14" rendermin="0" rendermax="3500" colorClass="" colorTable=""></BandRender>
+    </Render>
+	</RasterSourceType>
+	<RasterSourceType ID="FY4A-AGRI-1000MFile" describe="标称数据文件" datasetsID="FY4A-AGRI-1000M"  bandID="1,3,5" displayDataset="true" defaultDisplayDataset="NOMChannel01">
+    <KeyNames key="FY4A,AGRI,L1,1000M" suffix="hdf"></KeyNames>
+		<Render defaultband="3,2,1" ifCalibration="true" ifVector="true">
+
+    </Render>
+    </RasterSourceType>
+    <RasterSourceType ID="FY4A-AGRI-1000M-ldf,tif,tiff" describe="标称数据文件" datasetsID="FY4A-AGRI-1000M"  bandID="1,3,5" displayDataset="true" >
+    <KeyNames key="FY4A,AGRI,1000M" suffix="ldf,tif,tiff"></KeyNames>
+		<Render defaultband="3,2,1" ifCalibration="true" ifVector="true">
+			<BandRender bandID="1,2,3,4,5,6" rendermin="0" rendermax="1000" colorClass="" colorTable=""></BandRender>
+			<BandRender bandID="7" rendermin="2700" rendermax="5000" colorClass="" colorTable=""></BandRender>
+      <BandRender bandID="8,9,10,11,12,13,14" rendermin="0" rendermax="3500" colorClass="" colorTable=""></BandRender>
+    </Render>
+	</RasterSourceType>
+	<RasterSourceType ID="FY4A-AGRI-2000MFile" describe="标称数据文件" datasetsID="FY4A-AGRI-2000M"  bandID="" displayDataset="true" defaultDisplayDataset="NOMChannel01">
+    <KeyNames key="FY4A,AGRI,L1,2000M" suffix="hdf"></KeyNames>
+		<Render defaultband="3,2,1" ifCalibration="true" ifVector="true">
+
+    </Render>
+    </RasterSourceType>
+    <RasterSourceType ID="FY4A-AGRI-2000M-ldf,tif,tiff" describe="标称数据文件" datasetsID="FY4A-AGRI-2000M"  bandID="" displayDataset="true" >
+    <KeyNames key="FY4A,AGRI,2000M" suffix="ldf,tif,tiff"></KeyNames>
+		<Render defaultband="3,2,1" ifCalibration="true" ifVector="true">
+			<BandRender bandID="1,2,3,4,5,6" rendermin="0" rendermax="1000" colorClass="" colorTable=""></BandRender>
+			<BandRender bandID="7" rendermin="2700" rendermax="5000" colorClass="" colorTable=""></BandRender>
+      <BandRender bandID="8,9,10,11,12,13,14" rendermin="0" rendermax="3500" colorClass="" colorTable=""></BandRender>
+    </Render>
+	</RasterSourceType>
+	<RasterSourceType ID="FY4A-AGRI-4000MFile"  describe="标称数据文件" datasetsID="FY4A-AGRI-4000M"  bandID="1,3,5" displayDataset="true" defaultDisplayDataset="NOMChannel13">
+    <KeyNames key="FY4A,AGRI,L1,4000M" suffix="hdf"></KeyNames>
+		<Render defaultband="3,2,1" ifCalibration="true" ifVector="true">
+      <BandRender bandID="1" colorClass="RAS" colorTable=""></BandRender>
+
+    </Render>
+    </RasterSourceType>
+    <RasterSourceType ID="FY4A-AGRI-4000M-ldf,tif,tiff"  describe="标称数据文件" datasetsID="FY4A-AGRI-4000M"  bandID="1,3,5" displayDataset="true" >
+    <KeyNames key="FY4A,AGRI,4000M" suffix="ldf,tif,tiff"></KeyNames>
+		<Render defaultband="3,2,1" ifCalibration="true" ifVector="true">
+			<BandRender bandID="1,2,3,4,5,6" rendermin="0" rendermax="1000" colorClass="" colorTable=""></BandRender>
+			<BandRender bandID="7" rendermin="2700" rendermax="5000" colorClass="" colorTable=""></BandRender>
+      <BandRender bandID="8,9,10,11,12,13,14" rendermin="0" rendermax="3500" colorClass="" colorTable=""></BandRender>
+    </Render>
+	</RasterSourceType>
+
+  <RasterSourceType ID="FY4A-AGRI-ldf,tif,tiff"  describe="标称数据文件" datasetsID="FY4A-AGRI-4000M"  bandID="1,3,5" displayDataset="true" >
+    <KeyNames key="FY4A,AGRI" suffix="ldf,tif,tiff"></KeyNames>
+    <Render defaultband="3,2,1" ifCalibration="true" ifVector="true">
+      <BandRender bandID="1,2,3,4,5,6" rendermin="0" rendermax="1000" colorClass="" colorTable=""></BandRender>
+      <BandRender bandID="7" rendermin="2700" rendermax="5000" colorClass="" colorTable=""></BandRender>
+      <BandRender bandID="8,9,10,11,12,13,14" rendermin="0" rendermax="3500" colorClass="" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+
+    <!--GF1数据，支持tiff、dat格式-->
+  <RasterSourceType ID="GF1-WFVFile" describe="WFV文件" datasetsID="GF1-WFV" bandID="" displayDataset="false">
+    <KeyNames key="GF1,WFV" suffix="tiff,tif"></KeyNames>
+		<Render defaultband="3,2,1" ifCalibration="true" ifVector="true">
+			<!-- <BandRender bandID="1,2,3,4" rendermin="0" rendermax="1000" colorClass="RAS" colorTable=""></BandRender>			 -->
+    </Render>
+  </RasterSourceType>
+  <RasterSourceType ID="GF1-MSSFile" describe="MSS文件" datasetsID="GF1-MSS"  bandID="" displayDataset="false">
+    <KeyNames key="GF1,MSS" suffix="TIFF">	</KeyNames>
+		<Render defaultband="3,2,1" ifVector="true">
+			<!-- <BandRender bandID="1,2,3,4" rendermin="0" rendermax="1000" colorClass="RAS" colorTable=""></BandRender>	     -->
+    </Render>
+  </RasterSourceType>
+  <RasterSourceType ID="GF1-PANFile" describe="PAN文件" datasetsID="GF1-PAN"  bandID="" displayDataset="false">
+    <KeyNames key="GF1,PAN" suffix="TIFF">	</KeyNames>
+		<Render defaultband="0" ifVector="true">
+      <BandRender bandID="1" colorClass="" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+  <RasterSourceType ID="GF1-PMSFile" describe="PMS文件" datasetsID="GF1-PMS"  bandID="" displayDataset="false">
+    <KeyNames key="GF1,PMS" suffix="TIFF">	</KeyNames>
+		<Render defaultband="3,2,1" ifVector="true">
+			<!-- <BandRender bandID="1,2,3,4" rendermin="0" rendermax="1000" colorClass="RAS" colorTable=""></BandRender>		     -->
+    </Render>
+  </RasterSourceType>
+  <!--GF4数据，支持tiff格式-->
+  <RasterSourceType ID="GF4-PMSFile" describe="PMS文件" datasetsID="GF4-PMS" bandID="" displayDataset="false">
+    <KeyNames key="GF4,PMS" suffix="tiff"></KeyNames>
+		<Render defaultband="4,5,3"  ifCalibration="true" ifVector="true">
+			<!-- <BandRender bandID="1,2,3,4,5" rendermin="0" rendermax="1000" colorClass="RAS" colorTable=""></BandRender> -->
+    </Render>
+  </RasterSourceType>
+  <RasterSourceType ID="GF4-IRSFile" describe="IRS文件" datasetsID="GF4-IRS" bandID="" displayDataset="false">
+    <KeyNames key="GF4,IRS" suffix="tiff,tif"></KeyNames>
+		<Render defaultband="1"  ifCalibration="true" ifVector="true">
+			<BandRender bandID="1" rendermin="0" rendermax="4096" colorClass="" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+  <!--环境卫星数据，支持tiff、dat格式-->
+  <RasterSourceType ID="HJ1A-CCD1File" describe="" datasetsID="HJ1A-CCD1"  bandID="" displayDataset="false" >
+    <KeyNames key="HJ1A,CCD1" suffix="tif,xml,jpg">	</KeyNames>
+		<Render defaultband="3,2,1" ifVector="true">
+      <BandRender bandID="1" colorClass="" colorTable=""></BandRender>
+    </Render>
+    </RasterSourceType>
+  <RasterSourceType ID="HJ1A-CCD2File" describe="" datasetsID="HJ1A-CCD2"  bandID="" displayDataset="false" >
+    <KeyNames key="HJ1A,CCD2" suffix="tif,xml,jpg">	</KeyNames>
+		<Render defaultband="3,2,1" ifVector="true">
+      <BandRender bandID="1" colorClass="" colorTable=""></BandRender>
+    </Render>
+    </RasterSourceType>
+  <RasterSourceType ID="HJ1B-CCD1File" describe="" datasetsID="HJ1B-CCD1"  bandID="" displayDataset="false" >
+    <KeyNames key="HJ1B,CCD1" suffix="tif,xml,jpg">	</KeyNames>
+		<Render defaultband="3,2,1" ifVector="true">
+      <BandRender bandID="1" colorClass="" colorTable=""></BandRender>
+    </Render>
+    </RasterSourceType>
+  <RasterSourceType ID="HJ1B-CCD2File" describe="" datasetsID="HJ1B-CCD2"  bandID="" displayDataset="false" >
+    <KeyNames key="HJ1B,CCD2" suffix="tif,xml,jpg">	</KeyNames>
+		<Render defaultband="3,2,1" ifVector="true">
+      <BandRender bandID="6" colorClass="" colorTable=""></BandRender>
+    </Render>
+    </RasterSourceType>
+  <RasterSourceType ID="HJ1B-IRSFile" describe="" datasetsID="HJ1B-IRS"  bandID="" displayDataset="false" >
+    <KeyNames key="HJ1B,IRS" suffix="tif,xml,jpg">	</KeyNames>
+		<Render defaultband="3,2,1" ifVector="true">
+      <BandRender bandID="1" colorClass="" colorTable=""></BandRender>
+    </Render>
+  </RasterSourceType>
+  <!--AHI8数据，OBI，支持hdf格式 ,葵花8号卫星数据，支持tiff、dat格式-->
+    <RasterSourceType ID="AHI8-OBI-NOMFile"  describe="标称数据文件" datasetsID="AHI8-OBI-NOM"  bandID="" displayDataset="true" defaultDisplayDataset="NOMChannelIRX0390_2000">
+    <KeyNames key="AHI8,OBI,2000m,NOM" suffix="hdf"></KeyNames>
+		<Render defaultband="1" ifCalibration="true" ifVector="true">
+
+    </Render>
+    </RasterSourceType>
+    <RasterSourceType ID="AHI8-OBIFile"  describe="标称数据文件" datasetsID="AHI8-OBI"  bandID="" displayDataset="true" defaultDisplayDataset="channel01">
+    <KeyNames key="AHI8,OBI" suffix="hdf"></KeyNames>
+		<Render defaultband="3" ifCalibration="true" ifVector="true">
+
+    </Render>
+    </RasterSourceType>
+	<RasterSourceType ID="HS-H08File" describe="" datasetsID="AHI8-OBI"  bandID="" displayDataset="false" >
+    <KeyNames key="HS,H08"  suffix="TIF,TIFF,DAT,BZ2">	</KeyNames>
+		<Render defaultband="3,2,1" ifVector="true">
+		  <BandRender bandID="1,2,3,4" rendermin="0" rendermax="1000" colorClass="" colorTable=""></BandRender>
+		</Render>
+		<Calibration calibrationClass=""></Calibration>
+	</RasterSourceType>
+
+	<!--MODIS格式-->
+	<RasterSourceType ID="EOST-MODIS"  describe="标称数据文件" datasetsID="EOST-MODIS"  bandID="" displayDataset="true" defaultDisplayDataset="NOMChannelIRX0390_2000">
+		<KeyNames key="EOST,MODIS" suffix="LDF"></KeyNames>		
+		<Render defaultband="3,2,1" ifCalibration="true" ifVector="true">
+		
+		</Render>		
+    </RasterSourceType>
+	
+    <RasterSourceType ID="EOSA-MODIS"  describe="标称数据文件" datasetsID="EOSA-MODIS"  bandID="" displayDataset="true" defaultDisplayDataset="NOMChannelIRX0390_2000">
+		<KeyNames key="EOSA,MODIS" suffix="LDF"></KeyNames>		
+		<Render defaultband="3,2,1" ifCalibration="true" ifVector="true">
+		
+		</Render>		
+    </RasterSourceType>
+    <!--PGS产品识别HDF格式-->
+	 <!--FY2E-->
+  <RasterSourceType ID="FY2E-CLC-MLT-NOM-HDF" describe="" datasetsID="FY2E-CLC-MLT-NOM"  bandID="" displayDataset="false" defaultDisplayDataset="FY2E Hourly Cloud Classification" >
+    <KeyNames key="FY2E,CLC,L2,MLT,NOM" suffix="HDF">	</KeyNames>
+		<Render defaultband="1" ifVector="true">
+      <BandRender bandID="1" colorClass="RAS" colorTable="GF_GFSFS"></BandRender>
+    </Render>
+    </RasterSourceType>
+	<!--FY2F-->
+  <!-- 	<RasterSourceType ID="FY2F-PRE-001-NOM-HDF" describe="" datasetsID="FY2F-PRE-001-NOM"  bandID="" displayDataset="false" defaultDisplayDataset="FY2F PRE 1-Hour Product" >    				
+		<KeyNames key="FY2F,PRE,001,NOM" suffix="HDF">	</KeyNames>		
+		<Render defaultband="1" ifVector="true">
+			<BandRender bandID="1" colorClass="RAS" colorTable="FY2F-PRE-001-NOM"></BandRender> 		
+		</Render>		
+    </RasterSourceType> -->
+	<!--FY3B 臭氧产品-->
+  <RasterSourceType ID="FY3B-TOUXX-050KM-HDF" describe="" datasetsID="TOUXX"  bandID="" displayDataset="false" defaultDisplayDataset="Total_Ozone" >
+    <KeyNames key="TOUXX,L2,050KM" suffix="HDF">	</KeyNames>
+		<Render defaultband="1" ifVector="true">
+      <BandRender bandID="1" colorClass="OZO" colorTable="OZOTOU"></BandRender>
+    </Render>
+    </RasterSourceType>
+  <RasterSourceType ID="FY3B-TOUXX-050KM-ldf,tif,tiff" describe="" datasetsID="TOUXX"  bandID="" displayDataset="false" defaultDisplayDataset="Total_Ozone" >
+    <KeyNames key="TOUXX,L2,050KM" suffix="ldf,tif,tiff,dat">	</KeyNames>
+		<Render defaultband="1" ifVector="true">
+      <BandRender bandID="1" colorClass="OZO" colorTable="OZOTOU"></BandRender>
+    </Render>
+    </RasterSourceType>
+	<!--FY3C-->
+  <RasterSourceType ID="FY3C-VIRRX-GBAL-CLA-MLT-HDF" describe="" datasetsID="FY3C-VIRRX-GBAL-CLA-MLT"  bandID="" displayDataset="false" defaultDisplayDataset="Global Cloud Amount" >
+    <KeyNames key="FY3C,VIRRX,GBAL,L2,CLA,MLT" suffix="HDF">	</KeyNames>
+		<Render defaultband="1" ifVector="true">
+      <BandRender bandID="1" colorClass="RAS" colorTable="FY3C-VIRRX-GBAL-L2-CLA-MLT"></BandRender>
+    </Render>
+    </RasterSourceType>
+  <RasterSourceType ID="FY3C-VIRRD-GBAL-SST-MLT-HDF" describe="" datasetsID="FY3C-VIRRD-GBAL-SST-MLT"  bandID="" displayDataset="false" defaultDisplayDataset="sea_surface_temperature" >
+    <KeyNames key="FY3C,VIRRD,GBAL,L2,SST,MLT" suffix="HDF">	</KeyNames>
+		<Render defaultband="1" ifVector="true">
+      <BandRender bandID="1" colorClass="" colorTable=""></BandRender>
+    </Render>
+    </RasterSourceType>
+	<!--CLT-->
+  <RasterSourceType ID="CLT-Product" describe="" datasetsID="Common"  bandID="" displayDataset="false" defaultDisplayDataset="" >
+    <KeyNames key="CLT" suffix="tif">	</KeyNames>
+		<Render defaultband="1" ifVector="true">
+      <BandRender bandID="1" colorClass="RAS" colorTable="CLT"></BandRender>
+		</Render>
+		<Calibration calibrationClass=""></Calibration>
+    </RasterSourceType>
+	<!--PRE-->
+  <RasterSourceType ID="PRE-Product" describe="" datasetsID="Common"  bandID="" displayDataset="false" defaultDisplayDataset="FY2F PRE 24-Hour Combine Product" >
+    <KeyNames key="PRE" suffix="tif,awx,hdf">	</KeyNames>
+		<Render defaultband="1" ifVector="true">
+      <BandRender bandID="1" colorClass="RAS" colorTable="PRE"></BandRender>
+		</Render>
+		<Calibration calibrationClass=""></Calibration>
+    </RasterSourceType>
+	<!--只针对产品判别-->
+  <RasterSourceType ID="FIRE-Product" describe="" datasetsID="Common"  bandID="" displayDataset="false" defaultDisplayDataset="" >
+    <KeyNames key="FIRE" suffix="dat">	</KeyNames>
+		<Render defaultband="1" ifVector="true">
+      <BandRender bandID="1" colorClass="FIR" colorTable="FIR"></BandRender>
+		</Render>
+		<Calibration calibrationClass=""></Calibration>
+  </RasterSourceType>
+	<!--PGS产品-->
+	<RasterSourceType ID="SST-Product" describe="" datasetsID="Common"  bandID="" displayDataset="false" defaultDisplayDataset="" >    				
+		<KeyNames key="SST" suffix="ldf,dat"></KeyNames>		
+		<Render defaultband="1" ifVector="true">
+      <BandRender bandID="1" colorClass="PGS" colorTable="PGSSST"></BandRender>
+		</Render>
+		<Calibration calibrationClass=""></Calibration>
+  </RasterSourceType>
+    <RasterSourceType ID="ASW-SWS-Product" describe="" datasetsID="Common"  bandID="" displayDataset="false" defaultDisplayDataset="" >
+    <KeyNames key="ASW,HMFS" suffix="tif"></KeyNames>
+    <Render defaultband="1" ifVector="true">
+	  <BandRender bandID="1" colorClass="ASW" colorTable="ASWHMFS"></BandRender>  
+    </Render>
+    <Calibration calibrationClass=""></Calibration>
+  </RasterSourceType>
+    <RasterSourceType ID="ASW-SST-Product" describe="" datasetsID="Common"  bandID="" displayDataset="false" defaultDisplayDataset="" >
+    <KeyNames key="ASW,HMWD" suffix="tif"></KeyNames>
+    <Render defaultband="1" ifVector="true">
+      <BandRender bandID="1" colorClass="ASW" colorTable="ASWHMWD"></BandRender>  
+    </Render>
+    <Calibration calibrationClass=""></Calibration>
+  </RasterSourceType>
+    <RasterSourceType ID="ASW-TPW-Product" describe="" datasetsID="Common"  bandID="" displayDataset="false" defaultDisplayDataset="" >
+    <KeyNames key="ASW,HMJS" suffix="tif"></KeyNames>
+    <Render defaultband="1" ifVector="true">
+      <BandRender bandID="1" colorClass="ASW" colorTable="ASWHMJS"></BandRender>  
+    </Render>
+    <Calibration calibrationClass=""></Calibration>
+  </RasterSourceType>
+    <RasterSourceType ID="ASW-OLR-Product" describe="" datasetsID="Common"  bandID="" displayDataset="false" defaultDisplayDataset="" >
+    <KeyNames key="ASW,CBFS" suffix="tif"></KeyNames>
+    <Render defaultband="1" ifVector="true">
+      <BandRender bandID="1" colorClass="ASW" colorTable="ASWCBFS"></BandRender>  
+    </Render>
+    <Calibration calibrationClass=""></Calibration>
+  </RasterSourceType>
+  <RasterSourceType ID="SWE-Product" describe="" datasetsID="FY3C-MWRIX"  bandID="" displayDataset="false" defaultDisplayDataset="" >
+    <KeyNames key="SWE" suffix="ldf,DAT"></KeyNames>
+		<Render defaultband="1" ifVector="true">
+      <BandRender bandID="1" colorClass="PGS" colorTable="PGSSWE"></BandRender>
+		</Render>
+		<Calibration calibrationClass=""></Calibration>
+  </RasterSourceType>
+  <RasterSourceType ID="SD-Product" describe="" datasetsID="FY3C-MWRIX"  bandID="" displayDataset="false" defaultDisplayDataset="" > <!--此处的datasetsID设置不对,待完善-->
+    <KeyNames key="SD" suffix="ldf,DAT"></KeyNames>
+    <Render defaultband="1" ifVector="true">
+      <BandRender bandID="1" colorClass="PGS" colorTable="PGSSWE"></BandRender>
+    </Render>
+    <Calibration calibrationClass=""></Calibration>
+  </RasterSourceType>
+</RasterSourceTypes>
+

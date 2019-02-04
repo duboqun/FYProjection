@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using OSGeo.GDAL;
+using OSGeo.OSR;
 
 namespace ProjectTool
 {
@@ -24,6 +25,9 @@ namespace ProjectTool
            {
                Console.WriteLine($"k:{VARIABLE.Key} v:{VARIABLE.Value}");
            }
+           
+           SpatialReference srs = new SpatialReference("");
+           srs.ImportFromEPSG(4326);
         }
     }
 }

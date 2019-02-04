@@ -194,7 +194,7 @@ namespace PIE.Meteo.FileProject.BlockOper
             {
                 if (raster != null)
                 {
-                    _projectName = GetProjectionIdentify(raster.SpatialRef.__str__());
+                    _projectName = GetProjectionIdentify(raster.SpatialRef.GetAttrValue("GEOGCS",0));
                     DataIdentify df = raster.DataIdentify;
                     if (string.IsNullOrEmpty(Satellite) || Satellite.ToUpper() == "NUL")
                         Satellite = df.Satellite;
@@ -383,7 +383,7 @@ namespace PIE.Meteo.FileProject.BlockOper
             try
             {
                 if (prd != null)
-                    _projectName = GetProjectionIdentify(prd.SpatialRef.__str__());
+                    _projectName = GetProjectionIdentify(prd.SpatialRef.GetAttrValue("GEOGCS",0));
             }
             finally
             {
@@ -473,7 +473,7 @@ namespace PIE.Meteo.FileProject.BlockOper
                 prd = WarpDataset.Open(fname);
                 if (prd != null)
                 {
-                    _projectName = GetProjectionIdentify(prd.SpatialRef.__str__());
+                    _projectName = GetProjectionIdentify(prd.SpatialRef.GetAttrValue("GEOGCS",0));
                     DataIdentify df = prd.DataIdentify;
                     if (string.IsNullOrEmpty(Satellite) || Satellite.ToUpper() == "NUL")
                         Satellite = df.Satellite;
