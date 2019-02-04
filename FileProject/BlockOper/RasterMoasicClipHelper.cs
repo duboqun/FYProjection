@@ -20,8 +20,11 @@ namespace PIE.Meteo.FileProject.BlockOper
         public bool ComputeBeginEndRowCol(AbstractWarpDataset args, AbstractWarpDataset dstArgs, Size targetSize, ref int oBeginRow, ref int oBeginCol, ref int oEndRow, ref int oEndCol, ref int tBeginRow, ref int tBeginCol, ref int tEndRow, ref int tEndCol)
         {
             Envelope targetEnvelope = dstArgs.GetEnvelope();
-            Envelope innerEnvelope = ((targetEnvelope as Geometry.Geometry).Intersection(args.GetEnvelope() as IGeometry) as Envelope);
-            if (innerEnvelope == null)
+            Geometry targetGeo = targetEnvelope.GetGeometry();
+            Geometry argGeo = args.GetEnvelope().GetGeometry();
+            
+            Geometry innerEnvelopeGeo = targetGeo.Intersection(argGeo);
+            if (innerEnvelopeGeo == null)
                 return  false;
             double tResolutionX = dstArgs.ResolutionX;
             double tResolutionY = dstArgs.ResolutionY;
@@ -179,16 +182,22 @@ namespace PIE.Meteo.FileProject.BlockOper
         {
             Envelope oEnvelope = args.GetEnvelope();
             Envelope tEnvelope = dstArgs.GetEnvelope();
-            
-            Envelope inEnv = ((oEnvelope as Geometry.Geometry).Intersection(tEnvelope as IGeometry) as Envelope);
-            if (inEnv == null)
+            Geometry oGeo =  oEnvelope.GetGeometry();
+            Geometry tGeo =  tEnvelope.GetGeometry();
+
+            Geometry inEnvGeo = oGeo.Intersection(tGeo);
+            if (inEnvGeo == null)
                 return false;
+            Envelope inEnv = new Envelope();
+            inEnvGeo.GetEnvelope(inEnv);
+            
             if (!IsInteractived(oEnvelope, tEnvelope))
                 return false;
             float oResolutionX = args.ResolutionX;
             float oResolutionY = args.ResolutionY;
             float tResolutionX = dstArgs.ResolutionX;
             float tResolutionY = dstArgs.ResolutionY;
+            
             oIntersectSize = CoordEnvelopeToSize(inEnv, oResolutionX, oResolutionY);
             tIntersectSize = CoordEnvelopeToSize(inEnv, tResolutionX, tResolutionY);
             //

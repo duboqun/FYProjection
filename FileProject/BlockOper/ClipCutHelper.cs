@@ -5,36 +5,35 @@ using System.Text;
 using System.Drawing;
 using System.IO;
 using System.Text.RegularExpressions;
-using PIE.DataSource;
-using PIE.Meteo.Core;
+using OSGeo.GDAL;
 
 namespace PIE.Meteo.FileProject.BlockOper
 {
     public class ClipCutHelper
     {
-        public static int GetSize(PixelDataType PixelDataType)
+        public static int GetSize(DataType DataType)
         {
-            switch (PixelDataType)
+            switch (DataType)
             {
-                case PixelDataType.Byte:
+                case DataType.GDT_Byte:
                     return 1;
                     break;
-                case PixelDataType.Float64:
+                case DataType.GDT_Float64:
                     return 8;
                     break;
-                case PixelDataType.Float32:
+                case DataType.GDT_Float32:
                     return 4;
                     break;
-                case PixelDataType.Int16:
+                case DataType.GDT_Int16:
                     return 2;
                     break;
-                case PixelDataType.Int32:
+                case DataType.GDT_Int32:
                     return 4;
                     break;
-                case PixelDataType.UInt16:
+                case DataType.GDT_UInt16:
                     return 2;
                     break;
-                case PixelDataType.UInt32:
+                case DataType.GDT_UInt32:
                     return 4;
                     break;
                 default:

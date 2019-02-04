@@ -1,5 +1,4 @@
-﻿using PIE.Meteo.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,7 +37,7 @@ namespace PIE.Meteo.FileProject.BlockOper
         {
             for (int i = 1; i < srcRasters.Count(); i++)
             {
-                if (!srcRasters[i].SpatialRef.IsSame(srcRasters[0].SpatialRef))
+                if (srcRasters[i].SpatialRef.IsSame(srcRasters[0].SpatialRef)!=1)
                 {
                     return false;
                 }

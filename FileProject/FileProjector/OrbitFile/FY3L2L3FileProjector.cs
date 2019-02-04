@@ -1,28 +1,13 @@
-﻿#region Version Info
-/*========================================================================
-* 功能概述：
-* 
-* 创建者：admin     时间：2013-09-04 9:54:47
-* ------------------------------------------------------------------------
-* 变更记录：
-* 时间：                 修改者：                
-* 修改说明：
-* 
-* ------------------------------------------------------------------------
-* ========================================================================
-*/
-#endregion
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.IO;
+using OSGeo.GDAL;
+using OSGeo.OSR;
 using PIE.Meteo.RasterProject;
-using PIE.DataSource;
-using PIE.Meteo.Core;
-using PIE.Geometry;
+
 
 namespace PIE.Meteo.FileProject
 {
@@ -75,22 +60,22 @@ namespace PIE.Meteo.FileProject
         {
             //IBandProvider srcbandpro = locationRaster.BandProvider as IBandProvider;
             {
-                IRasterBand[] lonsBands = locationRaster.GetBands("Longitude");
-                IRasterBand lonsBand = lonsBands[0];
+                Band[] lonsBands = locationRaster.GetBands("Longitude");
+                Band lonsBand = lonsBands[0];
                 {
-                    locationSize = new Size(lonsBand.GetXSize(), lonsBand.GetYSize());
-                    xs = new Double[lonsBand.GetXSize() * lonsBand.GetYSize()];
+                    locationSize = new Size(lonsBand.XSize, lonsBand.YSize);
+                    xs = new Double[lonsBand.XSize * lonsBand.YSize];
                     unsafe
                     {
                         fixed (Double* ptrLong = xs)
                         {
                             IntPtr bufferPtrLong = new IntPtr(ptrLong);
-                            lonsBand.Read(0, 0, lonsBand.GetXSize(), lonsBand.GetYSize(), bufferPtrLong, lonsBand.GetXSize(), lonsBand.GetYSize(), PixelDataType.Float64);
+                            lonsBand.ReadRaster(0, 0, lonsBand.XSize, lonsBand.YSize, bufferPtrLong, lonsBand.XSize, lonsBand.YSize, DataType.GDT_Float64,0,0);
                         }
                     }
                 }
-                IRasterBand[] latBands = locationRaster.GetBands("Latitude");
-                IRasterBand latBand = latBands[0];
+                Band[] latBands = locationRaster.GetBands("Latitude");
+                Band latBand = latBands[0];
                 {
                     ys = new Double[locationSize.Width * locationSize.Height];
                     unsafe
@@ -99,7 +84,7 @@ namespace PIE.Meteo.FileProject
                         {
                             {
                                 IntPtr bufferPtrLat = new IntPtr(ptrLat);
-                                latBand.Read(0, 0, latBand.GetXSize(), latBand.GetYSize(), bufferPtrLat, latBand.GetXSize(), latBand.GetYSize(), PixelDataType.Float64);
+                                latBand.ReadRaster(0, 0, latBand.XSize, latBand.YSize, bufferPtrLat, latBand.XSize, latBand.YSize, DataType.GDT_Float64,0,0);
                             }
                         }
                     }
@@ -200,7 +185,14 @@ namespace PIE.Meteo.FileProject
             {
                 _dstSpatialRef = dstRaster.SpatialRef;
                 var coordEnv = dstRaster.GetEnvelope();
-                prjSettings.OutEnvelope = PrjEnvelope.CreateByLeftTop(_dstSpatialRef, coordEnv.XMin, coordEnv.YMax, coordEnv.GetWidth(), coordEnv.GetHeight());
+                prjSettings.OutEnvelope = new PrjEnvelope()
+                {
+                    Srs = _dstSpatialRef,
+                    MinX = coordEnv.MinX,
+                    MinY = coordEnv.MinY,
+                    MaxX = coordEnv.MaxX,
+                    MaxY = coordEnv.MaxY
+                };
                 ReadyArgs(srcRaster, prjSettings, _dstSpatialRef, progressCallback);
                 string outfilename = _prjSettings.OutPathAndFileName;
                 try
@@ -333,7 +325,7 @@ namespace PIE.Meteo.FileProject
                 dstSpatialRef = _srcSpatialRef;
             if (string.IsNullOrWhiteSpace(prjSettings.OutFormat))
                 prjSettings.OutFormat = "LDF";
-            if (dstSpatialRef.Type == SpatialReferenceType.GeographicCS)
+            if (dstSpatialRef.IsGeographic()==1)
             {
                 _srcImgResolution = 0.01f;
             }
@@ -343,7 +335,7 @@ namespace PIE.Meteo.FileProject
             }
             if (prjSettings.OutResolutionX == 0 || prjSettings.OutResolutionY == 0)
             {
-                if (dstSpatialRef.Type == SpatialReferenceType.GeographicCS)
+                if (dstSpatialRef.IsGeographic()==1)
                 {
                     prjSettings.OutResolutionX = 0.01f;
                     prjSettings.OutResolutionY = 0.01f;
@@ -412,9 +404,9 @@ namespace PIE.Meteo.FileProject
             _rasterProjector.ComputeDstEnvelope(_srcSpatialRef, xs, ys, locationSize, dstSpatialRef, maskEnvelope, out maxPrjEnvelope, progressCallback);
         }
 
-        private IRasterBand[] TryCreateRasterDataBands(AbstractWarpDataset srcRaster, FY3L2L3FilePrjSettings prjSettings, Action<int, string> progressCallback)
+        private Band[] TryCreateRasterDataBands(AbstractWarpDataset srcRaster, FY3L2L3FilePrjSettings prjSettings, Action<int, string> progressCallback)
         {
-            List<IRasterBand> rasterBands = new List<IRasterBand>();
+            List<Band> rasterBands = new List<Band>();
             if (prjSettings.OutBandNos == null)
             {
                 int count = srcRaster.BandCount;
@@ -423,7 +415,7 @@ namespace PIE.Meteo.FileProject
                 {
                     if (progressCallback != null)
                         progressCallback(_readyProgress++, "准备第" + i + "个输入数据通道");
-                    IRasterBand band = srcRaster.GetRasterBand(i);
+                    Band band = srcRaster.GetRasterBand(i);
                     rasterBands.Add(band);
                 }
             }
@@ -431,7 +423,7 @@ namespace PIE.Meteo.FileProject
             {
                 foreach (var i in prjSettings.OutBandNos)
                 {
-                    IRasterBand band = srcRaster.GetRasterBand(i);
+                    Band band = srcRaster.GetRasterBand(i);
                     rasterBands.Add(band);
                 }
             }

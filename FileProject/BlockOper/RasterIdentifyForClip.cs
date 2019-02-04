@@ -1,5 +1,4 @@
-﻿using PIE.Meteo.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -195,7 +194,7 @@ namespace PIE.Meteo.FileProject.BlockOper
             {
                 if (raster != null)
                 {
-                    _projectName = GetProjectionIdentify(raster.SpatialRef.Name);
+                    _projectName = GetProjectionIdentify(raster.SpatialRef.__str__());
                     DataIdentify df = raster.DataIdentify;
                     if (string.IsNullOrEmpty(Satellite) || Satellite.ToUpper() == "NUL")
                         Satellite = df.Satellite;
@@ -384,7 +383,7 @@ namespace PIE.Meteo.FileProject.BlockOper
             try
             {
                 if (prd != null)
-                    _projectName = GetProjectionIdentify(prd.SpatialRef.Name);
+                    _projectName = GetProjectionIdentify(prd.SpatialRef.__str__());
             }
             finally
             {
@@ -474,7 +473,7 @@ namespace PIE.Meteo.FileProject.BlockOper
                 prd = WarpDataset.Open(fname);
                 if (prd != null)
                 {
-                    _projectName = GetProjectionIdentify(prd.SpatialRef.Name);
+                    _projectName = GetProjectionIdentify(prd.SpatialRef.__str__());
                     DataIdentify df = prd.DataIdentify;
                     if (string.IsNullOrEmpty(Satellite) || Satellite.ToUpper() == "NUL")
                         Satellite = df.Satellite;
