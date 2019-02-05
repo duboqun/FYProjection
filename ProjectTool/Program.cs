@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using OSGeo.GDAL;
 
 namespace PIE.Meteo.ProjectTool
 {
@@ -12,6 +13,7 @@ namespace PIE.Meteo.ProjectTool
     {
         static void Main(string[] args)
         {
+            Gdal.AllRegister();
             //UInt16[] buffer = new ushort[100*100];
             //string hdfPath = @"E:\RSDATA\FY4A_0724\FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20180724000000_20180724001459_0500M_V0001.HDF";
             //hdfPath = @"R:\FY4A\AGRI\L1\FDI\DISK\2018\20180804\FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20180804010000_20180804011459_0500M_V0001.HDF";

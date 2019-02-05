@@ -559,7 +559,7 @@ namespace PIE.Meteo.FileProject
         }
 
         internal static void GetFY4ABandmapTable(AbstractWarpDataset hkmRaster, AbstractWarpDataset kmRaster,
-            AbstractWarpDataset dkmRaster, AbstractWarpDataset fkmRaster, int[] bandNumbers, out int[] hkmBands,
+            AbstractWarpDataset dkmRaster, AbstractWarpDataset fkmRaster, ref int[] bandNumbers, out int[] hkmBands,
             out int[] kmBands, out int[] dkmBands, out int[] fkmBands)
         {
             hkmBands = null;

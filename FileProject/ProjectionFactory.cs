@@ -1147,7 +1147,7 @@ namespace PIE.Meteo.FileProject
             prjOutArg.ResolutionY = outResolutionY;
             FilterRasterForFY4A(ref hkmRaster, ref kmRaster, ref dkmRaster, ref fkmRaster, dstSpatialRef, outResolutionX, outResolutionY);
             int[] hkmBands, kmBands, dkmBands, fkmBands;
-            FileFinder.GetFY4ABandmapTable(hkmRaster, kmRaster, dkmRaster, fkmRaster, prjOutArg.SelectedBands, out hkmBands, out kmBands, out dkmBands, out fkmBands);
+            FileFinder.GetFY4ABandmapTable(hkmRaster, kmRaster, dkmRaster, fkmRaster, ref prjOutArg.SelectedBands, out hkmBands, out kmBands, out dkmBands, out fkmBands);
             int bandCount = 0;
             new List<int[]> { kmBands, dkmBands, fkmBands }.ForEach(t => { if (t == null) bandCount += 0; else bandCount += t.Length; });
 

@@ -58,9 +58,25 @@ namespace PIE.Meteo.FileProject
                 string subDsPath = ds.GetSubDatasets().Values.ToList()[index];
                 var subRasterDs = Gdal.OpenShared(subDsPath, Access.GA_ReadOnly);
                 bands = new Band[subRasterDs.RasterCount];
-                for (int i = 0; i < subRasterDs.RasterCount; i++)
+                if (subRasterDs != null)
                 {
-                    bands[i] = subRasterDs.GetRasterBand(i+1);
+                    for (int i = 0; i < subRasterDs.RasterCount; i++)
+                    {
+                        bands[i] = subRasterDs.GetRasterBand(i + 1);
+                    }
+                }
+            }
+            else
+            {
+                string subDs = $"HDF5:\"{fileName}\"://{v}";
+                var subRasterDs = Gdal.OpenShared(subDs, Access.GA_ReadOnly);
+                if (subRasterDs != null)
+                {
+                    bands = new Band[subRasterDs.RasterCount];
+                    for (int i = 0; i < subRasterDs.RasterCount; i++)
+                    {
+                        bands[i] = subRasterDs.GetRasterBand(i+1);
+                    }
                 }
             }
             return bands;
