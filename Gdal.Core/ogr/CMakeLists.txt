@@ -1,4 +1,3 @@
-cmake_minimum_required(VERSION 3.13)
 project(ogr_warp)
 add_library(ogr_warp SHARED ogr_wrap.cpp)
 find_package(GDAL)

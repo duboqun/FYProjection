@@ -36,7 +36,7 @@ class GdalPINVOKE {
     static ExceptionArgumentDelegate argumentNullDelegate = new ExceptionArgumentDelegate(SetPendingArgumentNullException);
     static ExceptionArgumentDelegate argumentOutOfRangeDelegate = new ExceptionArgumentDelegate(SetPendingArgumentOutOfRangeException);
 
-    [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="SWIGRegisterExceptionCallbacks_Gdal")]
+    [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="SWIGRegisterExceptionCallbacks_Gdal")]
     public static extern void SWIGRegisterExceptionCallbacks_Gdal(
                                 ExceptionDelegate applicationDelegate,
                                 ExceptionDelegate arithmeticDelegate,
@@ -50,7 +50,7 @@ class GdalPINVOKE {
                                 ExceptionDelegate overflowDelegate, 
                                 ExceptionDelegate systemExceptionDelegate);
 
-    [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="SWIGRegisterExceptionArgumentCallbacks_Gdal")]
+    [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="SWIGRegisterExceptionArgumentCallbacks_Gdal")]
     public static extern void SWIGRegisterExceptionCallbacksArgument_Gdal(
                                 ExceptionArgumentDelegate argumentDelegate,
                                 ExceptionArgumentDelegate argumentNullDelegate,
@@ -172,7 +172,7 @@ class GdalPINVOKE {
     public delegate string SWIGStringDelegate(string message);
     static SWIGStringDelegate stringDelegate = new SWIGStringDelegate(CreateString);
 
-    [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="SWIGRegisterStringCallback_Gdal")]
+    [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="SWIGRegisterStringCallback_Gdal")]
     public static extern void SWIGRegisterStringCallback_Gdal(SWIGStringDelegate stringDelegate);
 
     static string CreateString(string cString) {
@@ -191,10 +191,10 @@ class GdalPINVOKE {
   }
 
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_UseExceptions___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_UseExceptions___")]
   public static extern void UseExceptions();
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_DontUseExceptions___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_DontUseExceptions___")]
   public static extern void DontUseExceptions();
 
   public class StringListMarshal : IDisposable {
@@ -215,1138 +215,1138 @@ class GdalPINVOKE {
   }
 
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_StringListDestroy___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_StringListDestroy___")]
   public static extern void StringListDestroy(IntPtr jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_nVersion_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_nVersion_set___")]
   public static extern void RasterIOExtraArg_nVersion_set(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_nVersion_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_nVersion_get___")]
   public static extern int RasterIOExtraArg_nVersion_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_eResampleAlg_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_eResampleAlg_set___")]
   public static extern void RasterIOExtraArg_eResampleAlg_set(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_eResampleAlg_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_eResampleAlg_get___")]
   public static extern int RasterIOExtraArg_eResampleAlg_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_pfnProgress_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_pfnProgress_set___")]
   public static extern void RasterIOExtraArg_pfnProgress_set(global::System.Runtime.InteropServices.HandleRef jarg1, Gdal.GDALProgressFuncDelegate jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_pfnProgress_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_pfnProgress_get___")]
   public static extern Gdal.GDALProgressFuncDelegate RasterIOExtraArg_pfnProgress_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_pProgressData_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_pProgressData_set___")]
   public static extern void RasterIOExtraArg_pProgressData_set(global::System.Runtime.InteropServices.HandleRef jarg1, IntPtr jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_pProgressData_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_pProgressData_get___")]
   public static extern IntPtr RasterIOExtraArg_pProgressData_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_bFloatingPointWindowValidity_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_bFloatingPointWindowValidity_set___")]
   public static extern void RasterIOExtraArg_bFloatingPointWindowValidity_set(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_bFloatingPointWindowValidity_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_bFloatingPointWindowValidity_get___")]
   public static extern int RasterIOExtraArg_bFloatingPointWindowValidity_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_dfXOff_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_dfXOff_set___")]
   public static extern void RasterIOExtraArg_dfXOff_set(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_dfXOff_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_dfXOff_get___")]
   public static extern double RasterIOExtraArg_dfXOff_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_dfYOff_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_dfYOff_set___")]
   public static extern void RasterIOExtraArg_dfYOff_set(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_dfYOff_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_dfYOff_get___")]
   public static extern double RasterIOExtraArg_dfYOff_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_dfXSize_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_dfXSize_set___")]
   public static extern void RasterIOExtraArg_dfXSize_set(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_dfXSize_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_dfXSize_get___")]
   public static extern double RasterIOExtraArg_dfXSize_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_dfYSize_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_dfYSize_set___")]
   public static extern void RasterIOExtraArg_dfYSize_set(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_dfYSize_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterIOExtraArg_dfYSize_get___")]
   public static extern double RasterIOExtraArg_dfYSize_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_new_RasterIOExtraArg___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_new_RasterIOExtraArg___")]
   public static extern global::System.IntPtr new_RasterIOExtraArg();
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_delete_RasterIOExtraArg___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_delete_RasterIOExtraArg___")]
   public static extern void delete_RasterIOExtraArg(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Debug___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Debug___")]
   public static extern void Debug(string jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_SetErrorHandler___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_SetErrorHandler___")]
   public static extern int SetErrorHandler(Gdal.GDALErrorHandlerDelegate jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_PushErrorHandler__SWIG_0___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_PushErrorHandler__SWIG_0___")]
   public static extern int PushErrorHandler__SWIG_0(string jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Error___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Error___")]
   public static extern void Error(int jarg1, int jarg2, string jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GOA2GetAuthorizationURL___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GOA2GetAuthorizationURL___")]
   public static extern string GOA2GetAuthorizationURL(string jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GOA2GetRefreshToken___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GOA2GetRefreshToken___")]
   public static extern string GOA2GetRefreshToken(string jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GOA2GetAccessToken___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GOA2GetAccessToken___")]
   public static extern string GOA2GetAccessToken(string jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_PushErrorHandler__SWIG_1___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_PushErrorHandler__SWIG_1___")]
   public static extern void PushErrorHandler__SWIG_1(Gdal.GDALErrorHandlerDelegate jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_PopErrorHandler___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_PopErrorHandler___")]
   public static extern void PopErrorHandler();
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ErrorReset___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ErrorReset___")]
   public static extern void ErrorReset();
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_EscapeString___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_EscapeString___")]
   public static extern string EscapeString(int jarg1, string jarg2, int jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GetLastErrorNo___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GetLastErrorNo___")]
   public static extern int GetLastErrorNo();
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GetLastErrorType___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GetLastErrorType___")]
   public static extern int GetLastErrorType();
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GetLastErrorMsg___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GetLastErrorMsg___")]
   public static extern string GetLastErrorMsg();
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GetErrorCounter___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GetErrorCounter___")]
   public static extern uint GetErrorCounter();
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_VSIGetLastErrorNo___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_VSIGetLastErrorNo___")]
   public static extern int VSIGetLastErrorNo();
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_VSIGetLastErrorMsg___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_VSIGetLastErrorMsg___")]
   public static extern string VSIGetLastErrorMsg();
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_VSIErrorReset___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_VSIErrorReset___")]
   public static extern void VSIErrorReset();
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_PushFinderLocation___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_PushFinderLocation___")]
   public static extern void PushFinderLocation(byte[] jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_PopFinderLocation___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_PopFinderLocation___")]
   public static extern void PopFinderLocation();
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_FinderClean___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_FinderClean___")]
   public static extern void FinderClean();
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_FindFile___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_FindFile___")]
   public static extern string FindFile(string jarg1, byte[] jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ReadDir___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ReadDir___")]
   public static extern IntPtr ReadDir(byte[] jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ReadDirRecursive___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ReadDirRecursive___")]
   public static extern IntPtr ReadDirRecursive(byte[] jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_SetConfigOption___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_SetConfigOption___")]
   public static extern void SetConfigOption(string jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GetConfigOption___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GetConfigOption___")]
   public static extern string GetConfigOption(string jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_CPLBinaryToHex___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_CPLBinaryToHex___")]
   public static extern string CPLBinaryToHex(int jarg1, IntPtr jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_CPLHexToBinary___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_CPLHexToBinary___")]
   public static extern IntPtr CPLHexToBinary(string jarg1, out int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_FileFromMemBuffer___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_FileFromMemBuffer___")]
   public static extern void FileFromMemBuffer(byte[] jarg1, int jarg2, IntPtr jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Unlink___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Unlink___")]
   public static extern int Unlink(byte[] jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_HasThreadSupport___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_HasThreadSupport___")]
   public static extern int HasThreadSupport();
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Mkdir___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Mkdir___")]
   public static extern int Mkdir(byte[] jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Rmdir___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Rmdir___")]
   public static extern int Rmdir(byte[] jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_MkdirRecursive___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_MkdirRecursive___")]
   public static extern int MkdirRecursive(byte[] jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RmdirRecursive___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RmdirRecursive___")]
   public static extern int RmdirRecursive(byte[] jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Rename___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Rename___")]
   public static extern int Rename(byte[] jarg1, byte[] jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GetActualURL___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GetActualURL___")]
   public static extern string GetActualURL(byte[] jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GetSignedURL___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GetSignedURL___")]
   public static extern string GetSignedURL(byte[] jarg1, IntPtr[] jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GetFileSystemsPrefixes___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GetFileSystemsPrefixes___")]
   public static extern IntPtr GetFileSystemsPrefixes();
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GetFileSystemOptions___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GetFileSystemOptions___")]
   public static extern string GetFileSystemOptions(byte[] jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_VSIFOpenL___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_VSIFOpenL___")]
   public static extern IntPtr VSIFOpenL(byte[] jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_VSIFOpenExL___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_VSIFOpenExL___")]
   public static extern IntPtr VSIFOpenExL(byte[] jarg1, string jarg2, int jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_VSIFEofL___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_VSIFEofL___")]
   public static extern int VSIFEofL(IntPtr jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_VSIFFlushL___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_VSIFFlushL___")]
   public static extern int VSIFFlushL(IntPtr jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_VSIFCloseL___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_VSIFCloseL___")]
   public static extern int VSIFCloseL(IntPtr jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_VSIFSeekL___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_VSIFSeekL___")]
   public static extern int VSIFSeekL(IntPtr jarg1, int jarg2, int jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_VSIFTellL___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_VSIFTellL___")]
   public static extern int VSIFTellL(IntPtr jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_VSIFTruncateL___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_VSIFTruncateL___")]
   public static extern int VSIFTruncateL(IntPtr jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_VSIFWriteL___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_VSIFWriteL___")]
   public static extern int VSIFWriteL(string jarg1, int jarg2, int jarg3, IntPtr jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_VSICurlClearCache___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_VSICurlClearCache___")]
   public static extern void VSICurlClearCache();
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_VSICurlPartialClearCache___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_VSICurlPartialClearCache___")]
   public static extern void VSICurlPartialClearCache(byte[] jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ParseCommandLine___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ParseCommandLine___")]
   public static extern IntPtr ParseCommandLine(byte[] jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_XMLNode_Type_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_XMLNode_Type_get___")]
   public static extern int XMLNode_Type_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_XMLNode_Value_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_XMLNode_Value_get___")]
   public static extern string XMLNode_Value_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_XMLNode_Next_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_XMLNode_Next_get___")]
   public static extern global::System.IntPtr XMLNode_Next_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_XMLNode_Child_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_XMLNode_Child_get___")]
   public static extern global::System.IntPtr XMLNode_Child_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_new_XMLNode__SWIG_0___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_new_XMLNode__SWIG_0___")]
   public static extern global::System.IntPtr new_XMLNode__SWIG_0(string jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_new_XMLNode__SWIG_1___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_new_XMLNode__SWIG_1___")]
   public static extern global::System.IntPtr new_XMLNode__SWIG_1(int jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_delete_XMLNode___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_delete_XMLNode___")]
   public static extern void delete_XMLNode(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_XMLNode_SerializeXMLTree___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_XMLNode_SerializeXMLTree___")]
   public static extern string XMLNode_SerializeXMLTree(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_XMLNode_toString___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_XMLNode_toString___")]
   public static extern string XMLNode_toString(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_XMLNode_SearchXMLNode___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_XMLNode_SearchXMLNode___")]
   public static extern global::System.IntPtr XMLNode_SearchXMLNode(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_XMLNode_GetXMLNode___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_XMLNode_GetXMLNode___")]
   public static extern global::System.IntPtr XMLNode_GetXMLNode(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_XMLNode_GetXMLValue___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_XMLNode_GetXMLValue___")]
   public static extern string XMLNode_GetXMLValue(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_XMLNode_AddXMLChild___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_XMLNode_AddXMLChild___")]
   public static extern void XMLNode_AddXMLChild(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_XMLNode_RemoveXMLChild___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_XMLNode_RemoveXMLChild___")]
   public static extern int XMLNode_RemoveXMLChild(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_XMLNode_AddXMLSibling___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_XMLNode_AddXMLSibling___")]
   public static extern void XMLNode_AddXMLSibling(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_XMLNode_CreateXMLElementAndValue___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_XMLNode_CreateXMLElementAndValue___")]
   public static extern global::System.IntPtr XMLNode_CreateXMLElementAndValue(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_XMLNode_CloneXMLTree___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_XMLNode_CloneXMLTree___")]
   public static extern global::System.IntPtr XMLNode_CloneXMLTree(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_XMLNode_Clone___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_XMLNode_Clone___")]
   public static extern global::System.IntPtr XMLNode_Clone(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_XMLNode_SetXMLValue___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_XMLNode_SetXMLValue___")]
   public static extern int XMLNode_SetXMLValue(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_XMLNode_StripXMLNamespace___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_XMLNode_StripXMLNamespace___")]
   public static extern void XMLNode_StripXMLNamespace(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, int jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_MajorObject_GetDescription___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_MajorObject_GetDescription___")]
   public static extern string MajorObject_GetDescription(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_MajorObject_SetDescription___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_MajorObject_SetDescription___")]
   public static extern void MajorObject_SetDescription(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_MajorObject_GetMetadataDomainList___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_MajorObject_GetMetadataDomainList___")]
   public static extern IntPtr MajorObject_GetMetadataDomainList(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_MajorObject_GetMetadata___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_MajorObject_GetMetadata___")]
   public static extern IntPtr MajorObject_GetMetadata(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_MajorObject_SetMetadata__SWIG_0___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_MajorObject_SetMetadata__SWIG_0___")]
   public static extern int MajorObject_SetMetadata__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, IntPtr[] jarg2, string jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_MajorObject_SetMetadata__SWIG_1___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_MajorObject_SetMetadata__SWIG_1___")]
   public static extern int MajorObject_SetMetadata__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_MajorObject_GetMetadataItem___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_MajorObject_GetMetadataItem___")]
   public static extern string MajorObject_GetMetadataItem(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_MajorObject_SetMetadataItem___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_MajorObject_SetMetadataItem___")]
   public static extern int MajorObject_SetMetadataItem(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3, string jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Driver_ShortName_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Driver_ShortName_get___")]
   public static extern string Driver_ShortName_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Driver_LongName_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Driver_LongName_get___")]
   public static extern string Driver_LongName_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Driver_HelpTopic_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Driver_HelpTopic_get___")]
   public static extern string Driver_HelpTopic_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Driver_Create___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Driver_Create___")]
   public static extern global::System.IntPtr Driver_Create(global::System.Runtime.InteropServices.HandleRef jarg1, byte[] jarg2, int jarg3, int jarg4, int jarg5, int jarg6, IntPtr[] jarg7);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Driver_CreateCopy___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Driver_CreateCopy___")]
   public static extern global::System.IntPtr Driver_CreateCopy(global::System.Runtime.InteropServices.HandleRef jarg1, byte[] jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, int jarg4, IntPtr[] jarg5, Gdal.GDALProgressFuncDelegate jarg6, string jarg7);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Driver_Delete___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Driver_Delete___")]
   public static extern int Driver_Delete(global::System.Runtime.InteropServices.HandleRef jarg1, byte[] jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Driver_Rename___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Driver_Rename___")]
   public static extern int Driver_Rename(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Driver_CopyFiles___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Driver_CopyFiles___")]
   public static extern int Driver_CopyFiles(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Driver_Register___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Driver_Register___")]
   public static extern int Driver_Register(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Driver_Deregister___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Driver_Deregister___")]
   public static extern void Driver_Deregister(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ColorEntry_c1_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ColorEntry_c1_set___")]
   public static extern void ColorEntry_c1_set(global::System.Runtime.InteropServices.HandleRef jarg1, short jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ColorEntry_c1_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ColorEntry_c1_get___")]
   public static extern short ColorEntry_c1_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ColorEntry_c2_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ColorEntry_c2_set___")]
   public static extern void ColorEntry_c2_set(global::System.Runtime.InteropServices.HandleRef jarg1, short jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ColorEntry_c2_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ColorEntry_c2_get___")]
   public static extern short ColorEntry_c2_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ColorEntry_c3_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ColorEntry_c3_set___")]
   public static extern void ColorEntry_c3_set(global::System.Runtime.InteropServices.HandleRef jarg1, short jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ColorEntry_c3_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ColorEntry_c3_get___")]
   public static extern short ColorEntry_c3_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ColorEntry_c4_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ColorEntry_c4_set___")]
   public static extern void ColorEntry_c4_set(global::System.Runtime.InteropServices.HandleRef jarg1, short jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ColorEntry_c4_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ColorEntry_c4_get___")]
   public static extern short ColorEntry_c4_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_new_ColorEntry___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_new_ColorEntry___")]
   public static extern global::System.IntPtr new_ColorEntry();
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_delete_ColorEntry___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_delete_ColorEntry___")]
   public static extern void delete_ColorEntry(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GCP_GCPX_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GCP_GCPX_set___")]
   public static extern void GCP_GCPX_set(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GCP_GCPX_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GCP_GCPX_get___")]
   public static extern double GCP_GCPX_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GCP_GCPY_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GCP_GCPY_set___")]
   public static extern void GCP_GCPY_set(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GCP_GCPY_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GCP_GCPY_get___")]
   public static extern double GCP_GCPY_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GCP_GCPZ_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GCP_GCPZ_set___")]
   public static extern void GCP_GCPZ_set(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GCP_GCPZ_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GCP_GCPZ_get___")]
   public static extern double GCP_GCPZ_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GCP_GCPPixel_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GCP_GCPPixel_set___")]
   public static extern void GCP_GCPPixel_set(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GCP_GCPPixel_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GCP_GCPPixel_get___")]
   public static extern double GCP_GCPPixel_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GCP_GCPLine_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GCP_GCPLine_set___")]
   public static extern void GCP_GCPLine_set(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GCP_GCPLine_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GCP_GCPLine_get___")]
   public static extern double GCP_GCPLine_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GCP_Info_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GCP_Info_set___")]
   public static extern void GCP_Info_set(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GCP_Info_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GCP_Info_get___")]
   public static extern string GCP_Info_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GCP_Id_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GCP_Id_set___")]
   public static extern void GCP_Id_set(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GCP_Id_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GCP_Id_get___")]
   public static extern string GCP_Id_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_new_GCP___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_new_GCP___")]
   public static extern global::System.IntPtr new_GCP(double jarg1, double jarg2, double jarg3, double jarg4, double jarg5, string jarg6, string jarg7);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_delete_GCP___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_delete_GCP___")]
   public static extern void delete_GCP(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_GCPX_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_GCPX_get___")]
   public static extern double GDAL_GCP_GCPX_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_GCPX_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_GCPX_set___")]
   public static extern void GDAL_GCP_GCPX_set(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_GCPY_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_GCPY_get___")]
   public static extern double GDAL_GCP_GCPY_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_GCPY_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_GCPY_set___")]
   public static extern void GDAL_GCP_GCPY_set(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_GCPZ_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_GCPZ_get___")]
   public static extern double GDAL_GCP_GCPZ_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_GCPZ_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_GCPZ_set___")]
   public static extern void GDAL_GCP_GCPZ_set(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_GCPPixel_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_GCPPixel_get___")]
   public static extern double GDAL_GCP_GCPPixel_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_GCPPixel_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_GCPPixel_set___")]
   public static extern void GDAL_GCP_GCPPixel_set(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_GCPLine_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_GCPLine_get___")]
   public static extern double GDAL_GCP_GCPLine_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_GCPLine_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_GCPLine_set___")]
   public static extern void GDAL_GCP_GCPLine_set(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_Info_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_Info_get___")]
   public static extern string GDAL_GCP_Info_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_Info_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_Info_set___")]
   public static extern void GDAL_GCP_Info_set(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_Id_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_Id_get___")]
   public static extern string GDAL_GCP_Id_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_Id_set___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_Id_set___")]
   public static extern void GDAL_GCP_Id_set(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_get_GCPX___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_get_GCPX___")]
   public static extern double GDAL_GCP_get_GCPX(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_set_GCPX___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_set_GCPX___")]
   public static extern void GDAL_GCP_set_GCPX(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_get_GCPY___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_get_GCPY___")]
   public static extern double GDAL_GCP_get_GCPY(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_set_GCPY___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_set_GCPY___")]
   public static extern void GDAL_GCP_set_GCPY(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_get_GCPZ___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_get_GCPZ___")]
   public static extern double GDAL_GCP_get_GCPZ(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_set_GCPZ___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_set_GCPZ___")]
   public static extern void GDAL_GCP_set_GCPZ(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_get_GCPPixel___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_get_GCPPixel___")]
   public static extern double GDAL_GCP_get_GCPPixel(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_set_GCPPixel___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_set_GCPPixel___")]
   public static extern void GDAL_GCP_set_GCPPixel(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_get_GCPLine___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_get_GCPLine___")]
   public static extern double GDAL_GCP_get_GCPLine(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_set_GCPLine___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_set_GCPLine___")]
   public static extern void GDAL_GCP_set_GCPLine(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_get_Info___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_get_Info___")]
   public static extern string GDAL_GCP_get_Info(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_set_Info___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_set_Info___")]
   public static extern void GDAL_GCP_set_Info(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_get_Id___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_get_Id___")]
   public static extern string GDAL_GCP_get_Id(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_set_Id___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDAL_GCP_set_Id___")]
   public static extern void GDAL_GCP_set_Id(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GCPsToGeoTransform___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GCPsToGeoTransform___")]
   public static extern int GCPsToGeoTransform(int jarg1, IntPtr jarg2, double[] jarg3, int jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_delete_AsyncReader___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_delete_AsyncReader___")]
   public static extern void delete_AsyncReader(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_AsyncReader_GetNextUpdatedRegion___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_AsyncReader_GetNextUpdatedRegion___")]
   public static extern int AsyncReader_GetNextUpdatedRegion(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, out int jarg3, out int jarg4, out int jarg5, out int jarg6);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_AsyncReader_LockBuffer___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_AsyncReader_LockBuffer___")]
   public static extern int AsyncReader_LockBuffer(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_AsyncReader_UnlockBuffer___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_AsyncReader_UnlockBuffer___")]
   public static extern void AsyncReader_UnlockBuffer(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_RasterXSize_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_RasterXSize_get___")]
   public static extern int Dataset_RasterXSize_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_RasterYSize_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_RasterYSize_get___")]
   public static extern int Dataset_RasterYSize_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_RasterCount_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_RasterCount_get___")]
   public static extern int Dataset_RasterCount_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_delete_Dataset___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_delete_Dataset___")]
   public static extern void delete_Dataset(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_GetDriver___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_GetDriver___")]
   public static extern global::System.IntPtr Dataset_GetDriver(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_GetRasterBand___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_GetRasterBand___")]
   public static extern global::System.IntPtr Dataset_GetRasterBand(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_GetProjection___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_GetProjection___")]
   public static extern string Dataset_GetProjection(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_GetProjectionRef___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_GetProjectionRef___")]
   public static extern string Dataset_GetProjectionRef(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_SetProjection___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_SetProjection___")]
   public static extern int Dataset_SetProjection(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_GetGeoTransform___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_GetGeoTransform___")]
   public static extern void Dataset_GetGeoTransform(global::System.Runtime.InteropServices.HandleRef jarg1, double[] jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_SetGeoTransform___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_SetGeoTransform___")]
   public static extern int Dataset_SetGeoTransform(global::System.Runtime.InteropServices.HandleRef jarg1, double[] jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_BuildOverviews___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_BuildOverviews___")]
   public static extern int Dataset_BuildOverviews(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, int jarg3, IntPtr jarg4, Gdal.GDALProgressFuncDelegate jarg5, string jarg6);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_GetGCPCount___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_GetGCPCount___")]
   public static extern int Dataset_GetGCPCount(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_GetGCPProjection___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_GetGCPProjection___")]
   public static extern string Dataset_GetGCPProjection(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_FlushCache___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_FlushCache___")]
   public static extern void Dataset_FlushCache(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_AddBand___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_AddBand___")]
   public static extern int Dataset_AddBand(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, IntPtr[] jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_CreateMaskBand___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_CreateMaskBand___")]
   public static extern int Dataset_CreateMaskBand(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_GetFileList___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_GetFileList___")]
   public static extern IntPtr Dataset_GetFileList(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_AdviseRead___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_AdviseRead___")]
   public static extern int Dataset_AdviseRead(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int jarg3, int jarg4, int jarg5, global::System.Runtime.InteropServices.HandleRef jarg6, global::System.Runtime.InteropServices.HandleRef jarg7, IntPtr jarg8, int jarg9, global::System.Runtime.InteropServices.HandleRef jarg10, IntPtr[] jarg11);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_StartTransaction___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_StartTransaction___")]
   public static extern int Dataset_StartTransaction(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_CommitTransaction___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_CommitTransaction___")]
   public static extern int Dataset_CommitTransaction(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_RollbackTransaction___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_RollbackTransaction___")]
   public static extern int Dataset_RollbackTransaction(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_ReadRaster__SWIG_0___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_ReadRaster__SWIG_0___")]
   public static extern int Dataset_ReadRaster__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int jarg3, int jarg4, int jarg5, IntPtr jarg6, int jarg7, int jarg8, int jarg9, int jarg10, int[] jarg11, int jarg12, int jarg13, int jarg14);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_WriteRaster__SWIG_0___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_WriteRaster__SWIG_0___")]
   public static extern int Dataset_WriteRaster__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int jarg3, int jarg4, int jarg5, IntPtr jarg6, int jarg7, int jarg8, int jarg9, int jarg10, int[] jarg11, int jarg12, int jarg13, int jarg14);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_ReadRaster__SWIG_1___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_ReadRaster__SWIG_1___")]
   public static extern int Dataset_ReadRaster__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int jarg3, int jarg4, int jarg5, IntPtr jarg6, int jarg7, int jarg8, int jarg9, int jarg10, int[] jarg11, int jarg12, int jarg13, int jarg14, global::System.Runtime.InteropServices.HandleRef jarg15);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_WriteRaster__SWIG_1___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_WriteRaster__SWIG_1___")]
   public static extern int Dataset_WriteRaster__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int jarg3, int jarg4, int jarg5, IntPtr jarg6, int jarg7, int jarg8, int jarg9, int jarg10, int[] jarg11, int jarg12, int jarg13, int jarg14, global::System.Runtime.InteropServices.HandleRef jarg15);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset___GetGCPs___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset___GetGCPs___")]
   public static extern IntPtr Dataset___GetGCPs(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset___SetGCPs___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset___SetGCPs___")]
   public static extern int Dataset___SetGCPs(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, IntPtr jarg3, string jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset___WriteCArrayItem_GDAL_GCP___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset___WriteCArrayItem_GDAL_GCP___")]
   public static extern void Dataset___WriteCArrayItem_GDAL_GCP(global::System.Runtime.InteropServices.HandleRef jarg1, IntPtr jarg2, int jarg3, global::System.Runtime.InteropServices.HandleRef jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset___ReadCArrayItem_GDAL_GCP___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset___ReadCArrayItem_GDAL_GCP___")]
   public static extern global::System.IntPtr Dataset___ReadCArrayItem_GDAL_GCP(global::System.Runtime.InteropServices.HandleRef jarg1, IntPtr jarg2, int jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset___AllocCArray_GDAL_GCP___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset___AllocCArray_GDAL_GCP___")]
   public static extern IntPtr Dataset___AllocCArray_GDAL_GCP(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset___FreeCArray_GDAL_GCP___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset___FreeCArray_GDAL_GCP___")]
   public static extern void Dataset___FreeCArray_GDAL_GCP(global::System.Runtime.InteropServices.HandleRef jarg1, IntPtr jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_XSize_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_XSize_get___")]
   public static extern int Band_XSize_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_YSize_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_YSize_get___")]
   public static extern int Band_YSize_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_DataType_get___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_DataType_get___")]
   public static extern int Band_DataType_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_GetDataset___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_GetDataset___")]
   public static extern global::System.IntPtr Band_GetDataset(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_GetBand___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_GetBand___")]
   public static extern int Band_GetBand(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_GetBlockSize___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_GetBlockSize___")]
   public static extern void Band_GetBlockSize(global::System.Runtime.InteropServices.HandleRef jarg1, out int jarg2, out int jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_GetColorInterpretation___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_GetColorInterpretation___")]
   public static extern int Band_GetColorInterpretation(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_GetRasterColorInterpretation___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_GetRasterColorInterpretation___")]
   public static extern int Band_GetRasterColorInterpretation(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_SetColorInterpretation___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_SetColorInterpretation___")]
   public static extern int Band_SetColorInterpretation(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_SetRasterColorInterpretation___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_SetRasterColorInterpretation___")]
   public static extern int Band_SetRasterColorInterpretation(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_GetNoDataValue___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_GetNoDataValue___")]
   public static extern void Band_GetNoDataValue(global::System.Runtime.InteropServices.HandleRef jarg1, out double jarg2, out int jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_SetNoDataValue___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_SetNoDataValue___")]
   public static extern int Band_SetNoDataValue(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_DeleteNoDataValue___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_DeleteNoDataValue___")]
   public static extern int Band_DeleteNoDataValue(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_GetUnitType___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_GetUnitType___")]
   public static extern string Band_GetUnitType(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_SetUnitType___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_SetUnitType___")]
   public static extern int Band_SetUnitType(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_GetRasterCategoryNames___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_GetRasterCategoryNames___")]
   public static extern IntPtr Band_GetRasterCategoryNames(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_SetRasterCategoryNames___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_SetRasterCategoryNames___")]
   public static extern int Band_SetRasterCategoryNames(global::System.Runtime.InteropServices.HandleRef jarg1, IntPtr[] jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_GetMinimum___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_GetMinimum___")]
   public static extern void Band_GetMinimum(global::System.Runtime.InteropServices.HandleRef jarg1, out double jarg2, out int jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_GetMaximum___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_GetMaximum___")]
   public static extern void Band_GetMaximum(global::System.Runtime.InteropServices.HandleRef jarg1, out double jarg2, out int jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_GetOffset___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_GetOffset___")]
   public static extern void Band_GetOffset(global::System.Runtime.InteropServices.HandleRef jarg1, out double jarg2, out int jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_GetScale___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_GetScale___")]
   public static extern void Band_GetScale(global::System.Runtime.InteropServices.HandleRef jarg1, out double jarg2, out int jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_SetOffset___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_SetOffset___")]
   public static extern int Band_SetOffset(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_SetScale___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_SetScale___")]
   public static extern int Band_SetScale(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_GetStatistics___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_GetStatistics___")]
   public static extern int Band_GetStatistics(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int jarg3, out double jarg4, out double jarg5, out double jarg6, out double jarg7);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_ComputeStatistics___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_ComputeStatistics___")]
   public static extern int Band_ComputeStatistics(global::System.Runtime.InteropServices.HandleRef jarg1, bool jarg2, out double jarg3, out double jarg4, out double jarg5, out double jarg6, Gdal.GDALProgressFuncDelegate jarg7, string jarg8);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_SetStatistics___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_SetStatistics___")]
   public static extern int Band_SetStatistics(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_GetOverviewCount___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_GetOverviewCount___")]
   public static extern int Band_GetOverviewCount(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_GetOverview___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_GetOverview___")]
   public static extern global::System.IntPtr Band_GetOverview(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_Checksum___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_Checksum___")]
   public static extern int Band_Checksum(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int jarg3, IntPtr jarg4, IntPtr jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_ComputeRasterMinMax___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_ComputeRasterMinMax___")]
   public static extern void Band_ComputeRasterMinMax(global::System.Runtime.InteropServices.HandleRef jarg1, double[] jarg2, int jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_ComputeBandStats___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_ComputeBandStats___")]
   public static extern void Band_ComputeBandStats(global::System.Runtime.InteropServices.HandleRef jarg1, double[] jarg2, int jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_Fill___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_Fill___")]
   public static extern int Band_Fill(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_FlushCache___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_FlushCache___")]
   public static extern void Band_FlushCache(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_GetRasterColorTable___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_GetRasterColorTable___")]
   public static extern global::System.IntPtr Band_GetRasterColorTable(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_GetColorTable___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_GetColorTable___")]
   public static extern global::System.IntPtr Band_GetColorTable(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_SetRasterColorTable___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_SetRasterColorTable___")]
   public static extern int Band_SetRasterColorTable(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_SetColorTable___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_SetColorTable___")]
   public static extern int Band_SetColorTable(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_GetDefaultRAT___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_GetDefaultRAT___")]
   public static extern global::System.IntPtr Band_GetDefaultRAT(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_SetDefaultRAT___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_SetDefaultRAT___")]
   public static extern int Band_SetDefaultRAT(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_GetMaskBand___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_GetMaskBand___")]
   public static extern global::System.IntPtr Band_GetMaskBand(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_GetMaskFlags___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_GetMaskFlags___")]
   public static extern int Band_GetMaskFlags(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_CreateMaskBand___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_CreateMaskBand___")]
   public static extern int Band_CreateMaskBand(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_GetHistogram___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_GetHistogram___")]
   public static extern int Band_GetHistogram(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, int jarg4, int[] jarg5, int jarg6, int jarg7, Gdal.GDALProgressFuncDelegate jarg8, string jarg9);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_GetDefaultHistogram___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_GetDefaultHistogram___")]
   public static extern int Band_GetDefaultHistogram(global::System.Runtime.InteropServices.HandleRef jarg1, out double jarg2, out double jarg3, out int jarg4, out int[] jarg5, int jarg6, Gdal.GDALProgressFuncDelegate jarg7, string jarg8);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_SetDefaultHistogram___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_SetDefaultHistogram___")]
   public static extern int Band_SetDefaultHistogram(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, int jarg4, int[] jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_HasArbitraryOverviews___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_HasArbitraryOverviews___")]
   public static extern bool Band_HasArbitraryOverviews(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_GetCategoryNames___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_GetCategoryNames___")]
   public static extern IntPtr Band_GetCategoryNames(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_SetCategoryNames___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_SetCategoryNames___")]
   public static extern int Band_SetCategoryNames(global::System.Runtime.InteropServices.HandleRef jarg1, IntPtr[] jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_AdviseRead___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_AdviseRead___")]
   public static extern int Band_AdviseRead(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int jarg3, int jarg4, int jarg5, global::System.Runtime.InteropServices.HandleRef jarg6, global::System.Runtime.InteropServices.HandleRef jarg7, IntPtr jarg8, IntPtr[] jarg9);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_ReadRaster__SWIG_0___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_ReadRaster__SWIG_0___")]
   public static extern int Band_ReadRaster__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int jarg3, int jarg4, int jarg5, IntPtr jarg6, int jarg7, int jarg8, int jarg9, int jarg10, int jarg11);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_WriteRaster__SWIG_0___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_WriteRaster__SWIG_0___")]
   public static extern int Band_WriteRaster__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int jarg3, int jarg4, int jarg5, IntPtr jarg6, int jarg7, int jarg8, int jarg9, int jarg10, int jarg11);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_ReadRaster__SWIG_1___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_ReadRaster__SWIG_1___")]
   public static extern int Band_ReadRaster__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int jarg3, int jarg4, int jarg5, IntPtr jarg6, int jarg7, int jarg8, int jarg9, int jarg10, int jarg11, global::System.Runtime.InteropServices.HandleRef jarg12);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_WriteRaster__SWIG_1___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_WriteRaster__SWIG_1___")]
   public static extern int Band_WriteRaster__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int jarg3, int jarg4, int jarg5, IntPtr jarg6, int jarg7, int jarg8, int jarg9, int jarg10, int jarg11, global::System.Runtime.InteropServices.HandleRef jarg12);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_new_ColorTable___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_new_ColorTable___")]
   public static extern global::System.IntPtr new_ColorTable(int jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_delete_ColorTable___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_delete_ColorTable___")]
   public static extern void delete_ColorTable(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ColorTable_Clone___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ColorTable_Clone___")]
   public static extern global::System.IntPtr ColorTable_Clone(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ColorTable_GetPaletteInterpretation___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ColorTable_GetPaletteInterpretation___")]
   public static extern int ColorTable_GetPaletteInterpretation(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ColorTable_GetCount___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ColorTable_GetCount___")]
   public static extern int ColorTable_GetCount(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ColorTable_GetColorEntry___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ColorTable_GetColorEntry___")]
   public static extern global::System.IntPtr ColorTable_GetColorEntry(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ColorTable_GetColorEntryAsRGB___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ColorTable_GetColorEntryAsRGB___")]
   public static extern int ColorTable_GetColorEntryAsRGB(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ColorTable_SetColorEntry___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ColorTable_SetColorEntry___")]
   public static extern void ColorTable_SetColorEntry(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ColorTable_CreateColorRamp___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ColorTable_CreateColorRamp___")]
   public static extern void ColorTable_CreateColorRamp(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, int jarg4, global::System.Runtime.InteropServices.HandleRef jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_new_RasterAttributeTable___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_new_RasterAttributeTable___")]
   public static extern global::System.IntPtr new_RasterAttributeTable();
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_delete_RasterAttributeTable___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_delete_RasterAttributeTable___")]
   public static extern void delete_RasterAttributeTable(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_Clone___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_Clone___")]
   public static extern global::System.IntPtr RasterAttributeTable_Clone(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetColumnCount___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetColumnCount___")]
   public static extern int RasterAttributeTable_GetColumnCount(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetNameOfCol___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetNameOfCol___")]
   public static extern string RasterAttributeTable_GetNameOfCol(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetUsageOfCol___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetUsageOfCol___")]
   public static extern int RasterAttributeTable_GetUsageOfCol(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetTypeOfCol___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetTypeOfCol___")]
   public static extern int RasterAttributeTable_GetTypeOfCol(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetColOfUsage___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetColOfUsage___")]
   public static extern int RasterAttributeTable_GetColOfUsage(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetRowCount___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetRowCount___")]
   public static extern int RasterAttributeTable_GetRowCount(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetValueAsString___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetValueAsString___")]
   public static extern string RasterAttributeTable_GetValueAsString(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetValueAsInt___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetValueAsInt___")]
   public static extern int RasterAttributeTable_GetValueAsInt(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetValueAsDouble___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetValueAsDouble___")]
   public static extern double RasterAttributeTable_GetValueAsDouble(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_SetValueAsString___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_SetValueAsString___")]
   public static extern void RasterAttributeTable_SetValueAsString(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int jarg3, string jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_SetValueAsInt___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_SetValueAsInt___")]
   public static extern void RasterAttributeTable_SetValueAsInt(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int jarg3, int jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_SetValueAsDouble___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_SetValueAsDouble___")]
   public static extern void RasterAttributeTable_SetValueAsDouble(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int jarg3, double jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_SetRowCount___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_SetRowCount___")]
   public static extern void RasterAttributeTable_SetRowCount(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_CreateColumn___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_CreateColumn___")]
   public static extern int RasterAttributeTable_CreateColumn(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, int jarg3, int jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetLinearBinning___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetLinearBinning___")]
   public static extern bool RasterAttributeTable_GetLinearBinning(global::System.Runtime.InteropServices.HandleRef jarg1, out double jarg2, out double jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_SetLinearBinning___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_SetLinearBinning___")]
   public static extern int RasterAttributeTable_SetLinearBinning(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetRowOfValue___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetRowOfValue___")]
   public static extern int RasterAttributeTable_GetRowOfValue(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_ChangesAreWrittenToFile___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_ChangesAreWrittenToFile___")]
   public static extern int RasterAttributeTable_ChangesAreWrittenToFile(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_DumpReadable___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_DumpReadable___")]
   public static extern void RasterAttributeTable_DumpReadable(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_SetTableType___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_SetTableType___")]
   public static extern void RasterAttributeTable_SetTableType(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetTableType___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterAttributeTable_GetTableType___")]
   public static extern int RasterAttributeTable_GetTableType(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ComputeMedianCutPCT___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ComputeMedianCutPCT___")]
   public static extern int ComputeMedianCutPCT(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, int jarg4, global::System.Runtime.InteropServices.HandleRef jarg5, Gdal.GDALProgressFuncDelegate jarg6, string jarg7);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_DitherRGB2PCT___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_DitherRGB2PCT___")]
   public static extern int DitherRGB2PCT(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, global::System.Runtime.InteropServices.HandleRef jarg4, global::System.Runtime.InteropServices.HandleRef jarg5, Gdal.GDALProgressFuncDelegate jarg6, string jarg7);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ReprojectImage___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ReprojectImage___")]
   public static extern int ReprojectImage(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, string jarg3, string jarg4, int jarg5, double jarg6, double jarg7, Gdal.GDALProgressFuncDelegate jarg8, string jarg9, IntPtr[] jarg10);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ComputeProximity___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ComputeProximity___")]
   public static extern int ComputeProximity(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, IntPtr[] jarg3, Gdal.GDALProgressFuncDelegate jarg4, string jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RasterizeLayer___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RasterizeLayer___")]
   public static extern int RasterizeLayer(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int[] jarg3, global::System.Runtime.InteropServices.HandleRef jarg4, IntPtr jarg5, IntPtr jarg6, int jarg7, double[] jarg8, IntPtr[] jarg9, Gdal.GDALProgressFuncDelegate jarg10, string jarg11);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Polygonize___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Polygonize___")]
   public static extern int Polygonize(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, int jarg4, IntPtr[] jarg5, Gdal.GDALProgressFuncDelegate jarg6, string jarg7);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_FPolygonize___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_FPolygonize___")]
   public static extern int FPolygonize(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, int jarg4, IntPtr[] jarg5, Gdal.GDALProgressFuncDelegate jarg6, string jarg7);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_FillNodata___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_FillNodata___")]
   public static extern int FillNodata(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, double jarg3, int jarg4, IntPtr[] jarg5, Gdal.GDALProgressFuncDelegate jarg6, string jarg7);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_SieveFilter___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_SieveFilter___")]
   public static extern int SieveFilter(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, int jarg4, int jarg5, IntPtr[] jarg6, Gdal.GDALProgressFuncDelegate jarg7, string jarg8);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RegenerateOverviews___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RegenerateOverviews___")]
   public static extern int RegenerateOverviews(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, string jarg4, Gdal.GDALProgressFuncDelegate jarg5, string jarg6);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_RegenerateOverview___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_RegenerateOverview___")]
   public static extern int RegenerateOverview(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, string jarg3, Gdal.GDALProgressFuncDelegate jarg4, string jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ContourGenerate___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ContourGenerate___")]
   public static extern int ContourGenerate(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, int jarg4, double[] jarg5, int jarg6, double jarg7, global::System.Runtime.InteropServices.HandleRef jarg8, int jarg9, int jarg10, Gdal.GDALProgressFuncDelegate jarg11, string jarg12);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ContourGenerateEx___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ContourGenerateEx___")]
   public static extern int ContourGenerateEx(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, IntPtr[] jarg3, Gdal.GDALProgressFuncDelegate jarg4, string jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_AutoCreateWarpedVRT___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_AutoCreateWarpedVRT___")]
   public static extern global::System.IntPtr AutoCreateWarpedVRT(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3, int jarg4, double jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_CreatePansharpenedVRT___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_CreatePansharpenedVRT___")]
   public static extern global::System.IntPtr CreatePansharpenedVRT(string jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, int jarg3, global::System.Runtime.InteropServices.HandleRef jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_new_Transformer___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_new_Transformer___")]
   public static extern global::System.IntPtr new_Transformer(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, IntPtr[] jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_delete_Transformer___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_delete_Transformer___")]
   public static extern void delete_Transformer(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Transformer_TransformPoint__SWIG_0___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Transformer_TransformPoint__SWIG_0___")]
   public static extern int Transformer_TransformPoint__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, double[] jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Transformer_TransformPoint__SWIG_1___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Transformer_TransformPoint__SWIG_1___")]
   public static extern int Transformer_TransformPoint__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, double[] jarg2, int jarg3, double jarg4, double jarg5, double jarg6);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Transformer_TransformPoints___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Transformer_TransformPoints___")]
   public static extern int Transformer_TransformPoints(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int jarg3, double[] jarg4, double[] jarg5, double[] jarg6, double[] jarg7);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Transformer_TransformGeolocations___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Transformer_TransformGeolocations___")]
   public static extern int Transformer_TransformGeolocations(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, global::System.Runtime.InteropServices.HandleRef jarg4, Gdal.GDALProgressFuncDelegate jarg5, string jarg6, IntPtr[] jarg7);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ApplyVerticalShiftGrid___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ApplyVerticalShiftGrid___")]
   public static extern global::System.IntPtr ApplyVerticalShiftGrid(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, bool jarg3, double jarg4, double jarg5, IntPtr[] jarg6);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ApplyGeoTransform___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ApplyGeoTransform___")]
   public static extern void ApplyGeoTransform(double[] jarg1, double jarg2, double jarg3, out double jarg4, out double jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_InvGeoTransform___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_InvGeoTransform___")]
   public static extern int InvGeoTransform(double[] jarg1, double[] jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_VersionInfo___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_VersionInfo___")]
   public static extern string VersionInfo(string jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_AllRegister___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_AllRegister___")]
   public static extern void AllRegister();
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDALDestroyDriverManager___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDALDestroyDriverManager___")]
   public static extern void GDALDestroyDriverManager();
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GetCacheMax___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GetCacheMax___")]
   public static extern int GetCacheMax();
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GetCacheUsed___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GetCacheUsed___")]
   public static extern int GetCacheUsed();
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_SetCacheMax___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_SetCacheMax___")]
   public static extern void SetCacheMax(int jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GetDataTypeSize___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GetDataTypeSize___")]
   public static extern int GetDataTypeSize(int jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_DataTypeIsComplex___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_DataTypeIsComplex___")]
   public static extern int DataTypeIsComplex(int jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GetDataTypeName___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GetDataTypeName___")]
   public static extern string GetDataTypeName(int jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GetDataTypeByName___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GetDataTypeByName___")]
   public static extern int GetDataTypeByName(string jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GetColorInterpretationName___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GetColorInterpretationName___")]
   public static extern string GetColorInterpretationName(int jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GetPaletteInterpretationName___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GetPaletteInterpretationName___")]
   public static extern string GetPaletteInterpretationName(int jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_DecToDMS___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_DecToDMS___")]
   public static extern string DecToDMS(double jarg1, string jarg2, int jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_PackedDMSToDec___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_PackedDMSToDec___")]
   public static extern double PackedDMSToDec(double jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_DecToPackedDMS___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_DecToPackedDMS___")]
   public static extern double DecToPackedDMS(double jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_ParseXMLString___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_ParseXMLString___")]
   public static extern global::System.IntPtr ParseXMLString(string jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_SerializeXMLTree___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_SerializeXMLTree___")]
   public static extern string SerializeXMLTree(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GetJPEG2000StructureAsString___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GetJPEG2000StructureAsString___")]
   public static extern string GetJPEG2000StructureAsString(string jarg1, IntPtr[] jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GetDriverCount___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GetDriverCount___")]
   public static extern int GetDriverCount();
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GetDriverByName___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GetDriverByName___")]
   public static extern global::System.IntPtr GetDriverByName(string jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GetDriver___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GetDriver___")]
   public static extern global::System.IntPtr GetDriver(int jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Open___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Open___")]
   public static extern global::System.IntPtr Open(byte[] jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_OpenEx___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_OpenEx___")]
   public static extern global::System.IntPtr OpenEx(byte[] jarg1, uint jarg2, IntPtr[] jarg3, IntPtr[] jarg4, IntPtr[] jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_OpenShared___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_OpenShared___")]
   public static extern global::System.IntPtr OpenShared(byte[] jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_IdentifyDriver___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_IdentifyDriver___")]
   public static extern global::System.IntPtr IdentifyDriver(byte[] jarg1, IntPtr[] jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_IdentifyDriverEx___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_IdentifyDriverEx___")]
   public static extern global::System.IntPtr IdentifyDriverEx(byte[] jarg1, uint jarg2, IntPtr[] jarg3, IntPtr[] jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GeneralCmdLineProcessor___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GeneralCmdLineProcessor___")]
   public static extern IntPtr GeneralCmdLineProcessor(IntPtr[] jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL___WriteCArrayItem_GDAL_GCP___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL___WriteCArrayItem_GDAL_GCP___")]
   public static extern void __WriteCArrayItem_GDAL_GCP(IntPtr jarg1, int jarg2, global::System.Runtime.InteropServices.HandleRef jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL___ReadCArrayItem_GDAL_GCP___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL___ReadCArrayItem_GDAL_GCP___")]
   public static extern global::System.IntPtr __ReadCArrayItem_GDAL_GCP(IntPtr jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL___AllocCArray_GDAL_GCP___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL___AllocCArray_GDAL_GCP___")]
   public static extern IntPtr __AllocCArray_GDAL_GCP(int jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL___FreeCArray_GDAL_GCP___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL___FreeCArray_GDAL_GCP___")]
   public static extern void __FreeCArray_GDAL_GCP(IntPtr jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_new_GDALInfoOptions___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_new_GDALInfoOptions___")]
   public static extern global::System.IntPtr new_GDALInfoOptions(IntPtr[] jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_delete_GDALInfoOptions___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_delete_GDALInfoOptions___")]
   public static extern void delete_GDALInfoOptions(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_GDALInfo___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_GDALInfo___")]
   public static extern string GDALInfo(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_new_GDALTranslateOptions___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_new_GDALTranslateOptions___")]
   public static extern global::System.IntPtr new_GDALTranslateOptions(IntPtr[] jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_delete_GDALTranslateOptions___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_delete_GDALTranslateOptions___")]
   public static extern void delete_GDALTranslateOptions(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALTranslate___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALTranslate___")]
   public static extern global::System.IntPtr wrapper_GDALTranslate(byte[] jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, Gdal.GDALProgressFuncDelegate jarg4, string jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_new_GDALWarpAppOptions___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_new_GDALWarpAppOptions___")]
   public static extern global::System.IntPtr new_GDALWarpAppOptions(IntPtr[] jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_delete_GDALWarpAppOptions___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_delete_GDALWarpAppOptions___")]
   public static extern void delete_GDALWarpAppOptions(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALWarpDestDS___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALWarpDestDS___")]
   public static extern int wrapper_GDALWarpDestDS(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, global::System.Runtime.InteropServices.HandleRef jarg4, Gdal.GDALProgressFuncDelegate jarg5, string jarg6);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALWarpDestName___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALWarpDestName___")]
   public static extern global::System.IntPtr wrapper_GDALWarpDestName(byte[] jarg1, int jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, global::System.Runtime.InteropServices.HandleRef jarg4, Gdal.GDALProgressFuncDelegate jarg5, string jarg6);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_new_GDALVectorTranslateOptions___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_new_GDALVectorTranslateOptions___")]
   public static extern global::System.IntPtr new_GDALVectorTranslateOptions(IntPtr[] jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_delete_GDALVectorTranslateOptions___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_delete_GDALVectorTranslateOptions___")]
   public static extern void delete_GDALVectorTranslateOptions(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALVectorTranslateDestDS___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALVectorTranslateDestDS___")]
   public static extern int wrapper_GDALVectorTranslateDestDS(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, Gdal.GDALProgressFuncDelegate jarg4, string jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALVectorTranslateDestName___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALVectorTranslateDestName___")]
   public static extern global::System.IntPtr wrapper_GDALVectorTranslateDestName(byte[] jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, Gdal.GDALProgressFuncDelegate jarg4, string jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_new_GDALDEMProcessingOptions___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_new_GDALDEMProcessingOptions___")]
   public static extern global::System.IntPtr new_GDALDEMProcessingOptions(IntPtr[] jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_delete_GDALDEMProcessingOptions___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_delete_GDALDEMProcessingOptions___")]
   public static extern void delete_GDALDEMProcessingOptions(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALDEMProcessing___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALDEMProcessing___")]
   public static extern global::System.IntPtr wrapper_GDALDEMProcessing(byte[] jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, string jarg3, string jarg4, global::System.Runtime.InteropServices.HandleRef jarg5, Gdal.GDALProgressFuncDelegate jarg6, string jarg7);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_new_GDALNearblackOptions___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_new_GDALNearblackOptions___")]
   public static extern global::System.IntPtr new_GDALNearblackOptions(IntPtr[] jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_delete_GDALNearblackOptions___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_delete_GDALNearblackOptions___")]
   public static extern void delete_GDALNearblackOptions(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALNearblackDestDS___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALNearblackDestDS___")]
   public static extern int wrapper_GDALNearblackDestDS(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, Gdal.GDALProgressFuncDelegate jarg4, string jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALNearblackDestName___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALNearblackDestName___")]
   public static extern global::System.IntPtr wrapper_GDALNearblackDestName(byte[] jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, Gdal.GDALProgressFuncDelegate jarg4, string jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_new_GDALGridOptions___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_new_GDALGridOptions___")]
   public static extern global::System.IntPtr new_GDALGridOptions(IntPtr[] jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_delete_GDALGridOptions___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_delete_GDALGridOptions___")]
   public static extern void delete_GDALGridOptions(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALGrid___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALGrid___")]
   public static extern global::System.IntPtr wrapper_GDALGrid(byte[] jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, Gdal.GDALProgressFuncDelegate jarg4, string jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_new_GDALRasterizeOptions___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_new_GDALRasterizeOptions___")]
   public static extern global::System.IntPtr new_GDALRasterizeOptions(IntPtr[] jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_delete_GDALRasterizeOptions___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_delete_GDALRasterizeOptions___")]
   public static extern void delete_GDALRasterizeOptions(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALRasterizeDestDS___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALRasterizeDestDS___")]
   public static extern int wrapper_GDALRasterizeDestDS(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, Gdal.GDALProgressFuncDelegate jarg4, string jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALRasterizeDestName___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALRasterizeDestName___")]
   public static extern global::System.IntPtr wrapper_GDALRasterizeDestName(byte[] jarg1, global::System.Runtime.InteropServices.HandleRef jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, Gdal.GDALProgressFuncDelegate jarg4, string jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_new_GDALBuildVRTOptions___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_new_GDALBuildVRTOptions___")]
   public static extern global::System.IntPtr new_GDALBuildVRTOptions(IntPtr[] jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_delete_GDALBuildVRTOptions___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_delete_GDALBuildVRTOptions___")]
   public static extern void delete_GDALBuildVRTOptions(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALBuildVRT_objects___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALBuildVRT_objects___")]
   public static extern global::System.IntPtr wrapper_GDALBuildVRT_objects(byte[] jarg1, int jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, global::System.Runtime.InteropServices.HandleRef jarg4, Gdal.GDALProgressFuncDelegate jarg5, string jarg6);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALBuildVRT_names___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_wrapper_GDALBuildVRT_names___")]
   public static extern global::System.IntPtr wrapper_GDALBuildVRT_names(byte[] jarg1, IntPtr[] jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, Gdal.GDALProgressFuncDelegate jarg4, string jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Driver_SWIGUpcast___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Driver_SWIGUpcast___")]
   public static extern global::System.IntPtr Driver_SWIGUpcast(global::System.IntPtr jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Dataset_SWIGUpcast___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Dataset_SWIGUpcast___")]
   public static extern global::System.IntPtr Dataset_SWIGUpcast(global::System.IntPtr jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("gdal_warp", EntryPoint="CSharp_OSGeofGDAL_Band_SWIGUpcast___")]
+  [global::System.Runtime.InteropServices.DllImport("libgdal_warp.so", EntryPoint="CSharp_OSGeofGDAL_Band_SWIGUpcast___")]
   public static extern global::System.IntPtr Band_SWIGUpcast(global::System.IntPtr jarg1);
 }
 

@@ -36,7 +36,7 @@ class OsrPINVOKE {
     static ExceptionArgumentDelegate argumentNullDelegate = new ExceptionArgumentDelegate(SetPendingArgumentNullException);
     static ExceptionArgumentDelegate argumentOutOfRangeDelegate = new ExceptionArgumentDelegate(SetPendingArgumentOutOfRangeException);
 
-    [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="SWIGRegisterExceptionCallbacks_Osr")]
+    [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="SWIGRegisterExceptionCallbacks_Osr")]
     public static extern void SWIGRegisterExceptionCallbacks_Osr(
                                 ExceptionDelegate applicationDelegate,
                                 ExceptionDelegate arithmeticDelegate,
@@ -50,7 +50,7 @@ class OsrPINVOKE {
                                 ExceptionDelegate overflowDelegate, 
                                 ExceptionDelegate systemExceptionDelegate);
 
-    [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="SWIGRegisterExceptionArgumentCallbacks_Osr")]
+    [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="SWIGRegisterExceptionArgumentCallbacks_Osr")]
     public static extern void SWIGRegisterExceptionCallbacksArgument_Osr(
                                 ExceptionArgumentDelegate argumentDelegate,
                                 ExceptionArgumentDelegate argumentNullDelegate,
@@ -172,7 +172,7 @@ class OsrPINVOKE {
     public delegate string SWIGStringDelegate(string message);
     static SWIGStringDelegate stringDelegate = new SWIGStringDelegate(CreateString);
 
-    [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="SWIGRegisterStringCallback_Osr")]
+    [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="SWIGRegisterStringCallback_Osr")]
     public static extern void SWIGRegisterStringCallback_Osr(SWIGStringDelegate stringDelegate);
 
     static string CreateString(string cString) {
@@ -191,10 +191,10 @@ class OsrPINVOKE {
   }
 
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_UseExceptions___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_UseExceptions___")]
   public static extern void UseExceptions();
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_DontUseExceptions___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_DontUseExceptions___")]
   public static extern void DontUseExceptions();
 
   public class StringListMarshal : IDisposable {
@@ -215,406 +215,406 @@ class OsrPINVOKE {
   }
 
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_StringListDestroy___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_StringListDestroy___")]
   public static extern void StringListDestroy(IntPtr jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_GetWellKnownGeogCSAsWKT___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_GetWellKnownGeogCSAsWKT___")]
   public static extern int GetWellKnownGeogCSAsWKT(string jarg1, out string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_GetUserInputAsWKT___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_GetUserInputAsWKT___")]
   public static extern int GetUserInputAsWKT(string jarg1, out string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_GetProjectionMethods___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_GetProjectionMethods___")]
   public static extern IntPtr GetProjectionMethods();
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_GetProjectionMethodParameterList___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_GetProjectionMethodParameterList___")]
   public static extern IntPtr GetProjectionMethodParameterList(string jarg1, out string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_GetProjectionMethodParamInfo___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_GetProjectionMethodParamInfo___")]
   public static extern void GetProjectionMethodParamInfo(string jarg1, string jarg2, out string jarg3, out string jarg4, ref double jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_new_SpatialReference___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_new_SpatialReference___")]
   public static extern global::System.IntPtr new_SpatialReference(string jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_delete_SpatialReference___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_delete_SpatialReference___")]
   public static extern void delete_SpatialReference(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference___str_____")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference___str_____")]
   public static extern string SpatialReference___str__(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_IsSame___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_IsSame___")]
   public static extern int SpatialReference_IsSame(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_IsSameGeogCS___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_IsSameGeogCS___")]
   public static extern int SpatialReference_IsSameGeogCS(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_IsSameVertCS___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_IsSameVertCS___")]
   public static extern int SpatialReference_IsSameVertCS(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_IsGeographic___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_IsGeographic___")]
   public static extern int SpatialReference_IsGeographic(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_IsProjected___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_IsProjected___")]
   public static extern int SpatialReference_IsProjected(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_IsCompound___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_IsCompound___")]
   public static extern int SpatialReference_IsCompound(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_IsGeocentric___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_IsGeocentric___")]
   public static extern int SpatialReference_IsGeocentric(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_IsLocal___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_IsLocal___")]
   public static extern int SpatialReference_IsLocal(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_IsVertical___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_IsVertical___")]
   public static extern int SpatialReference_IsVertical(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_EPSGTreatsAsLatLong___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_EPSGTreatsAsLatLong___")]
   public static extern int SpatialReference_EPSGTreatsAsLatLong(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_EPSGTreatsAsNorthingEasting___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_EPSGTreatsAsNorthingEasting___")]
   public static extern int SpatialReference_EPSGTreatsAsNorthingEasting(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetAuthority___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetAuthority___")]
   public static extern int SpatialReference_SetAuthority(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3, int jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetAttrValue___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetAttrValue___")]
   public static extern string SpatialReference_GetAttrValue(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, int jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetAttrValue___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetAttrValue___")]
   public static extern int SpatialReference_SetAttrValue(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetAngularUnits___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetAngularUnits___")]
   public static extern int SpatialReference_SetAngularUnits(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, double jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetAngularUnits___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetAngularUnits___")]
   public static extern double SpatialReference_GetAngularUnits(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetAngularUnitsName___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetAngularUnitsName___")]
   public static extern string SpatialReference_GetAngularUnitsName(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetTargetLinearUnits___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetTargetLinearUnits___")]
   public static extern int SpatialReference_SetTargetLinearUnits(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3, double jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetLinearUnits___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetLinearUnits___")]
   public static extern int SpatialReference_SetLinearUnits(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, double jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetLinearUnitsAndUpdateParameters___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetLinearUnitsAndUpdateParameters___")]
   public static extern int SpatialReference_SetLinearUnitsAndUpdateParameters(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, double jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetTargetLinearUnits___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetTargetLinearUnits___")]
   public static extern double SpatialReference_GetTargetLinearUnits(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetLinearUnits___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetLinearUnits___")]
   public static extern double SpatialReference_GetLinearUnits(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetLinearUnitsName___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetLinearUnitsName___")]
   public static extern string SpatialReference_GetLinearUnitsName(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetAuthorityCode___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetAuthorityCode___")]
   public static extern string SpatialReference_GetAuthorityCode(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetAuthorityName___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetAuthorityName___")]
   public static extern string SpatialReference_GetAuthorityName(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetAxisName___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetAxisName___")]
   public static extern string SpatialReference_GetAxisName(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, int jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetAxisOrientation___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetAxisOrientation___")]
   public static extern int SpatialReference_GetAxisOrientation(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, int jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetUTM___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetUTM___")]
   public static extern int SpatialReference_SetUTM(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetUTMZone___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetUTMZone___")]
   public static extern int SpatialReference_GetUTMZone(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetStatePlane___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetStatePlane___")]
   public static extern int SpatialReference_SetStatePlane(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int jarg3, string jarg4, double jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_AutoIdentifyEPSG___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_AutoIdentifyEPSG___")]
   public static extern int SpatialReference_AutoIdentifyEPSG(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetProjection___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetProjection___")]
   public static extern int SpatialReference_SetProjection(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetProjParm___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetProjParm___")]
   public static extern int SpatialReference_SetProjParm(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, double jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetProjParm___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetProjParm___")]
   public static extern double SpatialReference_GetProjParm(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, double jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetNormProjParm___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetNormProjParm___")]
   public static extern int SpatialReference_SetNormProjParm(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, double jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetNormProjParm___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetNormProjParm___")]
   public static extern double SpatialReference_GetNormProjParm(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, double jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetSemiMajor___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetSemiMajor___")]
   public static extern double SpatialReference_GetSemiMajor(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetSemiMinor___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetSemiMinor___")]
   public static extern double SpatialReference_GetSemiMinor(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetInvFlattening___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetInvFlattening___")]
   public static extern double SpatialReference_GetInvFlattening(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetACEA___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetACEA___")]
   public static extern int SpatialReference_SetACEA(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5, double jarg6, double jarg7);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetAE___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetAE___")]
   public static extern int SpatialReference_SetAE(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetBonne___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetBonne___")]
   public static extern int SpatialReference_SetBonne(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetCEA___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetCEA___")]
   public static extern int SpatialReference_SetCEA(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetCS___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetCS___")]
   public static extern int SpatialReference_SetCS(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetEC___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetEC___")]
   public static extern int SpatialReference_SetEC(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5, double jarg6, double jarg7);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetEckertIV___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetEckertIV___")]
   public static extern int SpatialReference_SetEckertIV(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetEckertVI___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetEckertVI___")]
   public static extern int SpatialReference_SetEckertVI(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetEquirectangular___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetEquirectangular___")]
   public static extern int SpatialReference_SetEquirectangular(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetEquirectangular2___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetEquirectangular2___")]
   public static extern int SpatialReference_SetEquirectangular2(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5, double jarg6);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetGaussSchreiberTMercator___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetGaussSchreiberTMercator___")]
   public static extern int SpatialReference_SetGaussSchreiberTMercator(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5, double jarg6);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetGS___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetGS___")]
   public static extern int SpatialReference_SetGS(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetGH___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetGH___")]
   public static extern int SpatialReference_SetGH(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetIGH___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetIGH___")]
   public static extern int SpatialReference_SetIGH(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetGEOS___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetGEOS___")]
   public static extern int SpatialReference_SetGEOS(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetGnomonic___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetGnomonic___")]
   public static extern int SpatialReference_SetGnomonic(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetHOM___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetHOM___")]
   public static extern int SpatialReference_SetHOM(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5, double jarg6, double jarg7, double jarg8);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetHOM2PNO___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetHOM2PNO___")]
   public static extern int SpatialReference_SetHOM2PNO(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5, double jarg6, double jarg7, double jarg8, double jarg9);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetKrovak___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetKrovak___")]
   public static extern int SpatialReference_SetKrovak(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5, double jarg6, double jarg7, double jarg8);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetLAEA___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetLAEA___")]
   public static extern int SpatialReference_SetLAEA(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetLCC___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetLCC___")]
   public static extern int SpatialReference_SetLCC(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5, double jarg6, double jarg7);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetLCC1SP___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetLCC1SP___")]
   public static extern int SpatialReference_SetLCC1SP(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5, double jarg6);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetLCCB___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetLCCB___")]
   public static extern int SpatialReference_SetLCCB(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5, double jarg6, double jarg7);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetMC___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetMC___")]
   public static extern int SpatialReference_SetMC(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetMercator___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetMercator___")]
   public static extern int SpatialReference_SetMercator(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5, double jarg6);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetMercator2SP___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetMercator2SP___")]
   public static extern int SpatialReference_SetMercator2SP(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5, double jarg6);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetMollweide___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetMollweide___")]
   public static extern int SpatialReference_SetMollweide(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetNZMG___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetNZMG___")]
   public static extern int SpatialReference_SetNZMG(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetOS___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetOS___")]
   public static extern int SpatialReference_SetOS(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5, double jarg6);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetOrthographic___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetOrthographic___")]
   public static extern int SpatialReference_SetOrthographic(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetPolyconic___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetPolyconic___")]
   public static extern int SpatialReference_SetPolyconic(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetPS___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetPS___")]
   public static extern int SpatialReference_SetPS(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5, double jarg6);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetRobinson___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetRobinson___")]
   public static extern int SpatialReference_SetRobinson(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetSinusoidal___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetSinusoidal___")]
   public static extern int SpatialReference_SetSinusoidal(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetStereographic___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetStereographic___")]
   public static extern int SpatialReference_SetStereographic(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5, double jarg6);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetSOC___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetSOC___")]
   public static extern int SpatialReference_SetSOC(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetTM___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetTM___")]
   public static extern int SpatialReference_SetTM(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5, double jarg6);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetTMVariant___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetTMVariant___")]
   public static extern int SpatialReference_SetTMVariant(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, double jarg3, double jarg4, double jarg5, double jarg6, double jarg7);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetTMG___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetTMG___")]
   public static extern int SpatialReference_SetTMG(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetTMSO___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetTMSO___")]
   public static extern int SpatialReference_SetTMSO(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5, double jarg6);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetVDG___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetVDG___")]
   public static extern int SpatialReference_SetVDG(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetWellKnownGeogCS___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetWellKnownGeogCS___")]
   public static extern int SpatialReference_SetWellKnownGeogCS(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetFromUserInput___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetFromUserInput___")]
   public static extern int SpatialReference_SetFromUserInput(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_CopyGeogCSFrom___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_CopyGeogCSFrom___")]
   public static extern int SpatialReference_CopyGeogCSFrom(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetTOWGS84___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetTOWGS84___")]
   public static extern int SpatialReference_SetTOWGS84(global::System.Runtime.InteropServices.HandleRef jarg1, double jarg2, double jarg3, double jarg4, double jarg5, double jarg6, double jarg7, double jarg8);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetTOWGS84___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_GetTOWGS84___")]
   public static extern int SpatialReference_GetTOWGS84(global::System.Runtime.InteropServices.HandleRef jarg1, double[] jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetLocalCS___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetLocalCS___")]
   public static extern int SpatialReference_SetLocalCS(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetGeogCS___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetGeogCS___")]
   public static extern int SpatialReference_SetGeogCS(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3, string jarg4, double jarg5, double jarg6, string jarg7, double jarg8, string jarg9, double jarg10);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetProjCS___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetProjCS___")]
   public static extern int SpatialReference_SetProjCS(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetGeocCS___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetGeocCS___")]
   public static extern int SpatialReference_SetGeocCS(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetVertCS___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetVertCS___")]
   public static extern int SpatialReference_SetVertCS(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3, int jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetCompoundCS___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_SetCompoundCS___")]
   public static extern int SpatialReference_SetCompoundCS(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, global::System.Runtime.InteropServices.HandleRef jarg3, global::System.Runtime.InteropServices.HandleRef jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromWkt___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromWkt___")]
   public static extern int SpatialReference_ImportFromWkt(global::System.Runtime.InteropServices.HandleRef jarg1, ref string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromProj4___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromProj4___")]
   public static extern int SpatialReference_ImportFromProj4(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromUrl___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromUrl___")]
   public static extern int SpatialReference_ImportFromUrl(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromESRI___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromESRI___")]
   public static extern int SpatialReference_ImportFromESRI(global::System.Runtime.InteropServices.HandleRef jarg1, IntPtr[] jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromEPSG___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromEPSG___")]
   public static extern int SpatialReference_ImportFromEPSG(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromEPSGA___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromEPSGA___")]
   public static extern int SpatialReference_ImportFromEPSGA(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromPCI___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromPCI___")]
   public static extern int SpatialReference_ImportFromPCI(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3, double[] jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromUSGS___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromUSGS___")]
   public static extern int SpatialReference_ImportFromUSGS(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, int jarg3, double[] jarg4, int jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromXML___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromXML___")]
   public static extern int SpatialReference_ImportFromXML(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromERM___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromERM___")]
   public static extern int SpatialReference_ImportFromERM(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, string jarg3, string jarg4);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromMICoordSys___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromMICoordSys___")]
   public static extern int SpatialReference_ImportFromMICoordSys(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromOzi___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ImportFromOzi___")]
   public static extern int SpatialReference_ImportFromOzi(global::System.Runtime.InteropServices.HandleRef jarg1, IntPtr[] jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ExportToWkt___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ExportToWkt___")]
   public static extern int SpatialReference_ExportToWkt(global::System.Runtime.InteropServices.HandleRef jarg1, out string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ExportToPrettyWkt___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ExportToPrettyWkt___")]
   public static extern int SpatialReference_ExportToPrettyWkt(global::System.Runtime.InteropServices.HandleRef jarg1, out string jarg2, int jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ExportToProj4___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ExportToProj4___")]
   public static extern int SpatialReference_ExportToProj4(global::System.Runtime.InteropServices.HandleRef jarg1, out string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ExportToPCI___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ExportToPCI___")]
   public static extern int SpatialReference_ExportToPCI(global::System.Runtime.InteropServices.HandleRef jarg1, out string jarg2, out string jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ExportToUSGS___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ExportToUSGS___")]
   public static extern int SpatialReference_ExportToUSGS(global::System.Runtime.InteropServices.HandleRef jarg1, out int jarg2, out int jarg3, out int jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ExportToXML___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ExportToXML___")]
   public static extern int SpatialReference_ExportToXML(global::System.Runtime.InteropServices.HandleRef jarg1, out string jarg2, string jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ExportToMICoordSys___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ExportToMICoordSys___")]
   public static extern int SpatialReference_ExportToMICoordSys(global::System.Runtime.InteropServices.HandleRef jarg1, out string jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_CloneGeogCS___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_CloneGeogCS___")]
   public static extern global::System.IntPtr SpatialReference_CloneGeogCS(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_Clone___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_Clone___")]
   public static extern global::System.IntPtr SpatialReference_Clone(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_Validate___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_Validate___")]
   public static extern int SpatialReference_Validate(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_StripCTParms___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_StripCTParms___")]
   public static extern int SpatialReference_StripCTParms(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_FixupOrdering___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_FixupOrdering___")]
   public static extern int SpatialReference_FixupOrdering(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_Fixup___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_Fixup___")]
   public static extern int SpatialReference_Fixup(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_MorphToESRI___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_MorphToESRI___")]
   public static extern int SpatialReference_MorphToESRI(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_MorphFromESRI___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_MorphFromESRI___")]
   public static extern int SpatialReference_MorphFromESRI(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ConvertToOtherProjection___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_SpatialReference_ConvertToOtherProjection___")]
   public static extern global::System.IntPtr SpatialReference_ConvertToOtherProjection(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2, IntPtr[] jarg3);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_new_CoordinateTransformation___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_new_CoordinateTransformation___")]
   public static extern global::System.IntPtr new_CoordinateTransformation(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_delete_CoordinateTransformation___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_delete_CoordinateTransformation___")]
   public static extern void delete_CoordinateTransformation(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_CoordinateTransformation_TransformPoint__SWIG_0___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_CoordinateTransformation_TransformPoint__SWIG_0___")]
   public static extern void CoordinateTransformation_TransformPoint__SWIG_0(global::System.Runtime.InteropServices.HandleRef jarg1, double[] jarg2);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_CoordinateTransformation_TransformPoint__SWIG_1___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_CoordinateTransformation_TransformPoint__SWIG_1___")]
   public static extern void CoordinateTransformation_TransformPoint__SWIG_1(global::System.Runtime.InteropServices.HandleRef jarg1, double[] jarg2, double jarg3, double jarg4, double jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_CoordinateTransformation_TransformPoints___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_CoordinateTransformation_TransformPoints___")]
   public static extern void CoordinateTransformation_TransformPoints(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, double[] jarg3, double[] jarg4, double[] jarg5);
 
-  [global::System.Runtime.InteropServices.DllImport("osr_warp", EntryPoint="CSharp_OSGeofOSR_CreateCoordinateTransformation___")]
+  [global::System.Runtime.InteropServices.DllImport("libosr_warp.so", EntryPoint="CSharp_OSGeofOSR_CreateCoordinateTransformation___")]
   public static extern global::System.IntPtr CreateCoordinateTransformation(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);
 }
 

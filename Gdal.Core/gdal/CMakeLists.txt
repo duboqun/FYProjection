@@ -1,4 +1,3 @@
-cmake_minimum_required(VERSION 3.13)
 project(gdal_warp)
 add_library(gdal_warp SHARED gdal_wrap.cpp)
 find_package(GDAL)

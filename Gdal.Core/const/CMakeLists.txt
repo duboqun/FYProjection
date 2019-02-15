@@ -1,4 +1,3 @@
-cmake_minimum_required(VERSION 3.13)
 project(gdalconst_warp)
 add_library(gdalconst_warp SHARED gdalconst_wrap.c)
 find_package(GDAL)

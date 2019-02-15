@@ -292,11 +292,15 @@ namespace PIE.Meteo.FileProject
                     float[] buffer = new float[dims[0]];
                     GCHandle hnd = GCHandle.Alloc(buffer, GCHandleType.Pinned);
                     H5D.read(datasetId, typeId, H5S.ALL, H5S.ALL, H5P.DEFAULT, hnd.AddrOfPinnedObject());
-                    for (int i = 0; i < buffer.Length; i++)
+                    hnd.Free();
+                    if (buffer.Any(t => t > Math.Pow(10, 10) || t < -Math.Pow(10, 10)))
                     {
-                        var t = BitConverter.GetBytes(buffer[i]);
-                        Array.Reverse(t);
-                        buffer[i] = BitConverter.ToSingle(t, 0);
+                        for (int i = 0; i < buffer.Length; i++)
+                        {
+                            var t = BitConverter.GetBytes(buffer[i]);
+                            Array.Reverse(t);
+                            buffer[i] = BitConverter.ToSingle(t, 0);
+                        }
                     }
 
                     datas.Add(buffer);
