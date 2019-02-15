@@ -203,10 +203,14 @@ namespace PIE.Meteo.FileProject
                 if (info != null)
                 {
                     string name = info.defaultDisplayDataset;
-                    var subDs = Gdal.OpenShared(subDsDic[name], Access.GA_ReadOnly);
-                    Width = subDs.RasterXSize;
-                    Height = subDs.RasterYSize;
-                    subDs.Dispose();
+                    string key = subDsDic.Keys.FirstOrDefault(t => t.Contains(name));
+                    if (!string.IsNullOrEmpty(key))
+                    {
+                        var subDs = Gdal.OpenShared(subDsDic[key], Access.GA_ReadOnly);
+                        Width = subDs.RasterXSize;
+                        Height = subDs.RasterYSize;
+                        subDs.Dispose();
+                    }
                     return;
                 }
                 else

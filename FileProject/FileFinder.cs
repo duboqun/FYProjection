@@ -219,9 +219,9 @@ namespace PIE.Meteo.FileProject
             {
                 return Open(fileFullPath);
             }
-            catch
+            catch(Exception ex)
             {
-                return null;
+                throw ex;
             }
         }
 

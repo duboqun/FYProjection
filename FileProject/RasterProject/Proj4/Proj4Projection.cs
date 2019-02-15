@@ -44,12 +44,6 @@ namespace PIE.Meteo.RasterProject
             this.Initialize(definition);
         }
 
-        /// <summary>
-        /// Common object initialization function
-        /// </summary>
-        /// <param name="definition">The projection definition string</param>
-        /// <exception cref="System.ArgumentException">Thrown when initialization fails.  
-        /// The reason may vary and will be documented in the Message</exception>
         private void Initialize(string definition)
         {
             proj4Str = definition;
@@ -59,40 +53,23 @@ namespace PIE.Meteo.RasterProject
             this.out_def = null;
         }
 
-        /// <summary>
-        /// Read the current pj_errno value.
-        /// </summary>
-        /// <returns>The current pj_errno value.</returns>
         public static int GetErrNo()
         {
             int errno = 0;
             return errno;
         }
 
-        /// <summary>
-        /// Get the error message corresponding to
-        /// the errno
-        /// </summary>
-        /// <param name="errno">The error number</param>
-        /// <returns>The message, or null if errno == 0</returns>
         public static string GetErrorMessage(int errno)
         {
             if (errno == 0) return null;
             return String.Empty;
         }
 
-        /// <summary>
-        /// Instance version checks initialization status.
-        /// </summary>
         private void CheckInitialized()
         {
             Proj4Projection.CheckInitialized(this);
         }
 
-        /// <summary>
-        /// Static version that checks initialization status.
-        /// </summary>
-        /// <param name="p">The projection object</param>
         private static void CheckInitialized(Proj4Projection p)
         {
             if (p.srs == null)
@@ -102,14 +79,6 @@ namespace PIE.Meteo.RasterProject
         }
         // PROPERTIES
 
-        /// <summary>
-        /// A string representing the coordinate system. Setting it [re]initializes the
-        /// projection definition.
-        /// </summary>
-        /// <exception cref="System.ArgumentException">Thrown when initialization fails (set).  
-        /// The reason may vary and will be documented in the Message</exception>
-        /// <exception cref="System.ApplicationException">Thrown when the projection is
-        /// not initialized (get).</exception>
         public string Definition
         {
             set { this.Initialize(value); }
@@ -128,11 +97,6 @@ namespace PIE.Meteo.RasterProject
             }
         }
 
-        /// <summary>
-        /// Returns true if the projection definition is Lat/Long.
-        /// </summary>
-        /// <exception cref="System.ApplicationException">Thrown when the projection is
-        /// not initialized (get).</exception>
         public bool IsLatLong
         {
             get
@@ -142,12 +106,6 @@ namespace PIE.Meteo.RasterProject
             }
         }
 
-        /// <summary>
-        /// Returns the projection definition string (Same as .Definition property)
-        /// </summary>
-        /// <returns>Projection definition string</returns>
-        /// <exception cref="System.ApplicationException">Thrown when the projection is
-        /// not initialized.</exception>
         public override string ToString()
         {
             return this.Definition;
@@ -214,41 +172,9 @@ namespace PIE.Meteo.RasterProject
                     throw new ArgumentException("Coordinate arrays must have the same length");
                 }
 
-                if (src.IsLatLong)
-                {
-                    CoordinateDomain cd = null; //dst._coordinateDomain;
-                    if (cd == null)
-                    {
-                        for (int i = 0; i < x.Length; i++)
-                        {
-                            x[i] *= DEG_TO_RAD;
-                            y[i] *= DEG_TO_RAD;
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 0; i < x.Length; i++)
-                        {
-                            cd.CorrectX(ref x[i]);
-                            cd.CorrectY(ref y[i]);
-                            //
-                            x[i] *= DEG_TO_RAD;
-                            y[i] *= DEG_TO_RAD;
-                        }
-                    }
-                }
-
                 CoordinateTransformation trans = new CoordinateTransformation(src.srs, dst.srs);
-                trans.TransformPoints(x.Length, x, y, z);
 
-                if (dst.IsLatLong)
-                {
-                    for (int i = 0; i < x.Length; i++)
-                    {
-                        x[i] *= RAD_TO_DEG;
-                        y[i] *= RAD_TO_DEG;
-                    }
-                }
+                trans.TransformPoints(x.Length, x, y, z);
             }
         }
 
