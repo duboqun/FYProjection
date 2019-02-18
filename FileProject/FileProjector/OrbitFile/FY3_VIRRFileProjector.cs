@@ -434,17 +434,22 @@ namespace PIE.Meteo.FileProject
                 longitudes = new Double[srcRaster.Width * srcRaster.Height];
                 latitudes = new Double[srcRaster.Width * srcRaster.Height];
                 CPLErr err = CPLErr.CE_None;
-                Band lonBand = srcRaster.GetBands(Longitude)[0];
+                
                 Band latBand = srcRaster.GetBands(Latitude)[0];
+                Console.WriteLine($"LatBand {latBand.XSize} {latBand.YSize}");
                 err = latBand.ReadRaster(0, 0, locationSize.Width, locationSize.Height, latitudes,
                     locationSize.Width, locationSize.Height, 0, 0);
                 Console.WriteLine("latBand.ReadRaster"+err);
                 latBand.Dispose();
                 latBand = null;
-                Console.WriteLine($"{lonBand.XSize} {lonBand.YSize}");
+                
+                Band lonBand = srcRaster.GetBands(Longitude)[0];
+                Console.WriteLine($"LonBand {lonBand.XSize} {lonBand.YSize}");
                 err = lonBand.ReadRaster(0, 0, locationSize.Width, locationSize.Height, longitudes,
                     locationSize.Width, locationSize.Height, 0, 0);
                 Console.WriteLine("lonBand.ReadRaster"+err);
+                lonBand.Dispose();
+                lonBand.Dispose();
             }
             catch (Exception ex)
             {
