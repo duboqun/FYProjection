@@ -23,42 +23,54 @@ namespace PIE.Meteo.FileProject
         private const double PI_OVER_2 = (PI / 2.0e0);
 
         #region 反射通道(可见光/近红外)定标常数
+
         private const string RefSB_Cal_Coefficients = "RefSB_Cal_Coefficients"; //文件属性,定标系数Scale和Offset
-        private const string SolarZenith = "SolarZenith";                       //太阳天顶角数据集
-        private const string EV_RefSB = "EV_RefSB";        //反射通道
+        private const string SolarZenith = "SolarZenith"; //太阳天顶角数据集
+        private const string EV_RefSB = "EV_RefSB"; //反射通道
+
         #endregion
 
         #region 发射通道(热红外通道)定标常数
+
         private const string Emmisive_Centroid_Wave_Number = "Emmisive_Centroid_Wave_Number";
         private const string Emmisive_BT_Coefficients = "Emmisive_BT_Coefficients";
-        private const string Prelaunch_Nonlinear_Coefficients = "Prelaunch_Nonlinear_Coefficients";//辐亮度非线性订正系数
+        private const string Prelaunch_Nonlinear_Coefficients = "Prelaunch_Nonlinear_Coefficients"; //辐亮度非线性订正系数
         private const string Emissive_Radiance_Scales = "Emissive_Radiance_Scales"; //线性定标系数
         private const string Emissive_Radiance_Offsets = "Emissive_Radiance_Offsets";
         private const double C1 = 1.1910427 / 100000;
         private const double C2 = 1.4387752;
-        private const string EV_Emissive = "EV_Emissive";  //发射通道
+        private const string EV_Emissive = "EV_Emissive"; //发射通道
+
         #endregion
 
         #region 经纬度数据集常数
+
         private const string Longitude = "Longitude";
         private const string Latitude = "Latitude";
+
         #endregion
 
         #region 辐射定标变量
+
         //反射通道定标系数，定长14，依次为：Scalech1、Offsetch1、Scalech2、Offsetch2、Scalech6、Offsetch6、Scalech7、Offsetch7、Scalech8、Offsetch8、Scalech9、Offsetch9、Scalech10、Offsetch10
         //定标值？= offSet+scale*观测值
         private float[] _refSB_Cal_Coefficients = null;
+
         /// <summary>太阳天顶角数据集(有效区间0-18000),角度值放大了100倍</summary>
         /// <summary>定标辐亮度值订正系数,只用到前9个数值，分别为：CH3的b0、b1、b2、CH4的b0、b1、b2和CH5的b0、b1、b2</summary>
         private float[] _prelaunch_Nonlinear_Coefficients = null;
-        private float[] _emissive_Radiance_Scales = null;   //new float[3*height]
+
+        private float[] _emissive_Radiance_Scales = null; //new float[3*height]
         private float[] _emissive_Radiance_Offsets = null;
-        private float[] _emmisive_Centroid_Wave_Number = new float[] { 2699.119F, 923.427053F, 830.241775F };//v值
-        private float[] _emmisive_BT_Coefficients = new float[] { 2.05806810F, 0.98231665F, 0.20002536F, 0.99791678F, 0.13149949F, 0.99820459F };//A、B值
+        private float[] _emmisive_Centroid_Wave_Number = new float[] {2699.119F, 923.427053F, 830.241775F}; //v值
+
+        private float[] _emmisive_BT_Coefficients = new float[]
+            {2.05806810F, 0.98231665F, 0.20002536F, 0.99791678F, 0.13149949F, 0.99820459F}; //A、B值
+
         #endregion
 
         private SpatialReference _srcSpatialRef = null;
-        private string _solarZenithCacheFilename;                   //太阳高度角文件，缓存文件
+        private string _solarZenithCacheFilename; //太阳高度角文件，缓存文件
         private FY3_VIRR_PrjSettings _prjSettings;
         private PrjBand[] _prjBands = null;
 
@@ -69,7 +81,7 @@ namespace PIE.Meteo.FileProject
             _fullname = "FY3_VIRR轨道文件投影";
             _rasterProjector = new RasterProjector();
             _srcSpatialRef = SpatialReferenceFactory.CreateSpatialReference(4326);
-            _supportExtBandNames = new string[] { "Height", "LandCover", "LandSeaMask" };
+            _supportExtBandNames = new string[] {"Height", "LandCover", "LandSeaMask"};
             //_NODATA_VALUE = 65535;
         }
 
@@ -85,7 +97,8 @@ namespace PIE.Meteo.FileProject
             return false;
         }
 
-        public override void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, SpatialReference dstSpatialRef, Action<int, string> progressCallback)
+        public override void Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings,
+            SpatialReference dstSpatialRef, Action<int, string> progressCallback)
         {
             try
             {
@@ -98,7 +111,8 @@ namespace PIE.Meteo.FileProject
                     options.Add("VERSION=LDF");
                     options.Add("WITHHDR=TRUE");
                     options.Add("SPATIALREF=" + dstSpatialRef.ExportToProj4());
-                    options.Add("MAPINFO={" + 1 + "," + 1 + "}:{" + _prjSettings.OutEnvelope.MinX + "," + _prjSettings.OutEnvelope.MaxY + "}:{" + _outResolutionX + "," + _outResolutionY + "}");
+                    options.Add("MAPINFO={" + 1 + "," + 1 + "}:{" + _prjSettings.OutEnvelope.MinX + "," +
+                                _prjSettings.OutEnvelope.MaxY + "}:{" + _outResolutionX + "," + _outResolutionY + "}");
                     options.Add("SENSOR=VIRR");
                     if (srcRaster.DataIdentify != null)
                     {
@@ -109,10 +123,12 @@ namespace PIE.Meteo.FileProject
                         {
                             options.Add("SATELLITE=" + satellite);
                         }
+
                         if (dt != DateTime.MinValue && dt != DateTime.MaxValue)
                             options.Add("DATETIME=" + dt.ToString("yyyy/MM/dd HH:mm"));
                         options.Add("ORBITDIRECTION=" + (asc ? "ASC" : "DESC"));
                     }
+
                     List<string> op1 = new List<string>(options);
                     op1.Add("BANDNAMES=" + BandNameString(_prjSettings.OutBandNos));
                     outwriter = CreateOutFile(_outfilename, _dstBandCount, _dstSize, op1.ToArray());
@@ -150,11 +166,11 @@ namespace PIE.Meteo.FileProject
                     if (prjSettings.IsClearPrjCache)
                         TryDeleteCurCatch();
                 }
-
             }
         }
 
-        private void ReadyArgs(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, SpatialReference dstSpatialRef, Action<int, string> progressCallback)
+        private void ReadyArgs(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings,
+            SpatialReference dstSpatialRef, Action<int, string> progressCallback)
         {
             if (srcRaster == null)
                 throw new ArgumentNullException("srcRaster");
@@ -163,7 +179,7 @@ namespace PIE.Meteo.FileProject
             _readyProgress = 0;
             _prjSettings = prjSettings as FY3_VIRR_PrjSettings;
             _dstSpatialRef = dstSpatialRef;
-            MemoryHelper.MemoryNeed(200, 1536);//剩余200MB,已使用1.2GB
+            MemoryHelper.MemoryNeed(200, 1536); //剩余200MB,已使用1.2GB
             if (progressCallback != null)
                 progressCallback(_readyProgress++, "准备相关参数");
             TryCreateDefaultArgs(srcRaster, _prjSettings, ref dstSpatialRef);
@@ -175,19 +191,23 @@ namespace PIE.Meteo.FileProject
             if (prjSettings.OutEnvelope == null || prjSettings.OutEnvelope == PrjEnvelope.Empty)
             {
                 prjSettings.OutEnvelope = _maxPrjEnvelope;
-                _orbitBlock = new Block { xBegin = 0, yBegin = 0, xEnd = srcRaster.Width - 1, yEnd = srcRaster.Height - 1 };
+                _orbitBlock = new Block
+                    {xBegin = 0, yBegin = 0, xEnd = srcRaster.Width - 1, yEnd = srcRaster.Height - 1};
             }
             else
             {
                 GetEnvelope(_xs, _ys, srcRaster.Width, srcRaster.Height, _prjSettings.OutEnvelope, out _orbitBlock);
                 if (_orbitBlock == null || _orbitBlock.Width <= 0 || _orbitBlock.Height <= 0)
                     throw new Exception("数据不在目标区间内");
-                float invalidPresent = (_orbitBlock.Width * _orbitBlock.Height * 1.0F) / (srcRaster.Width * srcRaster.Height);
+                float invalidPresent = (_orbitBlock.Width * _orbitBlock.Height * 1.0F) /
+                                       (srcRaster.Width * srcRaster.Height);
                 if (invalidPresent < 0.0001f)
                     throw new Exception("数据占轨道数据比例太小,有效率" + invalidPresent * 100 + "%");
                 if (invalidPresent > 0.60)
-                    _orbitBlock = new Block { xBegin = 0, yBegin = 0, xEnd = srcRaster.Width - 1, yEnd = srcRaster.Height - 1 };
+                    _orbitBlock = new Block
+                        {xBegin = 0, yBegin = 0, xEnd = srcRaster.Width - 1, yEnd = srcRaster.Height - 1};
             }
+
             //if (dstSpatialRef.IsGeographic()==1 && (prjSettings.OutEnvelope.MaxY > 80 || prjSettings.OutEnvelope.MaxY < -80))
             //    throw new Exception(string.Format("高纬度数据，不适合投影为等经纬度数据[{0}]", _maxPrjEnvelope));
             _dstSpatialRef = dstSpatialRef;
@@ -218,21 +238,23 @@ namespace PIE.Meteo.FileProject
             _emissive_Radiance_Offsets = null;
         }
 
-        private void DoSession(AbstractWarpDataset srcRaster, SpatialReference dstSpatialRef, FY3_VIRR_PrjSettings prjSettings, Action<int, string> progressCallback)
+        private void DoSession(AbstractWarpDataset srcRaster, SpatialReference dstSpatialRef,
+            FY3_VIRR_PrjSettings prjSettings, Action<int, string> progressCallback)
         {
             if (_curSession == null || _curSession != srcRaster || _isBeginSession)
             {
                 _srcLocationSize = new Size(srcRaster.Width, srcRaster.Height);
                 if (progressCallback != null)
-                    progressCallback(_readyProgress++, "读取及预处理经纬度数据集");
-                ReadyLocations(srcRaster, dstSpatialRef, _srcLocationSize, out _xs, out _ys, out _maxPrjEnvelope, progressCallback);
+                    progressCallback(_readyProgress++, "VIRR读取及预处理经纬度数据集");
+                ReadyLocations(srcRaster, dstSpatialRef, _srcLocationSize, out _xs, out _ys, out _maxPrjEnvelope,
+                    progressCallback);
                 if (progressCallback != null)
                     progressCallback(_readyProgress++, "准备其他参数");
                 if (prjSettings.IsRadRef || prjSettings.IsRad)
                     ReadyRadiationArgs(srcRaster);
                 if (prjSettings.IsSolarZenith && prjSettings.IsRadRef)
                 {
-                    _solarZenithCacheFilename = GetSolarZenithCacheFilename(srcRaster.fileName);    //太阳天顶角数据
+                    _solarZenithCacheFilename = GetSolarZenithCacheFilename(srcRaster.fileName); //太阳天顶角数据
                     if (!File.Exists(_solarZenithCacheFilename))
                         ReadySolarZenithArgsToFile(srcRaster);
                     else
@@ -242,6 +264,7 @@ namespace PIE.Meteo.FileProject
                         ReadySensorZenith(srcRaster);
                     }
                 }
+
                 _rasterDataBands = TryCreateRasterDataBands(srcRaster, prjSettings, progressCallback);
                 _isBeginSession = false;
             }
@@ -255,7 +278,8 @@ namespace PIE.Meteo.FileProject
                 _sensorSenithBand = bands[0];
         }
 
-        private Band[] TryCreateRasterDataBands(AbstractWarpDataset srcRaster, FY3_VIRR_PrjSettings prjSettings, Action<int, string> progressCallback)
+        private Band[] TryCreateRasterDataBands(AbstractWarpDataset srcRaster, FY3_VIRR_PrjSettings prjSettings,
+            Action<int, string> progressCallback)
         {
             List<Band> rasterBands = new List<Band>();
             for (int i = 0; i < _prjBands.Length; i++)
@@ -267,6 +291,7 @@ namespace PIE.Meteo.FileProject
                 Band band = latBands[bandMap.DataSetIndex];
                 rasterBands.Add(band);
             }
+
             return rasterBands.ToArray();
         }
 
@@ -274,75 +299,78 @@ namespace PIE.Meteo.FileProject
         /// 辐射值订正
         /// 
         /// </summary>
-        private void DoRadiation(ushort[] srcBandData, Size srcSize, string datasetName, int bandIndex, bool isSolarZenith, float[] solarZenithData)
+        private void DoRadiation(ushort[] srcBandData, Size srcSize, string datasetName, int bandIndex,
+            bool isSolarZenith, float[] solarZenithData)
         {
             switch (datasetName)
             {
-                case EV_RefSB://->反射率
-                    {
-                        float scale = _refSB_Cal_Coefficients[bandIndex * 2];
-                        float offSet = _refSB_Cal_Coefficients[bandIndex * 2 + 1];
-                        RefSbRadiation(srcBandData, isSolarZenith, scale, offSet, solarZenithData);
-                    }
+                case EV_RefSB: //->反射率
+                {
+                    float scale = _refSB_Cal_Coefficients[bandIndex * 2];
+                    float offSet = _refSB_Cal_Coefficients[bandIndex * 2 + 1];
+                    RefSbRadiation(srcBandData, isSolarZenith, scale, offSet, solarZenithData);
+                }
                     break;
-                case EV_Emissive://->辐亮度
+                case EV_Emissive: //->辐亮度
+                {
+                    float b0 = _prelaunch_Nonlinear_Coefficients[bandIndex * 3];
+                    float b1 = _prelaunch_Nonlinear_Coefficients[bandIndex * 3 + 1];
+                    float b2 = _prelaunch_Nonlinear_Coefficients[bandIndex * 3 + 2];
+                    float v = _emmisive_Centroid_Wave_Number[bandIndex];
+                    float A = _emmisive_BT_Coefficients[bandIndex * 2];
+                    float B = _emmisive_BT_Coefficients[bandIndex * 2 + 1];
+                    int height = srcSize.Height;
+                    int width = srcSize.Width;
+                    double v3 = v * v * v;
+                    double c2v = C2 * v;
+                    double c1v3 = C1 * v * v * v;
+                    Parallel.For(0, height, (i) =>
                     {
-                        float b0 = _prelaunch_Nonlinear_Coefficients[bandIndex * 3];
-                        float b1 = _prelaunch_Nonlinear_Coefficients[bandIndex * 3 + 1];
-                        float b2 = _prelaunch_Nonlinear_Coefficients[bandIndex * 3 + 2];
-                        float v = _emmisive_Centroid_Wave_Number[bandIndex];
-                        float A = _emmisive_BT_Coefficients[bandIndex * 2];
-                        float B = _emmisive_BT_Coefficients[bandIndex * 2 + 1];
-                        int height = srcSize.Height;
-                        int width = srcSize.Width;
-                        double v3 = v * v * v;
-                        double c2v = C2 * v;
-                        double c1v3 = C1 * v * v * v;
-                        Parallel.For(0, height, (i) =>
+                        float scale = _emissive_Radiance_Scales[i * 3 + bandIndex];
+                        float offset = _emissive_Radiance_Offsets[i * 3 + bandIndex];
+                        int index;
+                        UInt16 dn;
+                        double radiationLIN;
+                        double radiation;
+                        double temperatureBB;
+                        double sensorZenith;
+                        double deltaT;
+                        int rowOffset = i * width;
+                        for (int j = 0; j < width; j++)
                         {
-                            float scale = _emissive_Radiance_Scales[i * 3 + bandIndex];
-                            float offset = _emissive_Radiance_Offsets[i * 3 + bandIndex];
-                            int index;
-                            UInt16 dn;
-                            double radiationLIN;
-                            double radiation;
-                            double temperatureBB;
-                            double sensorZenith;
-                            double deltaT;
-                            int rowOffset = i * width;
-                            for (int j = 0; j < width; j++)
+                            index = rowOffset + j;
+                            dn = srcBandData[index];
+                            if (dn > 0 && dn < 50000) //EV_Emissive的有效值区间,理论上亮温应当在150K~350K之间
                             {
-                                index = rowOffset + j;
-                                dn = srcBandData[index];
-                                if (dn > 0 && dn < 50000)   //EV_Emissive的有效值区间,理论上亮温应当在150K~350K之间
+                                radiationLIN = (dn * scale + offset);
+                                radiation = (b0 + (b1 + 1) * radiationLIN + b2 * radiationLIN * radiationLIN);
+                                temperatureBB = (c2v / Math.Log(1 + c1v3 / radiation) - A) / B;
+                                //以上计算出来的值为亮温值
+                                //下面这行为对亮温，使用卫星天顶角，执行"临边变暗订正"。
+                                if (_isSensorZenith && _sensorZenithData != null)
                                 {
-                                    radiationLIN = (dn * scale + offset);
-                                    radiation = (b0 + (b1 + 1) * radiationLIN + b2 * radiationLIN * radiationLIN);
-                                    temperatureBB = (c2v / Math.Log(1 + c1v3 / radiation) - A) / B;
-                                    //以上计算出来的值为亮温值
-                                    //下面这行为对亮温，使用卫星天顶角，执行"临边变暗订正"。
-                                    if (_isSensorZenith && _sensorZenithData != null)
-                                    {
-                                        sensorZenith = _sensorZenithData[index] * 0.01d;
-                                        deltaT = temperatureBB + (Math.Pow(Math.E, 0.00012 * sensorZenith * sensorZenith) - 1) * (0.1072 * temperatureBB - 26.81);
-                                        srcBandData[index] = (UInt16)(deltaT * 10);
-                                    }
-                                    else
-                                        srcBandData[index] = (UInt16)(temperatureBB * 10);
+                                    sensorZenith = _sensorZenithData[index] * 0.01d;
+                                    deltaT = temperatureBB +
+                                             (Math.Pow(Math.E, 0.00012 * sensorZenith * sensorZenith) - 1) *
+                                             (0.1072 * temperatureBB - 26.81);
+                                    srcBandData[index] = (UInt16) (deltaT * 10);
                                 }
                                 else
-                                    srcBandData[index] = 0;
+                                    srcBandData[index] = (UInt16) (temperatureBB * 10);
                             }
-                        });
-
-                    }
+                            else
+                                srcBandData[index] = 0;
+                        }
+                    });
+                }
                     break;
                 default:
                     break;
             }
         }
 
-        private void RefSbRadiation(ushort[] srcBandData, bool isSolarZenith, float scale, float offSet, float[] solarZenithData)
+        private void RefSbRadiation(ushort[] srcBandData, bool isSolarZenith, float scale, float offSet,
+            float[] solarZenithData)
         {
             int length = srcBandData.Length;
             if (isSolarZenith)
@@ -350,7 +378,7 @@ namespace PIE.Meteo.FileProject
                 Parallel.For(0, length, (index) =>
                 {
                     float solarZenith = solarZenithData[index];
-                    srcBandData[index] = (UInt16)((scale * srcBandData[index] + offSet) * solarZenith);//高度角已经转为订正的值了。
+                    srcBandData[index] = (UInt16) ((scale * srcBandData[index] + offSet) * solarZenith); //高度角已经转为订正的值了。
                     if (srcBandData[index] > 65000)
                         srcBandData[index] = 0;
                 });
@@ -359,7 +387,7 @@ namespace PIE.Meteo.FileProject
             {
                 Parallel.For(0, length, (index) =>
                 {
-                    srcBandData[index] = (UInt16)(10 * (scale * srcBandData[index] + offSet));
+                    srcBandData[index] = (UInt16) (10 * (scale * srcBandData[index] + offSet));
                     if (srcBandData[index] > 65000)
                         srcBandData[index] = 0;
                 });
@@ -367,6 +395,7 @@ namespace PIE.Meteo.FileProject
         }
 
         protected short[] _sensorZenithData = null;
+
         protected override void TryReadZenithData(int xOffset, int yOffset, int blockWidth, int blockHeight)
         {
             //亮温临边变暗订正,读取卫星天顶角数据。
@@ -388,39 +417,34 @@ namespace PIE.Meteo.FileProject
             out double[] xs, out double[] ys, out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback)
         {
             Size locationSize;
+
             ReadLocations(srcRaster, out xs, out ys, out locationSize);
             TryResetLonlatForLeftRightInvalid(xs, ys, locationSize);
-            _rasterProjector.ComputeDstEnvelope(_srcSpatialRef, xs, ys, srcSize, dstSpatialRef, out maxPrjEnvelope, progressCallback);
+            _rasterProjector.ComputeDstEnvelope(_srcSpatialRef, xs, ys, srcSize, dstSpatialRef, out maxPrjEnvelope,
+                progressCallback);
         }
 
-        protected override void ReadLocations(AbstractWarpDataset srcRaster, out double[] longitudes, out double[] latitudes, out Size locationSize)
+        protected override void ReadLocations(AbstractWarpDataset srcRaster, out double[] longitudes,
+            out double[] latitudes, out Size locationSize)
         {
             try
             {
-                {
-                    locationSize = new Size(srcRaster.Width, srcRaster.Height);
-                    longitudes = new Double[srcRaster.Width * srcRaster.Height];
-                    latitudes = new Double[srcRaster.Width * srcRaster.Height];
-                    Band lonBand = srcRaster.GetBands(Longitude)[0];
-                    {
-                        Band latBand = srcRaster.GetBands(Latitude)[0];
-                        {
-                            unsafe
-                            {
-                                fixed (Double* ptrLong = longitudes)
-                                fixed (Double* ptrLat = latitudes)
-                                {
-                                    {
-                                        IntPtr bufferPtrLat = new IntPtr(ptrLat);
-                                        IntPtr bufferPtrLong = new IntPtr(ptrLong);
-                                        latBand.ReadRaster(0, 0, locationSize.Width, locationSize.Height, bufferPtrLat, locationSize.Width, locationSize.Height, DataType.GDT_Float64,0,0);
-                                        lonBand.ReadRaster(0, 0, locationSize.Width, locationSize.Height, bufferPtrLong, locationSize.Width, locationSize.Height, DataType.GDT_Float64,0,0);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                Console.WriteLine($"{srcRaster.Width} {srcRaster.Height}");
+                locationSize = new Size(srcRaster.Width, srcRaster.Height);
+                longitudes = new Double[srcRaster.Width * srcRaster.Height];
+                latitudes = new Double[srcRaster.Width * srcRaster.Height];
+                CPLErr err = CPLErr.CE_None;
+                Band lonBand = srcRaster.GetBands(Longitude)[0];
+                Band latBand = srcRaster.GetBands(Latitude)[0];
+                err = latBand.ReadRaster(0, 0, locationSize.Width, locationSize.Height, latitudes,
+                    locationSize.Width, locationSize.Height, 0, 0);
+                Console.WriteLine("latBand.ReadRaster"+err);
+                latBand.Dispose();
+                latBand = null;
+                Console.WriteLine($"{lonBand.XSize} {lonBand.YSize}");
+                err = lonBand.ReadRaster(0, 0, locationSize.Width, locationSize.Height, longitudes,
+                    locationSize.Width, locationSize.Height, 0, 0);
+                Console.WriteLine("lonBand.ReadRaster"+err);
             }
             catch (Exception ex)
             {
@@ -429,6 +453,7 @@ namespace PIE.Meteo.FileProject
         }
 
         #region 辐射反射定标计算        
+
         private void ReadyRadiationArgs(AbstractWarpDataset srcRaster)
         {
             if (srcRaster == null)
@@ -436,10 +461,13 @@ namespace PIE.Meteo.FileProject
             try
             {
                 _refSB_Cal_Coefficients = ReadFileAttributeToFloat(srcRaster, RefSB_Cal_Coefficients, 14);
-                _prelaunch_Nonlinear_Coefficients = ReadFileAttributeToFloat(srcRaster, Prelaunch_Nonlinear_Coefficients, 9);
+                _prelaunch_Nonlinear_Coefficients =
+                    ReadFileAttributeToFloat(srcRaster, Prelaunch_Nonlinear_Coefficients, 9);
                 Size srcSize = new Size(srcRaster.Width, srcRaster.Height);
-                _emissive_Radiance_Scales = ReadDataSetToSingle(srcRaster, new Size(3, srcSize.Height), Emissive_Radiance_Scales, 0);
-                _emissive_Radiance_Offsets = ReadDataSetToSingle(srcRaster, new Size(3, srcSize.Height), Emissive_Radiance_Offsets, 0);
+                _emissive_Radiance_Scales =
+                    ReadDataSetToSingle(srcRaster, new Size(3, srcSize.Height), Emissive_Radiance_Scales, 0);
+                _emissive_Radiance_Offsets =
+                    ReadDataSetToSingle(srcRaster, new Size(3, srcSize.Height), Emissive_Radiance_Offsets, 0);
             }
             catch (Exception ex)
             {
@@ -461,11 +489,13 @@ namespace PIE.Meteo.FileProject
                 Parallel.For(0, length, index =>
                 {
                     if (readSolarZenithData[index] > 0 && readSolarZenithData[index] < 18000)
-                        saveSolarZenithData[index] = (float)(10.0f / Math.Cos(readSolarZenithData[index] * DEG_TO_RAD_P100));
+                        saveSolarZenithData[index] =
+                            (float) (10.0f / Math.Cos(readSolarZenithData[index] * DEG_TO_RAD_P100));
                     else
                         saveSolarZenithData[index] = 0;
                 });
-                _solarZenithCacheRaster = WriteData(saveSolarZenithData, _solarZenithCacheFilename, srcSize.Width, srcSize.Height);
+                _solarZenithCacheRaster = WriteData(saveSolarZenithData, _solarZenithCacheFilename, srcSize.Width,
+                    srcSize.Height);
                 saveSolarZenithData = null;
                 readSolarZenithData = null;
             }
@@ -487,13 +517,15 @@ namespace PIE.Meteo.FileProject
                 {
                     value[i] = float.Parse(refSbCals[i]);
                 }
+
                 return value;
             }
             else
                 return null;
         }
 
-        private Int16[] ReadDataSetToInt16(AbstractWarpDataset srcbandpro, Size srcSize, string dataSetName, int bandIndex)
+        private Int16[] ReadDataSetToInt16(AbstractWarpDataset srcbandpro, Size srcSize, string dataSetName,
+            int bandIndex)
         {
             Int16[] data = new Int16[srcSize.Width * srcSize.Height];
             Band rasterBand = srcbandpro.GetBands(dataSetName)[0];
@@ -503,14 +535,16 @@ namespace PIE.Meteo.FileProject
                     fixed (Int16* ptr = data)
                     {
                         IntPtr bufferPtr = new IntPtr(ptr);
-                        rasterBand.ReadRaster(0, 0, srcSize.Width, srcSize.Height, bufferPtr, srcSize.Width, srcSize.Height, DataType.GDT_Int16,0,0);
+                        rasterBand.ReadRaster(0, 0, srcSize.Width, srcSize.Height, bufferPtr, srcSize.Width,
+                            srcSize.Height, DataType.GDT_Int16, 0, 0);
                     }
                 }
             }
             return data;
         }
 
-        private float[] ReadDataSetToSingle(AbstractWarpDataset srcbandpro, Size srcSize, string dataSetName, int bandIndex)
+        private float[] ReadDataSetToSingle(AbstractWarpDataset srcbandpro, Size srcSize, string dataSetName,
+            int bandIndex)
         {
             Single[] data = new Single[srcSize.Width * srcSize.Height];
             Band rasterBand = srcbandpro.GetBands(dataSetName)[0];
@@ -520,15 +554,18 @@ namespace PIE.Meteo.FileProject
                     fixed (Single* ptr = data)
                     {
                         IntPtr bufferPtr = new IntPtr(ptr);
-                        rasterBand.ReadRaster(0, 0, srcSize.Width, srcSize.Height, bufferPtr, srcSize.Width, srcSize.Height, DataType.GDT_Float32,0,0);
+                        rasterBand.ReadRaster(0, 0, srcSize.Width, srcSize.Height, bufferPtr, srcSize.Width,
+                            srcSize.Height, DataType.GDT_Float32, 0, 0);
                     }
                 }
             }
             return data;
         }
+
         #endregion
 
-        public override AbstractWarpDataset Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings, AbstractWarpDataset dstRaster, int beginBandIndex, Action<int, string> progressCallback)
+        public override AbstractWarpDataset Project(AbstractWarpDataset srcRaster, FilePrjSettings prjSettings,
+            AbstractWarpDataset dstRaster, int beginBandIndex, Action<int, string> progressCallback)
         {
             if (srcRaster == null)
                 throw new ArgumentNullException("srcRaster");
@@ -569,13 +606,14 @@ namespace PIE.Meteo.FileProject
             return new FY3_VIRR_PrjSettings();
         }
 
-        private void TryCreateDefaultArgs(AbstractWarpDataset srcRaster, FY3_VIRR_PrjSettings prjSettings, ref SpatialReference dstSpatialRef)
+        private void TryCreateDefaultArgs(AbstractWarpDataset srcRaster, FY3_VIRR_PrjSettings prjSettings,
+            ref SpatialReference dstSpatialRef)
         {
             if (dstSpatialRef == null)
                 dstSpatialRef = _srcSpatialRef;
             if (string.IsNullOrWhiteSpace(prjSettings.OutFormat))
                 prjSettings.OutFormat = "LDF";
-            if (dstSpatialRef.IsGeographic()==1)
+            if (dstSpatialRef.IsGeographic() == 1)
             {
                 _srcImgResolution = 0.01F;
             }
@@ -583,9 +621,10 @@ namespace PIE.Meteo.FileProject
             {
                 _srcImgResolution = 1000f;
             }
+
             if (prjSettings.OutResolutionX <= 0 || prjSettings.OutResolutionY <= 0)
             {
-                if (dstSpatialRef.IsGeographic()==1)
+                if (dstSpatialRef.IsGeographic() == 1)
                 {
                     prjSettings.OutResolutionX = 0.01F;
                     prjSettings.OutResolutionY = 0.01F;
@@ -596,6 +635,7 @@ namespace PIE.Meteo.FileProject
                     prjSettings.OutResolutionY = 1000F;
                 }
             }
+
             if (prjSettings.OutBandNos == null || prjSettings.OutBandNos.Length == 0)
             {
                 _prjBands = PrjBand.VIRR_1000_Orbit;
@@ -608,11 +648,13 @@ namespace PIE.Meteo.FileProject
                 {
                     bands.Add(defbands[bandNo - 1]);
                 }
+
                 _prjBands = bands.ToArray();
             }
         }
 
-        public override void ComputeDstEnvelope(AbstractWarpDataset srcRaster, SpatialReference dstSpatialRef, out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback)
+        public override void ComputeDstEnvelope(AbstractWarpDataset srcRaster, SpatialReference dstSpatialRef,
+            out PrjEnvelope maxPrjEnvelope, Action<int, string> progressCallback)
         {
             if (srcRaster != null)
             {
@@ -626,7 +668,8 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        protected override void DoRadiation(AbstractWarpDataset srcImgRaster, int i, ushort[] srcBandData, float[] solarZenithData, Size srcBlockImgSize, Size angleSize)
+        protected override void DoRadiation(AbstractWarpDataset srcImgRaster, int i, ushort[] srcBandData,
+            float[] solarZenithData, Size srcBlockImgSize, Size angleSize)
         {
             if (_isRadRef)
             {
@@ -634,39 +677,41 @@ namespace PIE.Meteo.FileProject
                 int dsIndex = _prjBands[i].DataSetIndex;
                 DoRadiation(srcBandData, srcBlockImgSize, ds, dsIndex, _isSolarZenith, solarZenithData);
             }
+
             if (_isRad)
             {
                 string datasetName = _prjBands[i].DataSetName;
                 int bandIndex = _prjBands[i].DataSetIndex;
                 switch (datasetName)
                 {
-                    case EV_RefSB://->反射率
+                    case EV_RefSB: //->反射率
+                    {
+                        float scale = _refSB_Cal_Coefficients[bandIndex * 2];
+                        float offSet = _refSB_Cal_Coefficients[bandIndex * 2 + 1];
+                        Parallel.For(0, srcBandData.Length, (index) =>
                         {
-                            float scale = _refSB_Cal_Coefficients[bandIndex * 2];
-                            float offSet = _refSB_Cal_Coefficients[bandIndex * 2 + 1];
-                            Parallel.For(0, srcBandData.Length, (index) =>
-                            {
-                                double rad = scale * srcBandData[index] + offSet;
-                                srcBandData[index] = rad > ushort.MaxValue ? (UInt16)0 : Convert.ToUInt16(rad);
-                            });
-                        }
+                            double rad = scale * srcBandData[index] + offSet;
+                            srcBandData[index] = rad > ushort.MaxValue ? (UInt16) 0 : Convert.ToUInt16(rad);
+                        });
+                    }
                         break;
-                    case EV_Emissive://->辐亮度
-                        {
-                            int height = srcBlockImgSize.Height;
-                            int width = srcBlockImgSize.Width;
+                    case EV_Emissive: //->辐亮度
+                    {
+                        int height = srcBlockImgSize.Height;
+                        int width = srcBlockImgSize.Width;
 
-                            Parallel.For(0, height, (ii) =>
+                        Parallel.For(0, height, (ii) =>
+                        {
+                            float scale = _emissive_Radiance_Scales[ii * 3 + bandIndex];
+                            float offset = _emissive_Radiance_Offsets[ii * 3 + bandIndex];
+                            for (int j = 0; j < width; j++)
                             {
-                                float scale = _emissive_Radiance_Scales[ii * 3 + bandIndex];
-                                float offset = _emissive_Radiance_Offsets[ii * 3 + bandIndex];
-                                for (int j = 0; j < width; j++)
-                                {
-                                    double rad = scale * srcBandData[ii * width + j] + offset;
-                                    srcBandData[ii * width + j] = rad > ushort.MaxValue ? (UInt16)0 : Convert.ToUInt16(rad);
-                                }
-                            });
-                        }
+                                double rad = scale * srcBandData[ii * width + j] + offset;
+                                srcBandData[ii * width + j] =
+                                    rad > ushort.MaxValue ? (UInt16) 0 : Convert.ToUInt16(rad);
+                            }
+                        });
+                    }
                         break;
                 }
             }

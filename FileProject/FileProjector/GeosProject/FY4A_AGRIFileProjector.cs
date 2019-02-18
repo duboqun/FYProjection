@@ -11,6 +11,7 @@ using System.IO;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using HDF.PInvoke;
+using H5ID = System.Int32;
 using OSGeo.GDAL;
 using OSGeo.OSR;
 
@@ -263,11 +264,12 @@ namespace PIE.Meteo.FileProject
             }
         }
 
+        
         private List<float[]> ReadDataSetToSingle(AbstractWarpDataset srcbandpro, int[] bands)
         {
             List<float[]> datas = new List<float[]>();
             var prjBands = PrjBandTable.GetPrjBands(srcbandpro);
-            long h5FileId = H5F.open(srcbandpro.fileName, H5F.ACC_RDONLY);
+            H5ID h5FileId = H5F.open(srcbandpro.fileName, H5F.ACC_RDONLY);
 
             foreach (int index in bands)
             {
@@ -276,12 +278,12 @@ namespace PIE.Meteo.FileProject
                 string dsName = "CALChannel" + bandIndex.ToString("00");
 
 
-                long datasetId = H5D.open(h5FileId, dsName);
+                H5ID datasetId = H5D.open(h5FileId, dsName);
                 if (datasetId <= 0)
                     throw new ArgumentNullException(string.Format("FY4辐射定标，未找到名称为{0}的数据.",
                         "CALChannel" + index.ToString("00")));
-                long typeId = H5D.get_type(datasetId);
-                long spaceId = H5D.get_space(datasetId);
+                H5ID typeId = H5D.get_type(datasetId);
+                H5ID spaceId = H5D.get_space(datasetId);
                 if (H5T.get_class(typeId) == H5T.class_t.FLOAT)
                 {
                     int rank = H5S.get_simple_extent_ndims(spaceId);

@@ -170,7 +170,6 @@ namespace PIE.Meteo.FileProject
                     {
                         percent++;
                         progress = percent * 100 / progressCount;
-                        progressCallback(progress, string.Format("投影完成{0}%", progress));
                     }
 
                     Parallel.For(0, rowStep, j =>
@@ -210,7 +209,6 @@ namespace PIE.Meteo.FileProject
                     {
                         percent++;
                         progress = percent * 100 / progressCount;
-                        progressCallback(progress, string.Format("投影完成{0}%", progress));
                     }
 
                     var bandNum = b - beginBandIndex;

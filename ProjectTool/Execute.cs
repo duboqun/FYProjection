@@ -18,7 +18,7 @@ namespace PIE.Meteo.ProjectTool
 
         public Execute()
         {
-            string size = "768";//ConfigurationManager.AppSettings["ProjectionThumbnailSize"];
+            string size = "768"; //ConfigurationManager.AppSettings["ProjectionThumbnailSize"];
             if (!string.IsNullOrWhiteSpace(size))
                 int.TryParse(size, out _prjPngSize);
         }
@@ -32,7 +32,8 @@ namespace PIE.Meteo.ProjectTool
             {
                 using (AbstractWarpDataset inputRaster = WarpDataset.Open(inArg.InputFilename))
                 {
-                    RasterDatasetInfo dsInfo = mRasterSourceManager.GetInstance().GetRasterDatasetInfo(inArg.InputFilename);
+                    RasterDatasetInfo dsInfo =
+                        mRasterSourceManager.GetInstance().GetRasterDatasetInfo(inArg.InputFilename);
                     DateTime? dateTime = mRasterSourceManager.GetInstance().GetImageTime(inArg.InputFilename);
                     DataIdentify dataIdentify = new DataIdentify();
                     outArg.OrbitFilename = Path.GetFileName(inArg.InputFilename);
@@ -45,7 +46,8 @@ namespace PIE.Meteo.ProjectTool
                     outArg.Station = ParseStation(Path.GetFileName(inArg.InputFilename));
                     outArg.DayOrNight = DayOrNight(inputRaster);
                     if (dateTime.HasValue)
-                        outArg.OrbitIdentify = CalcOrbitIdentify(dateTime.Value, inArg.PervObservationDate, inArg.PervObservationTime, inArg.OrbitIdentify);
+                        outArg.OrbitIdentify = CalcOrbitIdentify(dateTime.Value, inArg.PervObservationDate,
+                            inArg.PervObservationTime, inArg.OrbitIdentify);
                     outArg.Length = new FileInfo(inArg.InputFilename).Length;
                     string validEnvelopeMsg = "";
 
@@ -96,15 +98,18 @@ namespace PIE.Meteo.ProjectTool
                     {
                         PrjOutArg prjArg;
                         if (inArg.Envelopes == null || inArg.Envelopes.Length == 0)
-                            prjArg = new PrjOutArg(projectionIdentify, null, inArg.ResolutionX, inArg.ResolutionY, inArg.OutputDir);
+                            prjArg = new PrjOutArg(projectionIdentify, null, inArg.ResolutionX, inArg.ResolutionY,
+                                inArg.OutputDir);
                         else
-                            prjArg = new PrjOutArg(projectionIdentify, inArg.Envelopes, inArg.ResolutionX, inArg.ResolutionY, inArg.OutputDir);
+                            prjArg = new PrjOutArg(projectionIdentify, inArg.Envelopes, inArg.ResolutionX,
+                                inArg.ResolutionY, inArg.OutputDir);
                         //prjArg.Args = new string[] { "SolarZenith"};
                         if (inArg.Bands != null && inArg.Bands.Length != 0)
                         {
                             prjArg.SelectedBands = inArg.Bands;
                             Console.WriteLine("SelectedBands:" + string.Join(",", prjArg.SelectedBands));
                         }
+
                         //扩展参数
                         List<string> extArgs = new List<string>();
                         extArgs.Add("IsClearPrjCache");
@@ -113,7 +118,8 @@ namespace PIE.Meteo.ProjectTool
                         prjArg.Args = extArgs.ToArray();
                         ProjectionFactory prjFactory = new ProjectionFactory();
                         string retMessage = "";
-                        string[] files = prjFactory.Project(inputRaster, prjArg, new Action<int, string>(OnProgress), out retMessage);
+                        string[] files = prjFactory.Project(inputRaster, prjArg, new Action<int, string>(OnProgress),
+                            out retMessage);
                         prjFactory = null;
                         //投影结束，执行拼接，如果有拼接节点
                         List<OutFileArg> fileArgs = new List<OutFileArg>();
@@ -138,14 +144,30 @@ namespace PIE.Meteo.ProjectTool
                                 var dt = dateTime.HasValue ? dateTime.Value : DateTime.Now;
                                 TryMosaicFile(inArg, outfileRaster, dsInfo, dt, outArg.DayOrNight);
                             }
+
                             fileArg.OutputFilename = Path.GetFileName(file);
-                            fileArg.Thumbnail = (string.IsNullOrWhiteSpace(overViewFilename) && File.Exists(overViewFilename) ? "" : Path.GetFileName(overViewFilename));
-                            string solarZenithFile = Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file) + ".SolarZenith.ldf");
-                            string solarZenithHdrFile = Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file) + ".SolarZenith.hdr");
+                            fileArg.Thumbnail =
+                                (string.IsNullOrWhiteSpace(overViewFilename) && File.Exists(overViewFilename)
+                                    ? ""
+                                    : Path.GetFileName(overViewFilename));
+                            string solarZenithFile = Path.Combine(Path.GetDirectoryName(file),
+                                Path.GetFileNameWithoutExtension(file) + ".SolarZenith.ldf");
+                            string solarZenithHdrFile = Path.Combine(Path.GetDirectoryName(file),
+                                Path.GetFileNameWithoutExtension(file) + ".SolarZenith.hdr");
                             fileArg.ExtendFiles = Path.ChangeExtension(Path.GetFileName(file), "hdr") +
-                                (string.IsNullOrWhiteSpace(solarZenithFile) && File.Exists(solarZenithFile) ? "" : "," + Path.GetFileName(solarZenithFile)) +
-                                (string.IsNullOrWhiteSpace(solarZenithHdrFile) && File.Exists(solarZenithHdrFile) ? "" : "," + Path.GetFileName(solarZenithHdrFile));
-                            fileArg.Envelope = new PrjEnvelopeItem("GBAL", env == null ? null : new RasterProject.PrjEnvelope(env.MinX, env.MaxX, env.MinY, env.MaxY, SpatialReferenceFactory.CreateSpatialReference(4326)));
+                                                  (string.IsNullOrWhiteSpace(solarZenithFile) &&
+                                                   File.Exists(solarZenithFile)
+                                                      ? ""
+                                                      : "," + Path.GetFileName(solarZenithFile)) +
+                                                  (string.IsNullOrWhiteSpace(solarZenithHdrFile) &&
+                                                   File.Exists(solarZenithHdrFile)
+                                                      ? ""
+                                                      : "," + Path.GetFileName(solarZenithHdrFile));
+                            fileArg.Envelope = new PrjEnvelopeItem("GBAL",
+                                env == null
+                                    ? null
+                                    : new RasterProject.PrjEnvelope(env.MinX, env.MaxX, env.MinY, env.MaxY,
+                                        SpatialReferenceFactory.CreateSpatialReference(4326)));
                             fileArg.ResolutionX = resolutionX.ToString();
                             fileArg.ResolutionY = resolutionY.ToString();
                             fileArg.Length = new FileInfo(file).Length;
@@ -153,6 +175,7 @@ namespace PIE.Meteo.ProjectTool
                             if (inArg.IsOnlySaveMosaicFile)
                                 TryDeleteFile(file);
                         }
+
                         outArg.OutputFiles = fileArgs.ToArray();
                         outArg.LogLevel = "info";
                         if (string.IsNullOrWhiteSpace(retMessage))
@@ -167,7 +190,7 @@ namespace PIE.Meteo.ProjectTool
             catch (Exception ex)
             {
                 outArg.LogLevel = "error";
-                outArg.LogInfo = ex.Message;
+                outArg.LogInfo = ex.Message + ex.StackTrace;
                 Console.WriteLine("PIE.Meteo.ProjectTool.Execute()", ex);
             }
             finally
@@ -180,9 +203,11 @@ namespace PIE.Meteo.ProjectTool
                 {
                     string oldResStr = rex.Match(inputFileName).Groups[0].Value;
                     if (inArg.ProjectionIdentify == "GLL")
-                        inputFileName = inputFileName.Replace(oldResStr, $"_{PrjFileName.GLLResolutionIdentify(inArg.ResolutionX)}");
+                        inputFileName = inputFileName.Replace(oldResStr,
+                            $"_{PrjFileName.GLLResolutionIdentify(inArg.ResolutionX)}");
                     else
-                        inputFileName = inputFileName.Replace(oldResStr, $"_{PrjFileName.ResolutionIdentify(inArg.ResolutionX)}");
+                        inputFileName = inputFileName.Replace(oldResStr,
+                            $"_{PrjFileName.ResolutionIdentify(inArg.ResolutionX)}");
                 }
 
                 string outXmlFilename = Path.Combine(inArg.OutputDir, inputFileName + ".xml");
@@ -198,14 +223,16 @@ namespace PIE.Meteo.ProjectTool
         /// <param name="pervTime"></param>
         /// <param name="perOrbitIdentify"></param>
         /// <returns></returns>
-        private string CalcOrbitIdentify(DateTime curDateTime, string pervDate, string pervTime, string perOrbitIdentify)
+        private string CalcOrbitIdentify(DateTime curDateTime, string pervDate, string pervTime,
+            string perOrbitIdentify)
         {
             if (string.IsNullOrWhiteSpace(pervDate) || string.IsNullOrWhiteSpace(pervTime))
                 return curDateTime.ToString("HHmm");
-            if (pervDate != curDateTime.ToString("yyyyMMdd"))   //日期不相同,现在为第一轨
+            if (pervDate != curDateTime.ToString("yyyyMMdd")) //日期不相同,现在为第一轨
                 return curDateTime.ToString("HHmm");
             DateTime perDateTime;
-            if (!DateTime.TryParseExact(pervDate + pervTime, "yyyyMMddHHmm", null, System.Globalization.DateTimeStyles.None, out perDateTime))
+            if (!DateTime.TryParseExact(pervDate + pervTime, "yyyyMMddHHmm", null,
+                System.Globalization.DateTimeStyles.None, out perDateTime))
                 return curDateTime.ToString("HHmm");
             if (Math.Abs((perDateTime - curDateTime).TotalMinutes) >= 20)
             {
@@ -245,9 +272,11 @@ namespace PIE.Meteo.ProjectTool
             }
         }
 
-        private void TryMosaicFile(InputArg inArg, AbstractWarpDataset fileRaster, RasterDatasetInfo dataIdentify, DateTime dateTime, string dayOrNight)
+        private void TryMosaicFile(InputArg inArg, AbstractWarpDataset fileRaster, RasterDatasetInfo dataIdentify,
+            DateTime dateTime, string dayOrNight)
         {
-            if (inArg.MosaicInputArg == null || string.IsNullOrWhiteSpace(inArg.MosaicInputArg.OutputDir) || inArg.MosaicInputArg.Envelope == null)
+            if (inArg.MosaicInputArg == null || string.IsNullOrWhiteSpace(inArg.MosaicInputArg.OutputDir) ||
+                inArg.MosaicInputArg.Envelope == null)
                 return;
             //if (!Day.Contains(dayOrNight))
             //{
@@ -268,7 +297,8 @@ namespace PIE.Meteo.ProjectTool
             AbstractWarpDataset mosaicFileRaster = null;
             try
             {
-                string mosaicFilename = CreateMosaicFilename(inArg, dataIdentify, dateTime, projectionIdentify, fileRaster.ResolutionX, station, dayOrNight);
+                string mosaicFilename = CreateMosaicFilename(inArg, dataIdentify, dateTime, projectionIdentify,
+                    fileRaster.ResolutionX, station, dayOrNight);
                 mosaicFilename = Path.Combine(mosaicInputArg.OutputDir, mosaicFilename);
                 Mosaic mosaic = new Mosaic(inArg, fileRaster, new Action<int, string>(OnProgress));
                 mosaicFileRaster = mosaic.MosaicToFile(mosaicFilename);
@@ -282,11 +312,14 @@ namespace PIE.Meteo.ProjectTool
                     fileArg.ResolutionX = mosaicFileRaster.ResolutionX.ToString();
                     fileArg.ResolutionY = mosaicFileRaster.ResolutionY.ToString();
                     fileArg.OutputFilename = Path.GetFileName(mosaicFileRaster.fileName);
-                    fileArg.Thumbnail = (string.IsNullOrWhiteSpace(overViewFilename) ? "" : Path.GetFileName(overViewFilename));
+                    fileArg.Thumbnail = (string.IsNullOrWhiteSpace(overViewFilename)
+                        ? ""
+                        : Path.GetFileName(overViewFilename));
                     fileArg.ExtendFiles = Path.ChangeExtension(Path.GetFileName(mosaicFileRaster.fileName), "hdr");
                     fileArg.Length = new FileInfo(mosaicFileRaster.fileName).Length;
                 }
-                outArg.OutputFiles = new OutFileArg[] { fileArg };
+
+                outArg.OutputFiles = new OutFileArg[] {fileArg};
                 outArg.LogLevel = "info";
                 outArg.LogInfo = "拼接完成";
             }
@@ -299,14 +332,16 @@ namespace PIE.Meteo.ProjectTool
             {
                 if (mosaicFileRaster != null)
                     mosaicFileRaster.Dispose();
-                string outXmlFilename = Path.Combine(inArg.MosaicInputArg.OutputDir, Path.GetFileName(inArg.InputFilename) + ".xml");
+                string outXmlFilename = Path.Combine(inArg.MosaicInputArg.OutputDir,
+                    Path.GetFileName(inArg.InputFilename) + ".xml");
                 MosaicOutputArg.WriteXml(outArg, outXmlFilename);
             }
         }
 
         private PrjEnvelope CoordToEnvelope(Envelope coordEnvelope)
         {
-            return new PrjEnvelope(coordEnvelope.MinX, coordEnvelope.MaxX, coordEnvelope.MinY, coordEnvelope.MaxY, SpatialReferenceFactory.CreateSpatialReference(4326));
+            return new PrjEnvelope(coordEnvelope.MinX, coordEnvelope.MaxX, coordEnvelope.MinY, coordEnvelope.MaxY,
+                SpatialReferenceFactory.CreateSpatialReference(4326));
         }
 
         /// <summary>
@@ -316,7 +351,8 @@ namespace PIE.Meteo.ProjectTool
         /// <param name="inArg"></param>
         /// <param name="dataIdentify"></param>
         /// <returns></returns>
-        private string CreateMosaicFilename(InputArg inArg, RasterDatasetInfo dataIdentify, DateTime dateTime, string projectionIdentify, float resolution, string station, string dayOrNight)
+        private string CreateMosaicFilename(InputArg inArg, RasterDatasetInfo dataIdentify, DateTime dateTime,
+            string projectionIdentify, float resolution, string station, string dayOrNight)
         {
             PrjEnvelopeItem item = inArg.MosaicInputArg.Envelope;
 
@@ -328,15 +364,17 @@ namespace PIE.Meteo.ProjectTool
                 "L1",
                 dateTime.ToString("yyyyMMdd"),
                 string.IsNullOrWhiteSpace(inArg.OrbitIdentify) ? "0000" : inArg.OrbitIdentify,
-                projectionIdentify == "GLL" ? PrjFileName.GLLResolutionIdentify(resolution) : PrjFileName.ResolutionIdentify(resolution),
+                projectionIdentify == "GLL"
+                    ? PrjFileName.GLLResolutionIdentify(resolution)
+                    : PrjFileName.ResolutionIdentify(resolution),
                 station,
                 dayOrNight
-                );
+            );
         }
 
-        private string[] Days = new string[] { "D", "Day" };
-        private string[] Nights = new string[] { "N", "Night" };
-        private string[] Ms = new string[] { "M", "Both" };
+        private string[] Days = new string[] {"D", "Day"};
+        private string[] Nights = new string[] {"N", "Night"};
+        private string[] Ms = new string[] {"M", "Both"};
 
         /// <summary>
         /// 会出现三个值D、N、M
@@ -349,9 +387,9 @@ namespace PIE.Meteo.ProjectTool
             {
                 string v = "";
                 Dictionary<string, string> filaAttrs = fileRaster.GetAttributes();
-                if (filaAttrs.ContainsKey("Day Or Night Flag"))  //VIRR:D MERSI:Day
+                if (filaAttrs.ContainsKey("Day Or Night Flag")) //VIRR:D MERSI:Day
                     v = filaAttrs["Day Or Night Flag"];
-                else if (filaAttrs.ContainsKey("DAYNIGHTFLAG"))  //MODIS:Day
+                else if (filaAttrs.ContainsKey("DAYNIGHTFLAG")) //MODIS:Day
                     v = filaAttrs["DAYNIGHTFLAG"];
                 else
                     v = "";
@@ -380,20 +418,22 @@ namespace PIE.Meteo.ProjectTool
                 if (!ProjectionFactory.HasInvildEnvelope(inputRaster, validEnvelope.PrjEnvelope))
                     str.AppendLine("数据不在范围内：" + validEnvelope.Name + validEnvelope.PrjEnvelope.ToString());
                 else
-                    hasValid = true;//只要这块数据在一个有效区域内，就返回true，执行整块数据投影。
+                    hasValid = true; //只要这块数据在一个有效区域内，就返回true，执行整块数据投影。
             }
+
             msg = str.ToString();
             return hasValid;
         }
 
         private string ParseStation(string filename)
         {
-            string[] stations = new string[] { "BJ", "GZ", "XJ", "XZ", "JM", "KS", "SW", "MS" };
+            string[] stations = new string[] {"BJ", "GZ", "XJ", "XZ", "JM", "KS", "SW", "MS"};
             foreach (string station in stations)
             {
                 if (filename.Contains(station))
                     return station;
             }
+
             return "XX";
         }
 

@@ -758,9 +758,8 @@ namespace PIE.Meteo.FileProject
 
         internal string GetCacheFilename(string srcFilename, string dstFilename)
         {
-            _catchDir = Directory.GetCurrentDirectory() + "\\.prjChche\\" + Path.GetFileName(srcFilename) +
-                        "\\";
-            string dataFilename = _catchDir + dstFilename;
+            _catchDir = Path.Combine(Directory.GetCurrentDirectory(), "prjChche", Path.GetFileName(srcFilename));
+            string dataFilename = Path.Combine(_catchDir, dstFilename);
             if (!Directory.Exists(_catchDir))
                 Directory.CreateDirectory(_catchDir);
             return dataFilename;
@@ -922,7 +921,7 @@ namespace PIE.Meteo.FileProject
                     int blockOffsetY = blockYIndex * blockHeight;
                     int blockOffsetX = blockXIndex * blockWidth;
                     dstAngleBand.WriteRaster(blockOffsetX, blockOffsetY, blockWidth, blockHeight, dstBandData,
-                        dstbufferSize.Width, dstbufferSize.Height, 0,0);
+                        dstbufferSize.Width, dstbufferSize.Height, 0, 0);
                 }
             }
         }
