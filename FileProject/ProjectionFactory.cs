@@ -2855,7 +2855,7 @@ namespace PIE.Meteo.FileProject
                             if (prjOutArg.Args != null)
                             {
                                 if (prjOutArg.Args.Contains("NotRadiation"))
-                                    prjSetting.IsRadiation = false;
+                                    prjSetting.IsRadRef = false;
                                 if (prjOutArg.Args.Contains("NotSolarZenith"))
                                     prjSetting.IsSolarZenith = false;
                                 if (prjOutArg.Args.Contains("IsSensorZenith"))
@@ -2908,7 +2908,7 @@ namespace PIE.Meteo.FileProject
                             if (prjOutArg.Args != null)
                             {
                                 if (prjOutArg.Args.Contains("NotRadiation"))
-                                    prjSetting.IsRadiation = false; ;
+                                    prjSetting.IsRadRef = false; ;
                                 if (prjOutArg.Args.Contains("NotSolarZenith"))
                                     prjSetting.IsSolarZenith = false;
                                 if (prjOutArg.Args.Contains("IsSensorZenith"))
@@ -2960,7 +2960,7 @@ namespace PIE.Meteo.FileProject
                             if (prjOutArg.Args != null)
                             {
                                 if (prjOutArg.Args.Contains("NotRadiation"))
-                                    prjSetting.IsRadiation = false;
+                                    prjSetting.IsRadRef = false;
                                 if (prjOutArg.Args.Contains("NotSolarZenith"))
                                     prjSetting.IsSolarZenith = false;
                                 if (prjOutArg.Args.Contains("IsSensorZenith"))

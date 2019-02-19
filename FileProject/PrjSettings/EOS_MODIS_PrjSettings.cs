@@ -5,11 +5,12 @@ using System.Text;
 
 namespace PIE.Meteo.FileProject
 {
-    public class EOS_MODIS_PrjSettings:FilePrjSettings
+    public class EOS_MODIS_PrjSettings : FilePrjSettings
     {
         private AbstractWarpDataset[] _secondaryOrbitRaster = null;
         private AbstractWarpDataset _locationFile = null;      //定位文件,03文件
-        private bool _isRadiation = true;         //执行辐射定标
+        protected bool _isRad = false;              //执行辐射定标
+        private bool _isRadRef = true;         ///执行辐射定标并计算反射率辐亮度
         private bool _isSolarZenith = true;       //执行太阳天顶角订正
         private bool _isOutMapTable = false;      //输出原始行列号
         public bool IsSensorZenith = false;
@@ -35,14 +36,20 @@ namespace PIE.Meteo.FileProject
             set { _locationFile = value; }
         }
 
+        public bool IsRad
+        {
+            get { return _isRad; }
+            set { _isRad = value; }
+        }
+
         /// <summary>
         /// <value>true</value>:执行亮温计算
         /// <value>false</value>:不执行亮温计算
         /// </summary>
-        public bool IsRadiation
+        public bool IsRadRef
         {
-            get { return _isRadiation; }
-            set { _isRadiation = value; }
+            get { return _isRadRef; }
+            set { _isRadRef = value; }
         }
 
         /// <summary>

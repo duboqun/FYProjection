@@ -100,7 +100,7 @@ namespace PIE.Meteo.FileProject
 
         #endregion
 
-        private FilePrjSettings _prjSettings;
+        protected FilePrjSettings _prjSettings;
 
         public string Name
         {
@@ -2278,6 +2278,9 @@ namespace PIE.Meteo.FileProject
                     break;
                 case "FY3_VIRR":
                     prj = new FY3_VIRRFileProjector();
+                    break;
+                case "EOS":
+                    prj = new EOS_FileProjector();
                     break;
                 default:
                     throw new Exception(string.Format("未找到{0}投影库", name));

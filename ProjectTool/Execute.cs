@@ -190,6 +190,7 @@ namespace PIE.Meteo.ProjectTool
             catch (Exception ex)
             {
                 outArg.LogLevel = "error";
+                Console.WriteLine(ex.StackTrace);
                 outArg.LogInfo = ex.Message + ex.StackTrace;
                 Console.WriteLine("PIE.Meteo.ProjectTool.Execute()", ex);
             }

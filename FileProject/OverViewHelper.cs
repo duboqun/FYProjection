@@ -83,11 +83,34 @@ namespace PIE.Meteo.FileProject
             outfileRaster.GetRasterBand(bandNos[2] - 1)
                 .ReadRaster(0, 0, outfileRaster.Width, outfileRaster.Height, buffer[2], maxWidth, matchHeight, 0, 0);
 
+
+            double offsetR = 0, offsetG = 0, offsetB = 0;
+            double scaleR = 0.25, scaleG = 0.25, scaleB = 0.25;
+            var renderR = single.RenderCol.BandRenderCol.FirstOrDefault(t => t.BandID.Contains(bandNos[0].ToString()));
+            var renderG = single.RenderCol.BandRenderCol.FirstOrDefault(t => t.BandID.Contains(bandNos[1].ToString()));
+            var renderB = single.RenderCol.BandRenderCol.FirstOrDefault(t => t.BandID.Contains(bandNos[2].ToString()));
+            if (renderR != null && renderG != null && renderB != null)
+            {
+                offsetR = Convert.ToDouble(renderR.RenderMin);
+                offsetG = Convert.ToDouble(renderG.RenderMin);
+                offsetB = Convert.ToDouble(renderB.RenderMin);
+                scaleR = 250 / (Convert.ToDouble(renderR.RenderMax) - Convert.ToDouble(renderR.RenderMin));
+                scaleG = 250 / (Convert.ToDouble(renderG.RenderMax) - Convert.ToDouble(renderG.RenderMin));
+                scaleB = 250 / (Convert.ToDouble(renderB.RenderMax) - Convert.ToDouble(renderB.RenderMin));
+            }
+
             for (int i = 0; i < maxWidth * matchHeight; i++)
             {
-                buffer[0][i] = (UInt16) (buffer[0][i] / (UInt16) 4);
-                buffer[1][i] = (UInt16) (buffer[1][i] / (UInt16) 4);
-                buffer[2][i] = (UInt16) (buffer[2][i] / (UInt16) 4);
+                buffer[0][i] = buffer[0][i] > offsetR
+                    ? Convert.ToUInt16((buffer[0][i] - offsetR) * scaleR)
+                    : (ushort) 0;
+                buffer[1][i] = buffer[1][i] > offsetG
+                    ? Convert.ToUInt16((buffer[1][i] - offsetG) * scaleG)
+                    : (ushort) 0;
+                buffer[2][i] = buffer[2][i] > offsetB
+                    ? Convert.ToUInt16((buffer[2][i] - offsetB) * scaleB)
+                    : (ushort) 0;
+
                 var t = buffer[0][i] + buffer[1][i] + buffer[2][i];
                 if (t <= 0 || t >= 255 * 3)
                 {

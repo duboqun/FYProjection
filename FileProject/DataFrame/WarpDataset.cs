@@ -118,9 +118,7 @@ namespace PIE.Meteo.FileProject
         }
     }
 
-    /// <summary>
-    /// 包装数据集
-    /// </summary>
+    
     public abstract class AbstractWarpDataset : IWarpDataset
     {
         public Dataset ds;
@@ -156,6 +154,7 @@ namespace PIE.Meteo.FileProject
 
         public List<string> DatasetNames { get; set; } = new List<string>();
 
+        public IHdfOperator hdfOperator = null;
         #endregion
 
 
@@ -166,30 +165,31 @@ namespace PIE.Meteo.FileProject
             if (subDsDic.Count > 0)
             {
                 isMultiDs = true;
-                //var hp = H5P.FILE_CREATE;
-                H5ID _h5FileId = 0;
-                try
+                //初始化IHdfOperator
                 {
-                    _h5FileId = H5F.open(fileName, H5F.ACC_RDONLY);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    throw;
-                }
+                    int _h5FileId = H5F.open(fileName, H5F.ACC_RDONLY);
 
+                    if (_h5FileId >= 0)
+                    {
+                        hdfOperator = new Hdf5Operator(fileName);
+                        //HDF5
 
-                if (_h5FileId >= 0)
-                {
-                    GetAllFileAttributes(_h5FileId);
-                    H5F.close(_h5FileId);
+                        H5F.close(_h5FileId);
+                    }
+                    else if (HDF4Helper.IsHdf4(fileName))
+                    {
+                        //HDF4
+                        hdfOperator = new Hdf4Operator(fileName);
+
+                    }
                 }
+                _fileAttrs = hdfOperator?.GetAttributes();
 
                 GetAllSubDatasetFullpaths(ds);
 
                 TryGetSizeOfMultiDs();
             }
-            else if (ds.RasterCount > 0)
+            else if (ds.RasterCount>0)
             {
                 double[] geoTrans = new double[6];
                 ds.GetGeoTransform(geoTrans);
@@ -276,35 +276,31 @@ namespace PIE.Meteo.FileProject
                 (ds as IDisposable)?.Dispose();
                 ds = null;
             }
+            if (hdfOperator != null)
+            {
+                hdfOperator.Dispose();
+            }
         }
 
         public abstract Band GetRasterBand(int bandNo);
 
         public abstract Band[] GetBands(string v);
 
-        //public WarpDataset GetDataset(string name)
-        //{
-
-        //}
-
         public bool TryGetBandNameFromBandNo(int bandNo, out int bandName)
         {
             bandName = bandNo;
             return false;
         }
-
         public bool TryGetBandNoFromBandName(int bandName, out int bandNo)
         {
             bandNo = bandName;
             return false;
         }
-
         public bool TryGetBandNameFromBandNos(int[] basebands, out int[] bandNames)
         {
             bandNames = basebands;
             return false;
         }
-
         public bool TryGetBandNoFromBandNames(int[] basebands, out int[] bandNos)
         {
             bandNos = basebands;
@@ -326,100 +322,9 @@ namespace PIE.Meteo.FileProject
 
         public Dictionary<string, string> GetDatasetAttributes(string originalDatasetName)
         {
-            if (_datasetAttrCache.ContainsKey(originalDatasetName))
-                return _datasetAttrCache[originalDatasetName];
-
-            int h5FileId = 0;
-            H5DataSetId datasetId = 0;
-            H5GroupId groupId = 0;
-            H5DataTypeId typeId = 0;
-            H5DataSpaceId spaceId = 0;
-            try
-            {
-                h5FileId = H5F.open(fileName, H5F.ACC_RDONLY);
-                if (h5FileId == 0)
-                    return null;
-                string datasetName = GetDatasetFullNames(originalDatasetName, h5FileId);
-                if (string.IsNullOrEmpty(datasetName))
-                    return null;
-                int groupIndex = datasetName.LastIndexOf('/');
-                if (groupIndex == -1)
-                    datasetId = H5D.open(h5FileId, datasetName);
-                else
-                {
-                    string groupName = datasetName.Substring(0, groupIndex + 1);
-                    string dsName = datasetName.Substring(groupIndex + 1);
-                    groupId = H5G.open(h5FileId, groupName);
-                    datasetId = H5D.open(groupId, dsName);
-                }
-
-                if (datasetId == 0)
-                    return null;
-                Dictionary<string, string> attValues = new Dictionary<string, string>();
-
-                typeId = H5D.get_type(datasetId);
-                H5T.class_t type = H5T.get_class(typeId);
-                IntPtr tSize = H5T.get_size(typeId);
-
-                spaceId = H5D.get_space(datasetId);
-
-                int length = H5S.get_simple_extent_ndims(spaceId);
-                ulong[] dims = new ulong[length];
-                H5S.get_simple_extent_dims(spaceId, dims, null);
-                ulong storageSize = H5D.get_storage_size(datasetId);
-
-                attValues.Add("DataSetName", datasetName);
-                attValues.Add("DataType", type.ToString());
-                attValues.Add("DataTypeSize", tSize.ToString() + "Byte");
-                attValues.Add("Dims", String.Join("*", dims));
-                attValues.Add("StorageSize", storageSize.ToString() + "Byte");
-
-
-                //所有Attributes的键
-                ArrayList arrayList = new ArrayList();
-                GCHandle handle = GCHandle.Alloc(arrayList);
-                ulong n = 0;
-                // the callback is defined in H5ATest.cs
-                H5A.operator_t cb = (H5ID location_id, IntPtr attr_name, ref H5A.info_t ainfo, IntPtr op_data) =>
-                {
-                    GCHandle hnd = (GCHandle) op_data;
-                    ArrayList al = (hnd.Target as ArrayList);
-                    int len = 0;
-                    while (Marshal.ReadByte(attr_name, len) != 0)
-                    {
-                        ++len;
-                    }
-
-                    byte[] buf = new byte[len];
-                    Marshal.Copy(attr_name, buf, 0, len);
-                    al.Add(Encoding.UTF8.GetString(buf));
-                    return 0;
-                };
-                H5A.iterate(datasetId, H5.index_t.NAME, H5.iter_order_t.NATIVE, ref n, cb, (IntPtr) handle);
-                handle.Free();
-
-                foreach (string attName in arrayList)
-                {
-                    attValues.Add(attName, ReadAttributeValue(datasetId, attName));
-                }
-
-                _datasetAttrCache.Add(originalDatasetName, attValues);
-                return attValues;
-            }
-            finally
-            {
-                if (spaceId != 0)
-                    H5S.close(spaceId);
-                if (typeId != 0)
-                    H5T.close(typeId);
-                if (datasetId != 0)
-                    H5D.close(datasetId);
-                if (groupId != 0)
-                    H5G.close(groupId);
-                if (h5FileId != 0)
-                    H5F.close(h5FileId);
-            }
+            return hdfOperator?.GetDatasetAttributes(originalDatasetName);
         }
+
 
         protected int SearchSubDatasetIndex(string name)
         {
@@ -444,251 +349,24 @@ namespace PIE.Meteo.FileProject
 
         #region Attributes
 
-        protected void GetAllFileAttributes(H5ID _h5FileId)
-        {
-            //所有Attributes的键
-            ArrayList arrayList = new ArrayList();
-            GCHandle handle = GCHandle.Alloc(arrayList);
-            ulong n = 0;
-
-            // the callback is defined in H5ATest.cs
-            H5A.operator_t cb = (H5ID location_id, IntPtr attr_name, ref H5A.info_t ainfo, IntPtr op_data) =>
-            {
-                GCHandle hnd = (GCHandle) op_data;
-                ArrayList al = (hnd.Target as ArrayList);
-                int len = 0;
-                while (Marshal.ReadByte(attr_name, len) != 0)
-                {
-                    ++len;
-                }
-
-                byte[] buf = new byte[len];
-                Marshal.Copy(attr_name, buf, 0, len);
-                al.Add(Encoding.UTF8.GetString(buf));
-                return 0;
-            };
-
-            H5A.iterate(_h5FileId, H5.index_t.NAME, H5.iter_order_t.NATIVE, ref n, cb, (IntPtr) handle);
-            handle.Free();
-
-            foreach (string attributeName in arrayList)
-            {
-                _fileAttrs.Add(attributeName, ReadAttributeValue(_h5FileId, attributeName));
-            }
-        }
-
-        protected string ReadAttributeValue(H5ID _h5FileId, string attributeName)
-        {
-            object v = GetAttributeValue(_h5FileId, attributeName);
-            return TryArrayToString(v);
-        }
-
-        protected string TryArrayToString(object v)
-        {
-            if (v == null)
-                return string.Empty;
-            double[] attrArray;
-            if (v is double[])
-            {
-                attrArray = v as double[];
-                return doubleArrayJoin(attrArray);
-            }
-            else if (v is float[])
-            {
-                attrArray = (v as float[]).Select(t => Convert.ToDouble(t)).ToArray();
-                return doubleArrayJoin(attrArray);
-            }
-            else if (v is byte[])
-            {
-                attrArray = (v as byte[]).Select(t => Convert.ToDouble(t)).ToArray();
-                return doubleArrayJoin(attrArray);
-            }
-            else if (v is UInt16[])
-            {
-                attrArray = (v as UInt16[]).Select(t => Convert.ToDouble(t)).ToArray();
-                return doubleArrayJoin(attrArray);
-            }
-            else if (v is Int16[])
-            {
-                attrArray = (v as Int16[]).Select(t => Convert.ToDouble(t)).ToArray();
-                return doubleArrayJoin(attrArray);
-            }
-            else if (v is Int32[])
-            {
-                attrArray = (v as Int32[]).Select(t => Convert.ToDouble(t)).ToArray();
-                return doubleArrayJoin(attrArray);
-            }
-            else if (v is UInt32[])
-            {
-                attrArray = (v as UInt32[]).Select(t => Convert.ToDouble(t)).ToArray();
-                return doubleArrayJoin(attrArray);
-            }
-            else if (v is Int64[])
-            {
-                attrArray = (v as Int64[]).Select(t => Convert.ToDouble(t)).ToArray();
-                return doubleArrayJoin(attrArray);
-            }
-            else if (v is UInt64[])
-            {
-                attrArray = (v as UInt64[]).Select(t => Convert.ToDouble(t)).ToArray();
-                return doubleArrayJoin(attrArray);
-            }
 
 
-            return v.ToString().Replace('\0', ' ').TrimEnd();
-        }
-
-        private string doubleArrayJoin(double[] array)
-        {
-            var strs = array.Select(t => t.ToString("G"));
-            return string.Join(",", strs);
-        }
-
-        protected object GetAttributeValue(H5ID _h5FileId, string attributeName)
-        {
-            H5AttributeId attId = H5A.open(_h5FileId, attributeName);
-            if (attId == 0)
-                return null;
-            H5DataTypeId typeId = 0;
-            H5DataTypeId dtId = 0;
-            H5A.info_t attInfo = new H5A.info_t();
-            H5DataSpaceId spaceId = 0;
-            H5DataTypeId oldTypeId = 0;
-            object retObject = null;
-            try
-            {
-                typeId = H5A.get_type(attId);
-                H5A.get_info(attId, ref attInfo);
-                dtId = H5A.get_type(attId);
-                spaceId = H5A.get_space(attId);
-                IntPtr dataSize = H5T.get_size(dtId);
-                //
-                oldTypeId = typeId;
-                typeId = H5T.get_native_type(typeId, H5T.direction_t.DEFAULT);
-                H5T.class_t typeClass = H5T.get_class(typeId);
-                int ndims = H5S.get_simple_extent_ndims(spaceId);
-                ulong[] dims = new ulong[ndims];
-                H5S.get_simple_extent_dims(spaceId, dims, null);
-                ulong dimSize = 1;
-                if (dims.Length == 0)
-                {
-                    dimSize = 1;
-                }
-                else
-                {
-                    foreach (ulong dim in dims)
-                    {
-                        dimSize *= dim;
-                    }
-                }
-
-                switch (typeClass)
-                {
-                    case H5T.class_t.NO_CLASS:
-                        break;
-                    case H5T.class_t.INTEGER:
-                        // H5T.Sign.TWOS_COMPLEMENT;
-                        H5T.sign_t sign = H5T.get_sign(oldTypeId);
-                        switch (dataSize.ToInt32())
-                        {
-                            case 1:
-                                retObject = ReadArray<byte>(dimSize, attId, typeId);
-                                break;
-                            case 2:
-                                switch (sign)
-                                {
-                                    case H5T.sign_t.SGN_2:
-                                        retObject = ReadArray<Int16>(dimSize, attId, typeId);
-                                        break;
-                                    case H5T.sign_t.NONE:
-                                        retObject = ReadArray<UInt16>(dimSize, attId, typeId);
-                                        break;
-                                }
-
-                                break;
-                            case 4:
-                                switch (sign)
-                                {
-                                    case H5T.sign_t.SGN_2:
-                                        retObject = ReadArray<Int32>(dimSize, attId, typeId);
-                                        break;
-                                    case H5T.sign_t.NONE:
-                                        retObject = ReadArray<UInt32>(dimSize, attId, typeId);
-                                        break;
-                                }
-
-                                break;
-                            case 8:
-                                switch (sign)
-                                {
-                                    case H5T.sign_t.SGN_2:
-                                        retObject = ReadArray<Int64>(dimSize, attId, typeId);
-                                        break;
-                                    case H5T.sign_t.NONE:
-                                        retObject = ReadArray<UInt64>(dimSize, attId, typeId);
-                                        break;
-                                }
-
-                                break;
-                        }
-
-                        break;
-                    case H5T.class_t.FLOAT:
-                        switch (dataSize.ToInt32())
-                        {
-                            case 4:
-                                retObject = ReadArray<float>(dimSize, attId, typeId);
-                                break;
-                            case 8:
-                                retObject = ReadArray<double>(dimSize, attId, typeId);
-                                break;
-                        }
-
-                        break;
-                    case H5T.class_t.STRING:
-                        ulong size = attInfo.data_size;
-                        byte[] chars = ReadArray<byte>(size, attId, typeId);
-                        retObject = Encoding.ASCII.GetString(chars);
-                        break;
-                    default:
-                        break;
-                }
-
-                return retObject;
-            }
-            finally
-            {
-                if (spaceId != 0)
-                    H5S.close(spaceId);
-                if (attId != 0)
-                    H5A.close(attId);
-                if (oldTypeId != 0)
-                    H5T.close(oldTypeId);
-                if (typeId != 0)
-                    H5T.close(typeId);
-                if (dtId != 0)
-                    H5T.close(dtId);
-            }
-        }
-
-        protected T[] ReadArray<T>(ulong size, H5ID attId, H5ID typeId)
-        {
-            T[] v = new T[size];
-            if (size == 0)
-                return v;
-            GCHandle hnd = GCHandle.Alloc(v, GCHandleType.Pinned);
-            H5A.read(attId, typeId, hnd.AddrOfPinnedObject());
-            return v;
-        }
 
 
-        protected string GetDatasetFullNames(string datasetName, long fileId)
+
+
+
+
+
+
+
+        protected string GetDatasetFullNames(string datasetName, int fileId)
         {
             string shortDatasetName = GetDatasetShortName(datasetName);
             return FindDatasetFullNames(shortDatasetName, fileId);
         }
 
-        protected string FindDatasetFullNames(string shortDatasetName, long fileId)
+        protected string FindDatasetFullNames(string shortDatasetName, int fileId)
         {
             for (int i = 0; i < DatasetNames.Count; i++)
             {
@@ -696,7 +374,6 @@ namespace PIE.Meteo.FileProject
                 if (shortGdalDatasetName == shortDatasetName)
                     return DatasetNames[i];
             }
-
             return null;
         }
 
@@ -711,14 +388,13 @@ namespace PIE.Meteo.FileProject
             return shortDatasetName;
         }
 
-        protected void GetAllSubDatasetFullpaths(Dataset multiDs)
-        {
-            var sss = multiDs.GetSubDatasets();
-            DatasetNames = sss.Select(t => t.Key).ToList();
-        }
+            protected void GetAllSubDatasetFullpaths(Dataset multiDs)
+            {
+                var sss = multiDs.GetSubDatasets();
+                DatasetNames = sss.Select(t => t.Key).ToList();
+            }
 
         public abstract AbstractWarpDataset GetDataset(string name);
-
         #endregion
 
         public Dictionary<string, string> TryReadDataTable(string datasetName)
@@ -772,7 +448,7 @@ namespace PIE.Meteo.FileProject
             return result;
         }
 
-        private string ReadBuffer(byte[] buffer, int offset, H5T.class_t typeClass, H5ID typeId)
+        private string ReadBuffer(byte[] buffer, int offset, H5T.class_t typeClass, int typeId)
         {
             string result = string.Empty;
             IntPtr dataSize = H5T.get_size(typeId);
@@ -784,7 +460,6 @@ namespace PIE.Meteo.FileProject
             {
                 Array.Reverse(temp);
             }
-
             switch (typeClass)
             {
                 case H5T.class_t.NO_CLASS:
@@ -796,75 +471,69 @@ namespace PIE.Meteo.FileProject
                     switch (dataSize.ToInt32())
                     {
                         case 1:
-                            result = ((double) BitConverter.ToChar(temp, 0)).ToString("G");
+                            result = ((double)BitConverter.ToChar(temp, 0)).ToString("G");
                             break;
                         case 2:
                             switch (sign)
                             {
                                 case H5T.sign_t.SGN_2:
-                                    result = ((double) BitConverter.ToInt16(temp, 0)).ToString("G");
+                                    result = ((double)BitConverter.ToInt16(temp, 0)).ToString("G");
                                     break;
                                 case H5T.sign_t.NONE:
-                                    result = ((double) BitConverter.ToUInt16(temp, 0)).ToString("G");
+                                    result = ((double)BitConverter.ToUInt16(temp, 0)).ToString("G");
                                     break;
                             }
-
                             break;
                         case 4:
                             switch (sign)
                             {
                                 case H5T.sign_t.SGN_2:
-                                    result = ((double) BitConverter.ToInt32(temp, 0)).ToString("G");
+                                    result = ((double)BitConverter.ToInt32(temp, 0)).ToString("G");
                                     break;
                                 case H5T.sign_t.NONE:
-                                    result = ((double) BitConverter.ToUInt32(temp, 0)).ToString("G");
+                                    result = ((double)BitConverter.ToUInt32(temp, 0)).ToString("G");
                                     break;
                             }
-
                             break;
                         case 8:
                             switch (sign)
                             {
                                 case H5T.sign_t.SGN_2:
-                                    result = ((double) BitConverter.ToInt64(temp, 0)).ToString("G");
+                                    result = ((double)BitConverter.ToInt64(temp, 0)).ToString("G");
                                     break;
                                 case H5T.sign_t.NONE:
-                                    result = ((double) BitConverter.ToUInt64(temp, 0)).ToString("G");
+                                    result = ((double)BitConverter.ToUInt64(temp, 0)).ToString("G");
                                     break;
                             }
-
                             break;
                     }
-
                     break;
                 case H5T.class_t.FLOAT:
                     switch (dataSize.ToInt32())
                     {
                         case 4:
-                        {
-                            result = BitConverter.ToSingle(temp, 0).ToString("G");
-                            break;
-                        }
+                            {
+                                result = BitConverter.ToSingle(temp, 0).ToString("G");
+                                break;
+                            }
                         case 8:
-                        {
-                            result = BitConverter.ToDouble(temp, 0).ToString("G");
-                            break;
-                        }
+                            {
+                                result = BitConverter.ToDouble(temp, 0).ToString("G");
+                                break;
+                            }
                     }
-
                     break;
                 case H5T.class_t.STRING:
-                {
-                    GCHandle handler = GCHandle.Alloc(temp, GCHandleType.Pinned);
-                    var str = Marshal.PtrToStringAnsi(handler.AddrOfPinnedObject());
-                    handler.Free();
-                    result = str;
-                    break;
-                }
+                    {
+                        GCHandle handler = GCHandle.Alloc(temp, GCHandleType.Pinned);
+                        var str = Marshal.PtrToStringAnsi(handler.AddrOfPinnedObject());
+                        handler.Free();
+                        result = str;
+                        break;
+                    }
                 default:
                     break;
             }
-
             return result;
         }
 
@@ -876,7 +545,8 @@ namespace PIE.Meteo.FileProject
 
     public interface IWarpDataset : IDisposable
     {
-        OSGeo.GDAL.DataType DataType { get; set; }
+
+        DataType DataType { get; set; }
 
         string fileName { get; set; }
 
@@ -911,5 +581,6 @@ namespace PIE.Meteo.FileProject
         Dictionary<string, string> GetDatasetAttributes(string originalDatasetName);
 
         Dictionary<string, string> TryReadDataTable(string datasetName);
+
     }
 }
