@@ -86,17 +86,23 @@ namespace PIE.Meteo.FileProject
 
             double offsetR = 0, offsetG = 0, offsetB = 0;
             double scaleR = 0.25, scaleG = 0.25, scaleB = 0.25;
-            var renderR = single.RenderCol.BandRenderCol.FirstOrDefault(t => t.BandID.Contains(bandNos[0].ToString()));
-            var renderG = single.RenderCol.BandRenderCol.FirstOrDefault(t => t.BandID.Contains(bandNos[1].ToString()));
-            var renderB = single.RenderCol.BandRenderCol.FirstOrDefault(t => t.BandID.Contains(bandNos[2].ToString()));
-            if (renderR != null && renderG != null && renderB != null)
+            if (single != null)
             {
-                offsetR = Convert.ToDouble(renderR.RenderMin);
-                offsetG = Convert.ToDouble(renderG.RenderMin);
-                offsetB = Convert.ToDouble(renderB.RenderMin);
-                scaleR = 250 / (Convert.ToDouble(renderR.RenderMax) - Convert.ToDouble(renderR.RenderMin));
-                scaleG = 250 / (Convert.ToDouble(renderG.RenderMax) - Convert.ToDouble(renderG.RenderMin));
-                scaleB = 250 / (Convert.ToDouble(renderB.RenderMax) - Convert.ToDouble(renderB.RenderMin));
+                var renderR =
+                    single.RenderCol.BandRenderCol.FirstOrDefault(t => t.BandID.Contains(bandNos[0].ToString()));
+                var renderG =
+                    single.RenderCol.BandRenderCol.FirstOrDefault(t => t.BandID.Contains(bandNos[1].ToString()));
+                var renderB =
+                    single.RenderCol.BandRenderCol.FirstOrDefault(t => t.BandID.Contains(bandNos[2].ToString()));
+                if (renderR != null && renderG != null && renderB != null)
+                {
+                    offsetR = Convert.ToDouble(renderR.RenderMin);
+                    offsetG = Convert.ToDouble(renderG.RenderMin);
+                    offsetB = Convert.ToDouble(renderB.RenderMin);
+                    scaleR = 250 / (Convert.ToDouble(renderR.RenderMax) - Convert.ToDouble(renderR.RenderMin));
+                    scaleG = 250 / (Convert.ToDouble(renderG.RenderMax) - Convert.ToDouble(renderG.RenderMin));
+                    scaleB = 250 / (Convert.ToDouble(renderB.RenderMax) - Convert.ToDouble(renderB.RenderMin));
+                }
             }
 
             for (int i = 0; i < maxWidth * matchHeight; i++)

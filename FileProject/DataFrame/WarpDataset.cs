@@ -44,9 +44,13 @@ namespace PIE.Meteo.FileProject
             else
                 return new WarpDataset(ds, filePath);
         }
-
+        
+        Dictionary<string,Band[]> cacheBands = new Dictionary<string, Band[]>();
         public override Band[] GetBands(string v)
         {
+            if (cacheBands.ContainsKey(v))
+                return cacheBands[v];
+            
             Band[] bands = null;
             if (!isMultiDs)
                 throw new Exception("非HDF数据集，不可使用GetBands(string)");
@@ -54,7 +58,7 @@ namespace PIE.Meteo.FileProject
             if (index != -1)
             {
                 string subDsPath = ds.GetSubDatasets().Values.ToList()[index];
-                var subRasterDs = Gdal.OpenShared(subDsPath, Access.GA_ReadOnly);
+                var subRasterDs = Gdal.Open(subDsPath, Access.GA_ReadOnly);
                 bands = new Band[subRasterDs.RasterCount];
                 if (subRasterDs != null)
                 {
@@ -77,7 +81,7 @@ namespace PIE.Meteo.FileProject
                     }
                 }
             }
-
+            cacheBands.Add(v,bands);
             return bands;
         }
 

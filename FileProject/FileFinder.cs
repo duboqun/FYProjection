@@ -162,6 +162,8 @@ namespace PIE.Meteo.FileProject
             string retFile;
             if (fileName.Contains("_1000M_"))
                 retFile = fileName.Replace("_1000M_", "_GEOXX_");
+            else if(fileName.Contains("L1B"))
+            retFile = fileName.Replace("L1B", "GEOXX");
             else
                 throw new Exception("无法找到角度数据(如经纬度等)文件[._GEOXX_...HDF]");
             retFile = Path.Combine(dir.Replace("1000M", "GEO"), retFile);

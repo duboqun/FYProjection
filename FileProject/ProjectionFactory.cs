@@ -851,7 +851,8 @@ namespace PIE.Meteo.FileProject
                             outFileName = prjOutArg.OutDirOrFile;
                         outRaster = CreateRaster(outFileName, envelope, outResolutionX, outResolutionY, bandCount, dstSpatialRef, bandNames);
                         //int[] bands = new int[] { 1, 2, 3, 4, 24, 25, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23 };
-                        FilePrjSettings setting = new FilePrjSettings { OutBandNos = prjOutArg.SelectedBands };
+                        
+                        FilePrjSettings setting = new FilePrjSettings { OutBandNos = prjOutArg.SelectedBands?? Enumerable.Range(1, 25).ToArray()};
                         FileProjector.WriteMetaData(kmRaster, outRaster, setting);
                         outFiles.Add(outFileName);
                     }

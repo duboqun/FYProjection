@@ -1959,7 +1959,7 @@ namespace PIE.Meteo.FileProject
             double[] ys = null;
             Size geoSize;
             Size maxGeoSize = new Size(1024, 1024);
-            Band longitudeBand, latitudeBand;
+            Band longitudeBand = null, latitudeBand = null;
             ReadLocations(geoRaster, out longitudeBand, out latitudeBand); //GetGeoBand
             Size srcLocationSize = new Size(longitudeBand.XSize, longitudeBand.YSize);
             ReadLocations(longitudeBand, latitudeBand, maxGeoSize, out xs, out ys, out geoSize);
