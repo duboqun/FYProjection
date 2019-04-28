@@ -123,6 +123,11 @@ namespace PIE.Meteo.FileProject
         {
             get { return BandDefCollection.FY2_5000_OrbitDefCollecges(); }
         }
+
+        public static PrjBand[] NPP_Oribt
+        {
+            get { return BandDefCollection.NPP_OrbitDefCollecges(); }
+        }
     }
 
     class PrjBandCollection : ICollection

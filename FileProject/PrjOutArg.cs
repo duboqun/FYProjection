@@ -81,7 +81,9 @@ namespace PIE.Meteo.FileProject
         /// [从1开始的波段编号]
         /// </summary>
         public int[] SelectedBands;
-        
+
+        public string Formate { get; set; } = "LDF";
+
         private SpatialReference GetSpatialReference(string projectionIdentify)
         {
             switch (projectionIdentify)

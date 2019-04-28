@@ -218,8 +218,8 @@ namespace PIE.Meteo.FileProject
         /// <param name="yOffset"></param>
         /// <param name="blockWidth"></param>
         /// <param name="blockHeight"></param>
-        internal void ReadImgBand(out ushort[] bandData, int dstBandIndex, int xOffset, int yOffset, int blockWidth,
-            int blockHeight)
+        protected virtual void ReadImgBand(out ushort[] bandData, int dstBandIndex, int xOffset, int yOffset, int blockWidth,
+            int blockHeight,Size? srcImgSize = default(Size?))
         {
             Band latBand = _rasterDataBands[dstBandIndex]; //
             bandData = new ushort[blockWidth * blockHeight];
@@ -2281,6 +2281,12 @@ namespace PIE.Meteo.FileProject
                     break;
                 case "EOS":
                     prj = new EOS_FileProjector();
+                    break;
+                case  "NOAA":
+                    prj = new NOAA_1BDFileProjector();
+                    break;
+                case "NPP":
+                    prj = new NPP_FileProjector();
                     break;
                 default:
                     throw new Exception(string.Format("未找到{0}投影库", name));

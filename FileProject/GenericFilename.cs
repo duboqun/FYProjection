@@ -170,5 +170,22 @@ namespace PIE.Meteo.FileProject
             }
         }
 
+        public static string GetDriverName(string driver)
+        {
+            if (driver.ToLower().Contains("tif"))
+                return "GTiff";
+            else if (driver.ToLower() == "ldf") return "ENVI";
+            return "ENVI";
+        }
+
+        public static string GetExtByFormate(string driver)
+        {
+            if (driver.ToLower().Contains("tif"))
+                return ".tif";
+            else if (driver.ToLower() == "mem")
+                return ".DAT";
+            else
+                return ".ldf";
+        }
     }
 }

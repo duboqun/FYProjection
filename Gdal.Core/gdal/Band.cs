@@ -670,6 +670,15 @@ public class Band : MajorObject {
     return ret;
   }
 
+  public int GetXSize()
+  {
+      return XSize;
+  }
+  
+  public int GetYSize()
+  {
+      return YSize;
+  }
 }
 
 }

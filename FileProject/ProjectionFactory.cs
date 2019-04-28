@@ -144,7 +144,12 @@ namespace PIE.Meteo.FileProject
                 case "FY2NOM":
                     outFiles = PrjFY2X_NOM(srcRaster, prjOutArg, progress, out errorMessage);
                     break;
-
+                case "NPP":
+                    outFiles = PrjNPP(srcRaster, prjOutArg, progress, out errorMessage);
+                    break;
+                case "NOAA":
+                    outFiles = PrjNOAA_1BD_L1(srcRaster, prjOutArg, progress, out errorMessage);
+                    break;
                 case "PROJECTED":
                     outFiles = PrjProjected(srcRaster, prjOutArg, progress, out errorMessage);
                     break;
@@ -2646,19 +2651,19 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-        private string[] PrjNOAA_1BD_L1(AbstractWarpDataset raster, PrjOutArg prjOutArg, Action<int, string> progress, out StringBuilder errorMessage)
+                private string[] PrjNOAA_1BD_L1(AbstractWarpDataset raster, PrjOutArg prjOutArg, Action<int, string> progress, out StringBuilder errorMessage)
         {
             SpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
             PrjEnvelopeItem[] prjEnvelopes = prjOutArg.Envelopes;
             AbstractWarpDataset srcRaster = raster;
-            IFileProjector projTor = null;
+            NOAA_1BDFileProjector projTor = null;
             int[] kmBands;
             FileFinder.GetNoaaBandmapTable(prjOutArg.SelectedBands, out kmBands);
             errorMessage = new StringBuilder();
             try
             {
                 List<string> outFiles = new List<string>();
-                projTor = FileProjector.GetFileProjectByName("NOAA_1BD");
+                projTor = FileProjector.GetFileProjectByName("NOAA") as NOAA_1BDFileProjector;
                 projTor.BeginSession(srcRaster);
                 for (int i = 0; i < prjEnvelopes.Length; i++)
                 {
@@ -3093,5 +3098,82 @@ namespace PIE.Meteo.FileProject
         }
 
         #endregion 放弃支持的老卫星
+        
+                #region NPP
+        private string[] PrjNPP(AbstractWarpDataset srcRaster, PrjOutArg prjOutArg, Action<int, string> progress, out StringBuilder errorMessage)
+        {
+            //初始化输出波段
+            errorMessage = new StringBuilder();
+            if (prjOutArg.SelectedBands == null || prjOutArg.SelectedBands.Length == 0)
+            {
+                int bandCount = BandDefCollection.NPP_OrbitDefCollecges().Length;
+                prjOutArg.SelectedBands = Enumerable.Range(1, bandCount).ToArray();
+            }
+
+            List<string> outFiles = new List<string>();
+            NPP_FileProjector projtor = FileProjector.GetFileProjectByName("NPP") as NPP_FileProjector;
+            try
+            {
+
+                float outResolutionX = prjOutArg.ResolutionX;
+                float outResolutionY = prjOutArg.ResolutionY;
+                var prjEnvelopes = prjOutArg.Envelopes;
+                bool hasAngle = false;
+                projtor.BeginSession(srcRaster);
+
+                for (int i = 0; i < prjEnvelopes.Length; i++)
+                {
+                    string outFileName = null;
+                    if (IsDir(prjOutArg.OutDirOrFile))
+                        outFileName = GetOutPutFile(prjOutArg.OutDirOrFile, srcRaster.fileName, prjOutArg.ProjectionRef, prjEnvelopes[i].Name, null, outResolutionX, GenericFilename.GetExtByFormate(prjOutArg.Formate));
+                    else
+                        outFileName = prjOutArg.OutDirOrFile;
+                    outFiles.Add(outFileName);
+                    NPP_PrjSetting prjSetting = new NPP_PrjSetting();
+                    prjSetting.OutResolutionX = outResolutionX;
+                    prjSetting.OutResolutionY = outResolutionY;
+                    prjSetting.OutEnvelope = prjEnvelopes[i] == null ? null : prjEnvelopes[i].PrjEnvelope;
+                    prjSetting.OutBandNos = prjOutArg.SelectedBands;
+                    prjSetting.OutPathAndFileName = outFiles[i];
+                    prjSetting.OutFormat = prjOutArg.Formate;
+                    if (prjOutArg.Args != null)
+                    {
+                        if (prjOutArg.Args.Contains("NotRadiation"))
+                            prjSetting.IsRadRef = false;
+                        if (prjOutArg.Args.Contains("Radiation"))
+                        {
+                            prjSetting.IsRadRef = false;
+                            prjSetting.IsRad = true;
+                        }
+                        if (prjOutArg.Args.Contains("NotSolarZenith"))
+                            prjSetting.IsSolarZenith = false;
+                        if (prjOutArg.Args.Contains("IsSensorZenith"))
+                            prjSetting.IsSensorZenith = true;
+                        if (prjOutArg.Args.Contains("IsClearPrjCache"))
+                            prjSetting.IsClearPrjCache = true;
+                    }
+                    if (!hasAngle)//只输出一次角度数据
+                    {
+                        prjSetting.ExtArgs = prjOutArg.Args;
+                        hasAngle = true;
+                    }
+                    projtor.Project(srcRaster, prjSetting, prjOutArg.ProjectionRef, progress);
+                }
+                projtor.EndSession();
+            }
+            catch (Exception ex)
+            {
+                outFiles.All(t => { TryDeleteErrorFile(t); return true; });
+                errorMessage.AppendLine(ex.Message);
+                Console.WriteLine(ex.Message);
+                throw ex;
+            }
+            finally
+            {
+                projtor?.Dispose();
+            }
+            return outFiles.ToArray();
+        }
+        #endregion
     }
 }

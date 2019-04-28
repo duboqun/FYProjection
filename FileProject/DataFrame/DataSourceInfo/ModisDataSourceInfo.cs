@@ -24,7 +24,24 @@ namespace PIE.Meteo.Model
             FilePath = filePath;
             string fileName = Path.GetFileNameWithoutExtension(filePath);
             ImageTime = GetImageTimeFromFileName(fileName);
+            if (ImageTime == null)
+            {
+                ImageTime = GetImageTimeFromFileName2(fileName);
+            }
             return ImageTime;
+        }
+
+        private DateTime? GetImageTimeFromFileName2(string fileName)
+        {
+            DateTime? result = null;
+            string regTxt = @"_(\d{4})_(\d{2})_(\d{2})_(\d{2})_(\d{2})";
+            if (Regex.IsMatch(fileName, regTxt))
+            {
+                Match mch = Regex.Match(fileName, regTxt);
+                string timeStr = mch.Groups[1].Value + mch.Groups[2].Value + mch.Groups[3].Value + mch.Groups[4].Value + mch.Groups[5].Value;
+                result = DateTime.ParseExact(timeStr, "yyyyMMddHHmm", System.Globalization.CultureInfo.CurrentCulture);
+            }
+            return result;
         }
 
         public DateTime? GetImageTimeFromFileName(string fileName)

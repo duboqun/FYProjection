@@ -178,7 +178,7 @@
     <Band id="9" fileDataset="Data/EV_RefSB" bandName="" index="8" invalidValue="" resolution="1000" maxWaveLength="0.58" minWaveLength="0.53" middleWaveLength="0.555"></Band>
     <Band id="10" fileDataset="Data/EV_RefSB" bandName="" index="9" invalidValue="" resolution="1000" maxWaveLength="1.395" minWaveLength="1.325" middleWaveLength="1.360"></Band>
   </RasterDataset>
-  <RasterDataset ID="FY3C-MWRIX" SatelliteID="FY3C" SensorID="MWRIX" Satellitedescribe="风云3D" Sensordescribe="MWRIX传感器">
+  <RasterDataset ID="FY3C-MWRI" SatelliteID="FY3C" SensorID="MWRI" Satellitedescribe="风云3D" Sensordescribe="MWRI传感器">
     <Band id="1" fileDataset="EV_250_Aggr.1KM_RefSB" index="0" invalidValue="" resolution="1000" maxWaveLength="" minWaveLength="" middleWaveLength="0.470"></Band>
     <Band id="2" fileDataset="EV_250_Aggr.1KM_RefSB" index="1" invalidValue="" resolution="1000" maxWaveLength="" minWaveLength="" middleWaveLength="0.550"></Band>
     <Band id="3" fileDataset="EV_250_Aggr.1KM_RefSB" index="2" invalidValue="" resolution="1000" maxWaveLength="" minWaveLength="" middleWaveLength="0.650"></Band>
@@ -256,7 +256,7 @@
     <Band id="24" fileDataset="Data/EV_1KM_Emissive" bandName="" index="23" invalidValue="" resolution="250" maxWaveLength="" minWaveLength="" middleWaveLength="7.20"></Band>
     <Band id="25" fileDataset="Data/EV_1KM_Emissive" bandName="" index="24" invalidValue="" resolution="250" maxWaveLength="" minWaveLength="" middleWaveLength="8.55"></Band>
   </RasterDataset>
-  <RasterDataset ID="FY3D-MWRI" SatelliteID="FY3D" SensorID="MWRI" Satellitedescribe="风云3D" Sensordescribe="MWRIX传感器">
+  <RasterDataset ID="FY3D-MWRI" SatelliteID="FY3D" SensorID="MWRI" Satellitedescribe="风云3D" Sensordescribe="MWRI传感器">
     <Band id="1" fileDataset="EV_250_Aggr.1KM_RefSB" index="0" invalidValue="" resolution="1000" maxWaveLength="" minWaveLength="" middleWaveLength="0.470"></Band>
     <Band id="2" fileDataset="EV_250_Aggr.1KM_RefSB" index="1" invalidValue="" resolution="1000" maxWaveLength="" minWaveLength="" middleWaveLength="0.550"></Band>
     <Band id="3" fileDataset="EV_250_Aggr.1KM_RefSB" index="2" invalidValue="" resolution="1000" maxWaveLength="" minWaveLength="" middleWaveLength="0.650"></Band>
@@ -278,7 +278,7 @@
     <Band id="19" fileDataset="EV_1KM_RefSB" index="18" invalidValue="" resolution="1000" maxWaveLength="" minWaveLength="" middleWaveLength="1.640"></Band>
     <Band id="20" fileDataset="EV_1KM_RefSB" index="19" invalidValue="" resolution="1000" maxWaveLength="" minWaveLength="" middleWaveLength="2.130"></Band>
   </RasterDataset>
-  <RasterDataset ID="FY3C-MWRI" SatelliteID="FY3C" SensorID="MWRI" Satellitedescribe="风云3C" Sensordescribe="MWRIX传感器">
+  <RasterDataset ID="FY3C-MWRI" SatelliteID="FY3C" SensorID="MWRI" Satellitedescribe="风云3C" Sensordescribe="MWRI传感器">
     <Band id="1" fileDataset="Data/EV_250_RefSB_b1" index="0" invalidValue="" resolution="250" maxWaveLength="0.5" minWaveLength="0.4" middleWaveLength="0.47"></Band>
   </RasterDataset>
   <RasterDataset ID="FY4A-AGRI-0500M" SatelliteID="FY4A" SensorID="AGRI" Satellitedescribe="风云4A" Sensordescribe="AGRI传感器">
@@ -370,7 +370,7 @@
     <Band id="3" fileDataset="NOMChannelIRX0700_2000" index="3" invalidValue="" resolution="250" maxWaveLength="" minWaveLength="" middleWaveLength=""></Band>
     <Band id="4" fileDataset="NOMChannelIRX0730_2000" index="4" invalidValue="" resolution="250" maxWaveLength="" minWaveLength="" middleWaveLength=""></Band>
   </RasterDataset>
-  <RasterDataset ID="AHI8-OBI" SatelliteID="AHI8-OBI" SensorID="OBI" Satellitedescribe="H8" Sensordescribe="OBI传感器">
+  <RasterDataset ID="AHI8-OBI" SatelliteID="H8" SensorID="AHI" Satellitedescribe="H8" Sensordescribe="OBI传感器">
     <Band id="1" fileDataset="channel01" index="0" invalidValue="" resolution="1000" maxWaveLength="" minWaveLength="" middleWaveLength="0.470"></Band>
     <Band id="2" fileDataset="channel02" index="1" invalidValue="" resolution="1000" maxWaveLength="" minWaveLength="" middleWaveLength="0.510"></Band>
     <Band id="3" fileDataset="channel03" index="2" invalidValue="" resolution="500" maxWaveLength="" minWaveLength="" middleWaveLength="0.640"></Band>
@@ -413,7 +413,7 @@
     <Band id="1" bandName="PAN" fileDataset="" index="0" invalidValue="" resolution="50" maxWaveLength="0.9" minWaveLength="0.45" middleWaveLength="0.675"></Band>
     <Band id="2" bandName="BLUE" fileDataset="" index="1" invalidValue="" resolution="50" maxWaveLength="0.52" minWaveLength="0.45" middleWaveLength="0.485"></Band>
     <Band id="3" bandName="GREEN" fileDataset="" index="2" invalidValue="" resolution="50" maxWaveLength="0.6" minWaveLength="0.52" middleWaveLength="0.555"></Band>
-    <Band id="4" bandName="RED" fileDataset="" index="3" invalidValue="" resolution="50" maxWaveLength="0.69" minWaveLength="0.63" middleWaveLength="0.660"></Band>
+    <Band id="4" bandName="RED" fileDataset="" index="3" invalidValue="" resolution="50" maxWaveLength="0.69" minWaveLength="0.63" middleWaveLength="0.670"></Band>
     <Band id="5" bandName="NIR" fileDataset="" index="4" invalidValue="" resolution="50" maxWaveLength="0.9" minWaveLength="0.76" middleWaveLength="0.830"></Band>
   </RasterDataset>
   <RasterDataset ID="GF4-IRS" SatelliteID="GF4" SensorID="GF4-IRS" Satellitedescribe="高分四号" Sensordescribe="IRS传感器">
@@ -524,6 +524,31 @@
     <Band id="35" fileDataset="" index="13" invalidValue="" resolution="1000" maxWaveLength="" minWaveLength="" middleWaveLength="13.935"></Band>
     <Band id="36" fileDataset="" index="14" invalidValue="" resolution="1000" maxWaveLength="" minWaveLength="" middleWaveLength="14.235"></Band>
   </RasterDataset>
+  <RasterDataset ID="NPP_VIIRS" SatelliteID="NPP" SensorID="VIIRS" Satellitedescribe="" Sensordescribe="VIIRS传感器">
+    <Band id="1" fileDataset="" index="0" invalidValue="" resolution="375" maxWaveLength="" minWaveLength="" middleWaveLength="0.640"></Band>
+    <Band id="2" fileDataset="" index="1" invalidValue="" resolution="375" maxWaveLength="" minWaveLength="" middleWaveLength="0.865"></Band>
+    <Band id="3" fileDataset="" index="2" invalidValue="" resolution="375" maxWaveLength="" minWaveLength="" middleWaveLength="1.61"></Band>
+    <Band id="4" fileDataset="" index="3" invalidValue="" resolution="375" maxWaveLength="" minWaveLength="" middleWaveLength="3.74"></Band>
+    <Band id="5" fileDataset="" index="4" invalidValue="" resolution="375" maxWaveLength="" minWaveLength="" middleWaveLength="11.45"></Band>
+    
+    <Band id="6" fileDataset="" index="5" invalidValue="" resolution="750" maxWaveLength="" minWaveLength="" middleWaveLength="0.412"></Band>
+    <Band id="7" fileDataset="" index="6" invalidValue="" resolution="750" maxWaveLength="" minWaveLength="" middleWaveLength="0.445"></Band>
+    <Band id="8" fileDataset="" index="7" invalidValue="" resolution="750" maxWaveLength="" minWaveLength="" middleWaveLength="0.488"></Band>
+    <Band id="9" fileDataset="" index="8" invalidValue="" resolution="750" maxWaveLength="" minWaveLength="" middleWaveLength="0.555"></Band>
+    <Band id="10" fileDataset="" index="9" invalidValue="" resolution="750" maxWaveLength="" minWaveLength="" middleWaveLength="0.672"></Band>
+    <Band id="11" fileDataset="" index="10" invalidValue="" resolution="750" maxWaveLength="" minWaveLength="" middleWaveLength="0.746"></Band>
+    <Band id="12" fileDataset="" index="11" invalidValue="" resolution="750" maxWaveLength="" minWaveLength="" middleWaveLength="0.865"></Band>
+    <Band id="13" fileDataset="" index="12" invalidValue="" resolution="750" maxWaveLength="" minWaveLength="" middleWaveLength="1.24"></Band>
+    <Band id="14" fileDataset="" index="13" invalidValue="" resolution="750" maxWaveLength="" minWaveLength="" middleWaveLength="1.38"></Band>
+    <Band id="15" fileDataset="" index="14" invalidValue="" resolution="750" maxWaveLength="" minWaveLength="" middleWaveLength="1.61"></Band>
+    <Band id="16" fileDataset="" index="15" invalidValue="" resolution="750" maxWaveLength="" minWaveLength="" middleWaveLength="2.25"></Band>
+    <Band id="17" fileDataset="" index="2" invalidValue="" resolution="750" maxWaveLength="" minWaveLength="" middleWaveLength="3.70"></Band>
+    <Band id="18" fileDataset="" index="3" invalidValue="" resolution="750" maxWaveLength="" minWaveLength="" middleWaveLength="4.05"></Band>
+    <Band id="19" fileDataset="" index="4" invalidValue="" resolution="750" maxWaveLength="" minWaveLength="" middleWaveLength="8.55"></Band>
+    <Band id="20" fileDataset="" index="5" invalidValue="" resolution="750" maxWaveLength="" minWaveLength="" middleWaveLength="10.76"></Band>
+    <Band id="21" fileDataset="" index="6" invalidValue="" resolution="750" maxWaveLength="" minWaveLength="" middleWaveLength="12.01"></Band>
+  </RasterDataset>
+  
   <RasterDataset ID="AQUA" SatelliteID="EOSA" SensorID="MODIS" Satellitedescribe="" Sensordescribe="MODIS传感器">
     <Band id="1" fileDataset="" index="0" invalidValue="" resolution="250" maxWaveLength="" minWaveLength="" middleWaveLength="0.650"></Band>
     <Band id="2" fileDataset="" index="1" invalidValue="" resolution="250" maxWaveLength="" minWaveLength="" middleWaveLength="0.850"></Band>
@@ -607,5 +632,12 @@
   </RasterDataset>
   <RasterDataset ID="Common" SatelliteID="" SensorID="" Satellitedescribe="" Sensordescribe="">
     <Band id="1" fileDataset="" index="0" invalidValue="" resolution="" maxWaveLength="" minWaveLength="" middleWaveLength=""></Band>
+  </RasterDataset>
+  <RasterDataset ID="NOAA" SatelliteID="NOAA" SensorID="AVHRR" Satellitedescribe="NOAA18" Sensordescribe="AVHRR">
+    <Band id="1" fileDataset="" index="0" invalidValue="" resolution="1000" maxWaveLength="" minWaveLength="" middleWaveLength="0.60"></Band>
+    <Band id="2" fileDataset="" index="1" invalidValue="" resolution="1000" maxWaveLength="" minWaveLength="" middleWaveLength="0.9"></Band>
+    <Band id="3" fileDataset="" index="2" invalidValue="" resolution="1000" maxWaveLength="" minWaveLength="" middleWaveLength="3.7"></Band>
+    <Band id="4" fileDataset="" index="3" invalidValue="" resolution="1000" maxWaveLength="" minWaveLength="" middleWaveLength="11"></Band>
+    <Band id="5" fileDataset="" index="4" invalidValue="" resolution="1000" maxWaveLength="" minWaveLength="" middleWaveLength="12"></Band>
   </RasterDataset>
 </RasterDatasets>

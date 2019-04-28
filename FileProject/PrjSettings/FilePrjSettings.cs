@@ -14,7 +14,7 @@ namespace PIE.Meteo.FileProject
         protected float _outResolutionX = 0;
         protected float _outResolutionY = 0;
         //DriverName,如果为内存则为"MEMORY"
-        protected string _outFormat = "";
+        protected string _outFormat = "LDF";
         protected PrjEnvelope _outEnvelope = null;
         //如果_outFormat为非内存，则需要指定该参数
         private string _outPathAndFileName = null;

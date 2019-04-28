@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace PIE.Meteo.FileProject
 {
@@ -654,6 +655,93 @@ namespace PIE.Meteo.FileProject
             return groupBz2Files;
         }
 
+        #endregion
+        
+                #region NPP
+        //匹配路径
+        static string[] regStrArray = new string[]{
+            "gdnbo" , "gimgo", "gitco", "gmodo", "gmtco",
+            "icdbg","ivcdb","ivobc","svdnb",
+            "svi\\d{2}","svm\\d{2}"
+        };
+        static string[] regStrArray2 = new string[]{
+            "GDNBO" , "GIMGO", "GITCO", "GMODO", "GMTCO",
+            "ICDBG","IVCDB","IVOBC","SVDNB",
+            "SVI\\d{2}","SVM\\d{2}"
+        };
+        private static string TryFindNppFile(string filePath,string type)
+        {
+            string result = string.Empty;
+            string searchDir = Path.GetDirectoryName(filePath);
+            string fileName = Path.GetFileName(filePath);
+            foreach (var item in regStrArray)
+            {
+                if (Regex.IsMatch(fileName, item))
+                {
+                    var temp = Path.Combine(searchDir, Regex.Replace(fileName, item, type));
+                    if (File.Exists(temp))
+                        result = temp;
+                    else
+                        throw new ArgumentException($"NPP数据的{type}类型数据无法找到");
+                    break;
+                }
+
+            }
+            if(string.IsNullOrEmpty(result))
+            {
+                foreach (var item in regStrArray2)
+                {
+                    if (Regex.IsMatch(fileName, item))
+                    {
+                        var temp = Path.Combine(searchDir, Regex.Replace(fileName, item, type.ToUpper()));
+                        if (File.Exists(temp))
+                            result = temp;
+                        else
+                            throw new ArgumentException($"NPP数据的{type}类型数据无法找到");
+                        break;
+                    }
+                }
+            }
+            return result;
+        }
+        /// <summary>
+        /// 获取NppM波段的Geo文件
+        /// </summary>
+        /// <param name="nppDataset"></param>
+        /// <returns></returns>
+        public static string TryFindNppMbandGeoFile(AbstractWarpDataset nppDataset)
+        {
+            return TryFindNppFile(nppDataset.fileName, "gmodo");
+        }
+        /// <summary>
+        /// 获取Npp数据I波段Geo文件
+        /// </summary>
+        /// <param name="nppDataset"></param>
+        /// <returns></returns>
+        public static string TryFindNppIbandGeoFile(AbstractWarpDataset nppDataset)
+        {
+            return TryFindNppFile(nppDataset.fileName, "gimgo");
+        }
+        /// <summary>
+        /// 获取Npp数据I波段文件路径
+        /// </summary>
+        /// <param name="nppDataset"></param>
+        /// <param name="num"></param>
+        /// <returns></returns>
+        public static string TryFindNppIbandFile(AbstractWarpDataset nppDataset, int num)
+        {
+            return TryFindNppFile(nppDataset.fileName, $"svi{num:00}");
+        }
+        /// <summary>
+        /// 获取Npp数据M波段文件路径
+        /// </summary>
+        /// <param name="nppDataset"></param>
+        /// <param name="num"></param>
+        /// <returns></returns>
+        public static string TryFindNppMbandFile(AbstractWarpDataset nppDataset, int num)
+        {
+            return TryFindNppFile(nppDataset.fileName, $"svm{num:00}");
+        }
         #endregion
     }
 }

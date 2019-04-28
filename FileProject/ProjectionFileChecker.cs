@@ -114,11 +114,17 @@ namespace PIE.Meteo.FileProject
                                 return "FY4A_AGRI_4000";
                         }
                     }
+                    else if (info.SensorID == "VIIRS" && info.SatelliteID == "NPP")
+                        return "NPP";
 
                 }
-                else if (info.SatelliteID == "AHI8-OBI")
+                else if (info.SatelliteID == "H8")
                 {
                     return "H8";
+                }
+                else if (info.SatelliteID == "NOAA")
+                {
+                    return "NOAA";
                 }
                 else if (file.SpatialRef != null)
                     return "PROJECTED";
