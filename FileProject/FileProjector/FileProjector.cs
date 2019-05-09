@@ -1689,7 +1689,7 @@ namespace PIE.Meteo.FileProject
                         }
 
                         ReadImgBand(out srcBandData, i, curOrbitblock.xBegin * imgLocationRatioX,
-                            curOrbitblock.yBegin * imgLocationRatioY, srcBlockImgSize.Width, srcBlockImgSize.Height);
+                            curOrbitblock.yBegin * imgLocationRatioY, srcBlockImgSize.Width, srcBlockImgSize.Height,srcImgSize);
                         //Size angleSize = new Size(srcBlockJdWidth, srcBlockJdHeight);
                         DoRadiation(srcImgRaster, i, srcBandData, solarZenithData, srcBlockImgSize, srcAngleBlockSize);
                         ushort nodata = 0;

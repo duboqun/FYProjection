@@ -682,12 +682,12 @@
   <RasterSourceType ID="NPP_VIIRS"  describe="" datasetsID="NPP_VIIRS" bandID="" displayDataset="true">
     <KeyNames key="NPP_VIIRS" suffix="ldf,tif,tiff" ></KeyNames>
     <Render defaultband="3,2,1" ifCalibration="true" ifVector="true">
-      <BandRender bandID="1,2,3" colorClass="" colorTable=""></BandRender>
+      <BandRender bandID="1,2,3" rendermin="0" rendermax="1000"  colorClass="" colorTable=""></BandRender>
     </Render>
   </RasterSourceType>
 
   <RasterSourceType ID="NOAA"  describe="" datasetsID="NOAA" bandID="" displayDataset="true">
-    <KeyNames key="NOAA,AVHRR" suffix="l1b,tif,tiff" ></KeyNames>
+    <KeyNames key="NOAA,AVHRR" suffix="l1b,tif,tiff,ldf" ></KeyNames>
     <Render defaultband="3,2,1" ifCalibration="true" ifVector="true">
       <BandRender bandID="1,2" rendermin="0" rendermax="1000" colorClass="" colorTable=""></BandRender>
       <BandRender bandID="3,4,5" rendermin="2400" rendermax="3400" colorClass="" colorTable=""></BandRender>

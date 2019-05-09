@@ -2224,7 +2224,18 @@ namespace PIE.Meteo.FileProject
                 case "H8":
                     hasVaild = true;
                     break;
-
+                case "NPP":
+                    projector = FileProjector.GetFileProjectByName("NPP");
+                    string mGeoFile = FileFinder.TryFindNppMbandGeoFile(raster);
+                    using (AbstractWarpDataset locationRaster = WarpDataset.Open(mGeoFile))
+                    {
+                        hasVaild = projector.HasVaildEnvelope(locationRaster, invalidEnv, SpatialReferenceFactory.CreateSpatialReference(4326));
+                    }
+                    break;
+                case "NOAA":
+                    projector = FileProjector.GetFileProjectByName("NOAA");
+                    hasVaild = projector.HasVaildEnvelope(raster, invalidEnv, SpatialReferenceFactory.CreateSpatialReference(4326));
+                    break;
                 default:
                     throw new Exception("尚未支持的数据类型" + fileType);
             }
@@ -2651,7 +2662,7 @@ namespace PIE.Meteo.FileProject
             }
         }
 
-                private string[] PrjNOAA_1BD_L1(AbstractWarpDataset raster, PrjOutArg prjOutArg, Action<int, string> progress, out StringBuilder errorMessage)
+        private string[] PrjNOAA_1BD_L1(AbstractWarpDataset raster, PrjOutArg prjOutArg, Action<int, string> progress, out StringBuilder errorMessage)
         {
             SpatialReference dstSpatialRef = prjOutArg.ProjectionRef;
             PrjEnvelopeItem[] prjEnvelopes = prjOutArg.Envelopes;

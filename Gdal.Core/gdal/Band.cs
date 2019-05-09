@@ -259,6 +259,17 @@ public class Band : MajorObject {
       GC.KeepAlive(this);
       return retval;
   }
+  public CPLErr ReadRaster(int xOff, int yOff, int xSize, int ySize, UInt16[] buffer, int buf_xSize, int buf_ySize, int pixelSpace, int lineSpace, RasterIOExtraArg extraArg) {
+      CPLErr retval;
+      GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+      try {
+          retval = ReadRaster(xOff, yOff, xSize, ySize, handle.AddrOfPinnedObject(), buf_xSize, buf_ySize, DataType.GDT_UInt16, pixelSpace, lineSpace, extraArg);
+      } finally {
+          handle.Free();
+      }
+      GC.KeepAlive(this);
+      return retval;
+  }
   public CPLErr WriteRaster(int xOff, int yOff, int xSize, int ySize, float[] buffer, int buf_xSize, int buf_ySize, int pixelSpace, int lineSpace, RasterIOExtraArg extraArg) {
       CPLErr retval;
       GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);

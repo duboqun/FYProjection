@@ -71,7 +71,16 @@ namespace PIE.Meteo.FileProject
             else
             {
                 string subDs = $"HDF5:\"{fileName}\"://{v}";
-                var subRasterDs = Gdal.Open(subDs, Access.GA_ReadOnly);
+                Dataset subRasterDs = null;
+                try
+                {
+                    subRasterDs = Gdal.Open(subDs, Access.GA_ReadOnly);
+                }
+                catch (Exception e)
+                {
+                    subRasterDs = null;
+                }
+                
                 if (subRasterDs != null)
                 {
                     bands = new Band[subRasterDs.RasterCount];
@@ -166,7 +175,7 @@ namespace PIE.Meteo.FileProject
         {
             this.ds = ds;
             var subDsDic = ds.GetSubDatasets();
-            if (subDsDic.Count > 0)
+            if (Path.GetExtension(fileName).ToLower()!=".l1b"&& subDsDic.Count > 0)
             {
                 isMultiDs = true;
                 //初始化IHdfOperator

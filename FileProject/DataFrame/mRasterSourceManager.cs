@@ -577,6 +577,14 @@ namespace PIE.Meteo.Model
                 {
                     dataSourceInfo = new ModisDataSourceInfo();
                 }
+                else if(fileName.ToUpper().Contains("NPP"))
+                {
+                    dataSourceInfo = new NppDataSourceInfo();
+                }
+                else if(fileName.ToUpper().Contains("AVHRR"))
+                {
+                    dataSourceInfo = new NoaaDataSourceInfo();
+                }
                 else
                 {
                     return null;

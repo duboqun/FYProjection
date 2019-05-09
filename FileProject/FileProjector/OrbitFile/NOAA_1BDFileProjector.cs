@@ -492,8 +492,6 @@ namespace PIE.Meteo.FileProject
             int MaxY = 2000;
             ulong mem = MemoryHelper.GetAvalidPhyMemory(); //系统剩余内存
             long workingSet64 = MemoryHelper.WorkingSet64(); //为该进程已分配内存
-            if (mem < 200 * 1024.0f * 1024)
-                throw new Exception("当前系统资源不足以完成该操作，请释放部分资源后再试。");
             double usemem = mem; //;
 
             MaxY = (int) (usemem / 100 / w);
@@ -729,8 +727,8 @@ namespace PIE.Meteo.FileProject
             longitudes = null;
             latitudes = null;
 
-            var xBand = _vrtDataset.GetRasterBand(0);
-            var yBand = _vrtDataset.GetRasterBand(1);
+            var xBand = _vrtDataset.GetRasterBand(1);
+            var yBand = _vrtDataset.GetRasterBand(2);
             L1BInterpol.InterpolBand(out longitudes, xBand, locationSize);
             L1BInterpol.InterpolBand(out latitudes, yBand, locationSize);
         }

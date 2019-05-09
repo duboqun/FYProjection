@@ -647,6 +647,9 @@ public CPLErr SetGCPs(GCP[] pGCPs, string pszGCPProjection) {
   public Envelope GetExtent()
   {
       double[] geoTrans = GetGeoTransform();
+      
+      
+      
       Envelope env = new Envelope();
       env.MinX = geoTrans[0];
       env.MaxY = geoTrans[3];
